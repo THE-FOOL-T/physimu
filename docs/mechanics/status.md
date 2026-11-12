@@ -343,3 +343,161 @@ Bangla review and physical-device QA. The known keyboard chooser flake remains
 an open browser limitation, not a mechanics recognition result.
 
 M1 stops here. M2 requires the next explicit continue.
+
+## M1 follow-up — local models and original-app comparison
+
+At the owner's request, copied the five manifest-listed model files from the
+original checkout recorded in IMPORT.md into this repository's `models/`:
+`v2_original.pt`, the three RapidOCR ONNX files, and `ocr/easyocr/bengali.pth`.
+Source and destination sizes/SHA-256 hashes match the manifest. All five paths
+are ignored by Git; no weights, private images or dataset files were committed.
+No application code or dependency pins changed.
+
+- `python manage.py doctor`: **passed**, all five models OK.
+- `python manage.py test`, with models present: **428 Python passed, 1 skipped**
+  in **38.18 s**; **84 TypeScript passed**; type check and production build passed.
+- Both apps reached detector **ready**, OCR **ready**, with both RapidOCR and
+  Bengali OCR workers ready. Library versions and inference/budget settings
+  agree; each app uses its own copy of the model files and its own environment.
+- Sent the same real image bytes sequentially through `/api/analyze` in each
+  app, with `lang=en`, `style=auto`, AI reader off and unchanged default budgets.
+  Case: `Screenshot 2026-10-30 232522.png`, SHA-256
+  `167ebff80d00595c8f56ec3352ccc73165205c1ba2849a758e071247c0e7b6ec`.
+  Both returned `partial` with eight components. Netlist, solution, warnings
+  and source image are exactly equal. HTTP durations were 18.641 s (new) and
+  18.343 s (original); this is one comparison, not a latency benchmark.
+
+Full response parity **did not pass**. After excluding the intentional new
+`domain` field and timing measurements, three diagnostic differences remain:
+
+| Field | New app | Original app |
+| --- | ---: | ---: |
+| `diagnostics.engine_readings.length` | 24 | 25 |
+| `diagnostics.stages[1].readings` (Bengali OCR) | 9 | 10 |
+| `diagnostics.texts[6].alternatives.length` | 0 | 1 |
+
+Stopped the remaining image comparisons at this first mismatch, as requested,
+and reported it to the owner. The cause is **unverified**; no repeated run,
+budget adjustment, pipeline fix or M2 work was performed. Identical netlists on
+this case do not establish correct recognition or full response equivalence.
+
+The requested fresh visual Circuit/Mechanics switch check **was not completed**.
+Computer Use stopped browser input because it could not determine the current
+Windows browser URL confidently enough to enforce policy. No further UI input
+was attempted. Earlier M1 browser results remain historical evidence only.
+
+Raw responses, exact differences, copy hashes, environment/readiness records and
+test logs remain local under ignored `.cache/model-verification/`. The temporary
+original-app server was stopped and the original checkout remains clean. The
+new app remains running at `http://127.0.0.1:8000` for the owner's inspection.
+
+M2 remains on hold pending review of the diagnostic mismatch and completion of
+the fresh UI check. No source or model fix was made during this verification.
+
+## M1 follow-up resolution — inherited OCR work limits
+
+The owner's next continue resumed the investigation above, without starting M2.
+The computed circuit results match across three real images. The diagnostic
+count difference reproduces inside the original app itself and is explained by
+its existing wall-clock OCR work limit. No circuit implementation, model,
+configuration, dependency pin or deadline was changed to obtain these results.
+
+### Cause and evidence
+
+- Compared all **36 pipeline/solver Python files** with the original checkout,
+  normalizing CRLF/LF only: **zero content differences**.
+- Both saved first-case responses report Bengali OCR `limited` and
+  `engine_limits: [easyocr-bn]`. The new app's original nine Bengali readings
+  are an exact prefix of the original app's ten. The extra original reading is
+  a quotation mark with confidence approximately **0.00448**.
+- The unchanged `bangla_adapter.py` stops before another recognition call when
+  `time.monotonic() + call_reserve_seconds >= run.deadline`; its default reserve
+  is three seconds. `router.py` allocates engines from the remaining OCR time.
+  The worker preserves the partial readings and records the work limit. Thus
+  elapsed inference time determines how many proposal readings are returned.
+- Two fresh requests in the **original app alone** returned **8 then 11**
+  Bengali readings for the same first image, versus **10** in its earlier saved
+  response. Netlist, solver result, warnings and all other compared circuit
+  envelope fields stayed exactly equal. Its own full diagnostic JSON differed
+  on those repeats, even after removing timing measurements.
+- The fresh new-app first-case response returned **11** Bengali readings and
+  matched the original app's second fresh response completely after excluding
+  timing fields and the intentional additional `domain` field.
+
+This establishes inherited deadline-dependent diagnostic variability on the
+tested case, rather than a new domain-adapter difference. No enlarged-budget
+diagnostic was needed or run. All live comparisons used unchanged default
+25-second page/16-second text settings, the ten-second hybrid reserve, two CPU
+threads, identical image bytes, `lang=en`, `style=auto`, and AI reading off.
+
+### Three-image comparison
+
+All three pairs have exactly equal **netlists, solutions, warnings, source
+images, observed netlists, provenance, style estimates and regions**. Full
+payload comparison excludes only `domain` and timing keys (`timings`, `seconds`,
+`elapsed_seconds`); it retains every diagnostic field.
+
+| Real image | Parts / provenance | Bengali readings: new / original | Circuit fields exact | Full payload exact, excluding domain/timing |
+| --- | --- | --- | --- | --- |
+| `Screenshot 2026-10-30 232522.png` | 8 / partial | 11 / 11 | Yes | Yes |
+| `Screenshot 2026-10-30 232632.png` | 5 / partial | 10 / 12 | Yes | No: OCR diagnostics only |
+| `Screenshot 2026-10-30 232905.png` | 7 / extracted | 9 / 11 | Yes | No: OCR diagnostics only |
+
+For every pair, the shorter complete raw-engine reading list is an **exact
+prefix** of the longer list. The second pair has 49 structural difference paths
+because two extra readings also change the length/order of the fused diagnostic
+text list; this is not 49 independent recognition differences. The third pair
+has four structural differences in reading counts and text-alternative lengths.
+
+Input SHA-256 hashes, in table order:
+
+1. `167ebff80d00595c8f56ec3352ccc73165205c1ba2849a758e071247c0e7b6ec`
+2. `21e520de9e4b8ae0d00c44579c2f2c158d9066ebb402eda2c3f3babd90a12775`
+3. `de5707fd01baa68a1d593cca8b37cda8d11fa53952fd1394bb2184877b12734a`
+
+These are regression comparisons on three existing owner images, not a frozen
+gold evaluation, recognition-accuracy measurement or latency benchmark. Equal
+outputs can share the original app's recognition errors. Full diagnostic
+determinism under the default wall-clock limit is **not** claimed.
+
+### Fresh UI check and tests
+
+The browser access host remained unavailable. Using the computer-use workflow
+with native Edge, brought the browser into view and observed its current URL
+before navigating to `http://127.0.0.1:8000/`. Confirmed:
+
+- Circuit is selected by default; the mixed-network example loads with seven
+  components, 24 V, 12 kΩ, and the **Models ready** notice.
+- Selecting Mechanics shows its heading and the explicit not-implemented/no
+  simulation panel, including the pending Bangla-review notice.
+
+The attempted return to Circuit encountered a non-target legacy-window error,
+then a cached-element-unavailable error after refreshing. Stopped UI input and
+left the browser on Mechanics. This completes the requested quick look at both
+states, but **does not verify a fresh native round trip**. The earlier automated
+round-trip tests remain separately recorded historical evidence.
+
+Ran `python manage.py test` again with the copied models present: **428 Python
+passed, 1 skipped** in **42.69 s**; **84 TypeScript passed**; type check and build
+passed. No test source, threshold or expected result was changed.
+
+Commands from this checkout, using `.venv/Scripts/python.exe`:
+
+```powershell
+python .cache/model-verification/followup.py start
+python .cache/model-verification/followup.py compare
+python manage.py test
+```
+
+Local evidence is under ignored `.cache/model-verification/followup/`: raw
+responses, exact difference files, original self-repeats, `summary.json`,
+`case-summary.json`, readiness/server logs and `test.log`. The file-content and
+initial prefix audit is `.cache/model-verification/code-and-prefix-audit.json`.
+The source checkout remains clean and its temporary server was stopped. The
+new app remains available on loopback port 8000. Weights and private data remain
+ignored and no pipeline fix was made.
+
+The mismatch's cause is now explained and three circuit-result comparisons are
+complete. Inherited OCR diagnostic variability and the unconfirmed native
+reverse selection remain disclosed limitations. This follow-up stops here;
+M2 has not started and awaits the next explicit continue.
