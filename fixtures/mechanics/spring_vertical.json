@@ -1,0 +1,471 @@
+{
+  "version": 1,
+  "domain": "mechanics",
+  "image": {
+    "path": "spring_vertical.png",
+    "width": 800,
+    "height": 520
+  },
+  "archetype": "spring_mass",
+  "frame": {
+    "gravity": [
+      0.0,
+      1.0
+    ],
+    "px_per_m": {
+      "number": 240.0,
+      "unit": "px/m",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 1.0
+    },
+    "paper_color": "#fffef7",
+    "ink_color": "#202c3a",
+    "stroke_px": 2.0
+  },
+  "bodies": [
+    {
+      "id": "B1",
+      "type": "block",
+      "bbox": [
+        370.0,
+        258.0,
+        430.0,
+        308.0
+      ],
+      "mask": [
+        [
+          370.0,
+          258.0
+        ],
+        [
+          430.0,
+          258.0
+        ],
+        [
+          430.0,
+          308.0
+        ],
+        [
+          370.0,
+          308.0
+        ]
+      ],
+      "anchor": [
+        400.0,
+        283.0
+      ],
+      "label_ids": [
+        "label_B1"
+      ],
+      "mass": {
+        "number": 1.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": null,
+      "initial": {
+        "position": {
+          "x": {
+            "number": 0.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.2,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "S1",
+      "type": "ceiling",
+      "polyline": [
+        [
+          300.0,
+          80.0
+        ],
+        [
+          500.0,
+          80.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "type": "spring",
+      "a": {
+        "ref": "support",
+        "point": [
+          400.0,
+          90.0
+        ]
+      },
+      "b": {
+        "ref": "B1",
+        "point": [
+          400.0,
+          258.0
+        ]
+      },
+      "polyline": [
+        [
+          400.0,
+          90.0
+        ],
+        [
+          400.0,
+          258.0
+        ]
+      ],
+      "length_m": null,
+      "k": {
+        "number": 100.0,
+        "unit": "N/m",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "rest_length_m": {
+        "number": 0.5,
+        "unit": "m",
+        "status": "assumed",
+        "source": "prior",
+        "confidence": 1.0
+      },
+      "coils": 10,
+      "damping": {
+        "number": 0.0,
+        "unit": "kg/s",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "pulleys": [],
+  "forces": [],
+  "annotations": [
+    {
+      "id": "title",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          20.0,
+          16.0,
+          760.0,
+          40.0
+        ],
+        "text": "SYNTHETIC / AUTHORED: spring vertical",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "support",
+      "type": "axis",
+      "geometry": {
+        "points": [
+          [
+            400.0,
+            90.0
+          ]
+        ],
+        "bbox": null,
+        "text": null,
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B1",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          382.0,
+          275.0,
+          422.0,
+          295.0
+        ],
+        "text": "1 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "param_stretch",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          65.0,
+          790.0,
+          86.0
+        ],
+        "text": "stretch: 0.2 m",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "params.initial_stretch"
+    },
+    {
+      "id": "param_k",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          88.0,
+          790.0,
+          109.0
+        ],
+        "text": "k: 100 N/m",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "links.L1.k"
+    },
+    {
+      "id": "param_damping",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          111.0,
+          790.0,
+          132.0
+        ],
+        "text": "damping: 0 kg/s",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "links.L1.damping"
+    }
+  ],
+  "repairs": [
+    {
+      "surface_or_line_id": "S1",
+      "segments": [
+        [
+          [
+            392.0,
+            80.0
+          ],
+          [
+            408.0,
+            80.0
+          ]
+        ]
+      ]
+    }
+  ],
+  "constants": {
+    "g": {
+      "number": 9.81,
+      "unit": "m/s^2",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 0.0
+    }
+  },
+  "params": {
+    "initial_stretch": {
+      "number": 0.2,
+      "unit": "m",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    },
+    "initial_speed": {
+      "number": 0.0,
+      "unit": "m/s",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    },
+    "vertical": {
+      "number": 1.0,
+      "unit": "1",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    }
+  },
+  "bindings": [
+    {
+      "id": "stretch",
+      "path": "params.initial_stretch",
+      "class": "initial",
+      "control": {
+        "min": -0.35,
+        "max": 0.65,
+        "step": 0.01,
+        "unit": "m",
+        "locked": false
+      },
+      "labels": [
+        "param_stretch"
+      ],
+      "handle": "spring_end",
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "k",
+      "path": "links.L1.k",
+      "class": "physics",
+      "control": {
+        "min": 10.0,
+        "max": 500.0,
+        "step": 1.0,
+        "unit": "N/m",
+        "locked": false
+      },
+      "labels": [
+        "param_k"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "damping",
+      "path": "links.L1.damping",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 30.0,
+        "step": 0.1,
+        "unit": "kg/s",
+        "locked": false
+      },
+      "labels": [
+        "param_damping"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B1",
+      "path": "bodies.B1.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B1"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "g",
+      "path": "constants.g",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 20.0,
+        "step": 0.01,
+        "unit": "m/s^2",
+        "locked": false
+      },
+      "labels": [],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    }
+  ],
+  "constraints": [],
+  "warnings": [],
+  "meta": {
+    "language": "en",
+    "style": "printed",
+    "provenance": "authored",
+    "region": null
+  }
+}

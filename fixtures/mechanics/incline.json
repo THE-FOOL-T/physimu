@@ -1,0 +1,581 @@
+{
+  "version": 1,
+  "domain": "mechanics",
+  "image": {
+    "path": "incline.png",
+    "width": 800,
+    "height": 520
+  },
+  "archetype": "incline_block",
+  "frame": {
+    "gravity": [
+      0.0,
+      1.0
+    ],
+    "px_per_m": {
+      "number": 160.0,
+      "unit": "px/m",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 1.0
+    },
+    "paper_color": "#fffef7",
+    "ink_color": "#202c3a",
+    "stroke_px": 2.0
+  },
+  "bodies": [
+    {
+      "id": "B1",
+      "type": "block",
+      "bbox": [
+        303.4345541763852,
+        246.35898384862244,
+        375.3960784034515,
+        311.0
+      ],
+      "mask": [
+        [
+          303.4345541763852,
+          276.3589838486224
+        ],
+        [
+          355.3960784034515,
+          246.35898384862244
+        ],
+        [
+          375.3960784034515,
+          281.0
+        ],
+        [
+          323.4345541763852,
+          311.0
+        ]
+      ],
+      "anchor": [
+        339.41531628991834,
+        278.6794919243112
+      ],
+      "label_ids": [
+        "label_B1"
+      ],
+      "mass": {
+        "number": 5.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": "S1",
+      "initial": {
+        "position": {
+          "x": {
+            "number": 1.5588457268119897,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": -0.8999999999999999,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "S1",
+      "type": "incline",
+      "polyline": [
+        [
+          100.0,
+          440.0
+        ],
+        [
+          515.6921938165306,
+          200.00000000000003
+        ]
+      ],
+      "angle_deg": {
+        "number": 30.0,
+        "unit": "deg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "length_m": {
+        "number": 3.0,
+        "unit": "m",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_s": {
+        "number": 0.25,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.2,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "S2",
+      "type": "floor",
+      "polyline": [
+        [
+          40.0,
+          440.0
+        ],
+        [
+          760.0,
+          440.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "links": [],
+  "pulleys": [],
+  "forces": [],
+  "annotations": [
+    {
+      "id": "title",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          20.0,
+          16.0,
+          760.0,
+          40.0
+        ],
+        "text": "SYNTHETIC / AUTHORED: incline",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B1",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          321.41531628991834,
+          270.6794919243112,
+          361.41531628991834,
+          290.6794919243112
+        ],
+        "text": "5 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "angle",
+      "type": "angle_arc",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          70.0,
+          410.0,
+          130.0,
+          470.0
+        ],
+        "text": null,
+        "radius_px": null,
+        "start_deg": -30.0,
+        "end_deg": 0.0
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "param_position",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          65.0,
+          790.0,
+          86.0
+        ],
+        "text": "position: 1.8 m",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "params.start_position"
+    },
+    {
+      "id": "param_theta",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          88.0,
+          790.0,
+          109.0
+        ],
+        "text": "theta: 30 deg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "surfaces.S1.angle_deg"
+    },
+    {
+      "id": "param_length",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          111.0,
+          790.0,
+          132.0
+        ],
+        "text": "length: 3 m",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "surfaces.S1.length_m"
+    },
+    {
+      "id": "param_mu",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          134.0,
+          790.0,
+          155.0
+        ],
+        "text": "mu: 0.2 1",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "surfaces.S1.mu_k"
+    },
+    {
+      "id": "param_force",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          157.0,
+          790.0,
+          178.0
+        ],
+        "text": "force: 0 N",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "params.applied_force"
+    },
+    {
+      "id": "param_mu_static",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          180.0,
+          790.0,
+          201.0
+        ],
+        "text": "mu_static: 0.25 1",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "surfaces.S1.mu_s"
+    }
+  ],
+  "repairs": [
+    {
+      "surface_or_line_id": "S1",
+      "segments": [
+        [
+          [
+            314.7743001385408,
+            316.0
+          ],
+          [
+            380.3960784034515,
+            278.11324865405186
+          ]
+        ]
+      ]
+    }
+  ],
+  "constants": {
+    "g": {
+      "number": 9.81,
+      "unit": "m/s^2",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 0.0
+    }
+  },
+  "params": {
+    "start_position": {
+      "number": 1.8,
+      "unit": "m",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    },
+    "initial_speed": {
+      "number": 0.0,
+      "unit": "m/s",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    },
+    "applied_force": {
+      "number": 0.0,
+      "unit": "N",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    }
+  },
+  "bindings": [
+    {
+      "id": "position",
+      "path": "params.start_position",
+      "class": "initial",
+      "control": {
+        "min": 0.2,
+        "max": 2.8,
+        "step": 0.01,
+        "unit": "m",
+        "locked": false
+      },
+      "labels": [
+        "param_position"
+      ],
+      "handle": "block",
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "theta",
+      "path": "surfaces.S1.angle_deg",
+      "class": "geometry",
+      "control": {
+        "min": 5.0,
+        "max": 75.0,
+        "step": 1.0,
+        "unit": "deg",
+        "locked": true
+      },
+      "labels": [
+        "param_theta"
+      ],
+      "handle": "incline_tip",
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "length",
+      "path": "surfaces.S1.length_m",
+      "class": "geometry",
+      "control": {
+        "min": 1.0,
+        "max": 4.0,
+        "step": 0.1,
+        "unit": "m",
+        "locked": true
+      },
+      "labels": [
+        "param_length"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mu",
+      "path": "surfaces.S1.mu_k",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.01,
+        "unit": "1",
+        "locked": false
+      },
+      "labels": [
+        "param_mu"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "force",
+      "path": "params.applied_force",
+      "class": "physics",
+      "control": {
+        "min": -100.0,
+        "max": 100.0,
+        "step": 1.0,
+        "unit": "N",
+        "locked": false
+      },
+      "labels": [
+        "param_force"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mu_static",
+      "path": "surfaces.S1.mu_s",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.01,
+        "unit": "1",
+        "locked": false
+      },
+      "labels": [
+        "param_mu_static"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B1",
+      "path": "bodies.B1.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B1"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "g",
+      "path": "constants.g",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 20.0,
+        "step": 0.01,
+        "unit": "m/s^2",
+        "locked": false
+      },
+      "labels": [],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    }
+  ],
+  "constraints": [],
+  "warnings": [],
+  "meta": {
+    "language": "en",
+    "style": "printed",
+    "provenance": "authored",
+    "region": null
+  }
+}

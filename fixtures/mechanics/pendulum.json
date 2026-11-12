@@ -1,0 +1,442 @@
+{
+  "version": 1,
+  "domain": "mechanics",
+  "image": {
+    "path": "pendulum.png",
+    "width": 800,
+    "height": 520
+  },
+  "archetype": "pendulum",
+  "frame": {
+    "gravity": [
+      0.0,
+      1.0
+    ],
+    "px_per_m": {
+      "number": 250.0,
+      "unit": "px/m",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 1.0
+    },
+    "paper_color": "#fffef7",
+    "ink_color": "#202c3a",
+    "stroke_px": 2.0
+  },
+  "bodies": [
+    {
+      "id": "B1",
+      "type": "bob",
+      "bbox": [
+        451.65456543517485,
+        292.5769467591625,
+        499.65456543517485,
+        340.5769467591625
+      ],
+      "mask": [
+        [
+          451.65456543517485,
+          292.5769467591625
+        ],
+        [
+          499.65456543517485,
+          292.5769467591625
+        ],
+        [
+          499.65456543517485,
+          340.5769467591625
+        ],
+        [
+          451.65456543517485,
+          340.5769467591625
+        ]
+      ],
+      "anchor": [
+        475.65456543517485,
+        316.5769467591625
+      ],
+      "label_ids": [
+        "label_B1"
+      ],
+      "mass": {
+        "number": 1.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": null,
+      "initial": {
+        "position": {
+          "x": {
+            "number": 0.42261826174069944,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.9063077870366499,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "S1",
+      "type": "ceiling",
+      "polyline": [
+        [
+          270.0,
+          80.0
+        ],
+        [
+          470.0,
+          80.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "type": "rod",
+      "a": {
+        "ref": "pivot",
+        "point": [
+          370.0,
+          90.0
+        ]
+      },
+      "b": {
+        "ref": "B1",
+        "point": [
+          475.65456543517485,
+          316.5769467591625
+        ]
+      },
+      "polyline": [
+        [
+          370.0,
+          90.0
+        ],
+        [
+          475.65456543517485,
+          316.5769467591625
+        ]
+      ],
+      "length_m": {
+        "number": 1.0,
+        "unit": "m",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "k": null,
+      "rest_length_m": null,
+      "coils": null,
+      "damping": {
+        "number": 0.0,
+        "unit": "1/s",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "pulleys": [],
+  "forces": [],
+  "annotations": [
+    {
+      "id": "title",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          20.0,
+          16.0,
+          760.0,
+          40.0
+        ],
+        "text": "SYNTHETIC / AUTHORED: pendulum",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "pivot",
+      "type": "axis",
+      "geometry": {
+        "points": [
+          [
+            370.0,
+            90.0
+          ]
+        ],
+        "bbox": null,
+        "text": null,
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B1",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          457.65456543517485,
+          308.5769467591625,
+          497.65456543517485,
+          328.5769467591625
+        ],
+        "text": "1 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "param_angle",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          65.0,
+          790.0,
+          86.0
+        ],
+        "text": "angle: 25 deg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "params.release_angle"
+    },
+    {
+      "id": "param_length",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          88.0,
+          790.0,
+          109.0
+        ],
+        "text": "length: 1 m",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "links.L1.length_m"
+    },
+    {
+      "id": "param_damping",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          111.0,
+          790.0,
+          132.0
+        ],
+        "text": "damping: 0 1/s",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "links.L1.damping"
+    }
+  ],
+  "repairs": [],
+  "constants": {
+    "g": {
+      "number": 9.81,
+      "unit": "m/s^2",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 0.0
+    }
+  },
+  "params": {
+    "release_angle": {
+      "number": 25.0,
+      "unit": "deg",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    },
+    "angular_speed": {
+      "number": 0.0,
+      "unit": "rad/s",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    }
+  },
+  "bindings": [
+    {
+      "id": "angle",
+      "path": "params.release_angle",
+      "class": "initial",
+      "control": {
+        "min": -70.0,
+        "max": 70.0,
+        "step": 1.0,
+        "unit": "deg",
+        "locked": false
+      },
+      "labels": [
+        "param_angle"
+      ],
+      "handle": "bob",
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "length",
+      "path": "links.L1.length_m",
+      "class": "initial",
+      "control": {
+        "min": 0.25,
+        "max": 1.5,
+        "step": 0.01,
+        "unit": "m",
+        "locked": false
+      },
+      "labels": [
+        "param_length"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "damping",
+      "path": "links.L1.damping",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 3.0,
+        "step": 0.01,
+        "unit": "1/s",
+        "locked": false
+      },
+      "labels": [
+        "param_damping"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B1",
+      "path": "bodies.B1.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B1"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "g",
+      "path": "constants.g",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 20.0,
+        "step": 0.01,
+        "unit": "m/s^2",
+        "locked": false
+      },
+      "labels": [],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    }
+  ],
+  "constraints": [],
+  "warnings": [],
+  "meta": {
+    "language": "en",
+    "style": "printed",
+    "provenance": "authored",
+    "region": null
+  }
+}

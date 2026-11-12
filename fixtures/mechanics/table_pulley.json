@@ -1,0 +1,767 @@
+{
+  "version": 1,
+  "domain": "mechanics",
+  "image": {
+    "path": "table_pulley.png",
+    "width": 800,
+    "height": 520
+  },
+  "archetype": "table_pulley",
+  "frame": {
+    "gravity": [
+      0.0,
+      1.0
+    ],
+    "px_per_m": {
+      "number": 100.0,
+      "unit": "px/m",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 1.0
+    },
+    "paper_color": "#fffef7",
+    "ink_color": "#202c3a",
+    "stroke_px": 2.0
+  },
+  "bodies": [
+    {
+      "id": "B1",
+      "type": "block",
+      "bbox": [
+        250.0,
+        220.0,
+        310.0,
+        260.0
+      ],
+      "mask": [
+        [
+          250.0,
+          220.0
+        ],
+        [
+          310.0,
+          220.0
+        ],
+        [
+          310.0,
+          260.0
+        ],
+        [
+          250.0,
+          260.0
+        ]
+      ],
+      "anchor": [
+        280.0,
+        240.0
+      ],
+      "label_ids": [
+        "label_B1"
+      ],
+      "mass": {
+        "number": 2.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": "S1",
+      "initial": {
+        "position": {
+          "x": {
+            "number": 0.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    },
+    {
+      "id": "B2",
+      "type": "block",
+      "bbox": [
+        580.0,
+        340.0,
+        640.0,
+        380.0
+      ],
+      "mask": [
+        [
+          580.0,
+          340.0
+        ],
+        [
+          640.0,
+          340.0
+        ],
+        [
+          640.0,
+          380.0
+        ],
+        [
+          580.0,
+          380.0
+        ]
+      ],
+      "anchor": [
+        610.0,
+        360.0
+      ],
+      "label_ids": [
+        "label_B2"
+      ],
+      "mass": {
+        "number": 1.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": null,
+      "initial": {
+        "position": {
+          "x": {
+            "number": 3.3,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 1.2,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "S1",
+      "type": "floor",
+      "polyline": [
+        [
+          70.0,
+          260.0
+        ],
+        [
+          580.0,
+          260.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.15,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.1,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "S2",
+      "type": "floor",
+      "polyline": [
+        [
+          580.0,
+          480.0
+        ],
+        [
+          750.0,
+          480.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    },
+    {
+      "id": "S3",
+      "type": "wall",
+      "polyline": [
+        [
+          580.0,
+          260.0
+        ],
+        [
+          580.0,
+          480.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "L1",
+      "type": "rope",
+      "a": {
+        "ref": "B1",
+        "point": [
+          310.0,
+          240.0
+        ]
+      },
+      "b": {
+        "ref": "B2",
+        "point": [
+          610.0,
+          340.0
+        ]
+      },
+      "polyline": [
+        [
+          310.0,
+          240.0
+        ],
+        [
+          580.0,
+          240.0
+        ],
+        [
+          581.177794472772,
+          240.0231289127783
+        ],
+        [
+          582.3537728718353,
+          240.09247998800618
+        ],
+        [
+          583.5261219237351,
+          240.20794629135221
+        ],
+        [
+          584.6930339512069,
+          240.36934978214586
+        ],
+        [
+          585.8527096604838,
+          240.57644158790308
+        ],
+        [
+          587.0033609156771,
+          240.8289023880697
+        ],
+        [
+          588.1432134959522,
+          241.1263429063906
+        ],
+        [
+          589.2705098312484,
+          241.4683045111454
+        ],
+        [
+          590.3835117123248,
+          241.85425992232547
+        ],
+        [
+          591.4805029709527,
+          242.2836140246614
+        ],
+        [
+          592.5597921261228,
+          242.75570478524756
+        ],
+        [
+          593.6197149921865,
+          243.26980427434896
+        ],
+        [
+          594.6586372449086,
+          243.82511978781608
+        ],
+        [
+          595.6749569414785,
+          244.42079506937722
+        ],
+        [
+          596.6671069905881,
+          245.05591163092365
+        ],
+        [
+          597.6335575687742,
+          245.72949016875157
+        ],
+        [
+          598.572818479295,
+          246.44049207357764
+        ],
+        [
+          599.4834414499055,
+          247.18782103199908
+        ],
+        [
+          600.3640223659883,
+          247.97032471692944
+        ],
+        [
+          601.2132034355964,
+          248.78679656440357
+        ],
+        [
+          602.0296752830706,
+          249.63597763401174
+        ],
+        [
+          602.8121789680009,
+          250.5165585500945
+        ],
+        [
+          603.5595079264224,
+          251.42718152070498
+        ],
+        [
+          604.2705098312484,
+          252.3664424312258
+        ],
+        [
+          604.9440883690763,
+          253.33289300941192
+        ],
+        [
+          605.5792049306227,
+          254.32504305852154
+        ],
+        [
+          606.1748802121839,
+          255.34136275509135
+        ],
+        [
+          606.730195725651,
+          256.3802850078136
+        ],
+        [
+          607.2442952147525,
+          257.44020787387717
+        ],
+        [
+          607.7163859753387,
+          258.51949702904733
+        ],
+        [
+          608.1457400776745,
+          259.6164882876752
+        ],
+        [
+          608.5316954888546,
+          260.72949016875157
+        ],
+        [
+          608.8736570936094,
+          261.85678650404776
+        ],
+        [
+          609.1710976119303,
+          262.99663908432285
+        ],
+        [
+          609.4235584120969,
+          264.14729033951613
+        ],
+        [
+          609.6306502178542,
+          265.3069660487931
+        ],
+        [
+          609.7920537086478,
+          266.4738780762649
+        ],
+        [
+          609.9075200119938,
+          267.64622712816464
+        ],
+        [
+          609.9768710872216,
+          268.82220552722794
+        ],
+        [
+          610.0,
+          270.0
+        ],
+        [
+          610.0,
+          340.0
+        ]
+      ],
+      "length_m": null,
+      "k": null,
+      "rest_length_m": null,
+      "coils": null,
+      "damping": null
+    }
+  ],
+  "pulleys": [
+    {
+      "id": "P1",
+      "center": [
+        580.0,
+        270.0
+      ],
+      "radius_px": 30.0,
+      "mass": null
+    }
+  ],
+  "forces": [],
+  "annotations": [
+    {
+      "id": "title",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          20.0,
+          16.0,
+          760.0,
+          40.0
+        ],
+        "text": "SYNTHETIC / AUTHORED: table pulley",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B1",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          262.0,
+          232.0,
+          302.0,
+          252.0
+        ],
+        "text": "2 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B2",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          592.0,
+          352.0,
+          632.0,
+          372.0
+        ],
+        "text": "1 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "param_mu",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          65.0,
+          790.0,
+          86.0
+        ],
+        "text": "mu: 0.1 1",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "surfaces.S1.mu_k"
+    },
+    {
+      "id": "param_mu_static",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          88.0,
+          790.0,
+          109.0
+        ],
+        "text": "mu_static: 0.15 1",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "surfaces.S1.mu_s"
+    }
+  ],
+  "repairs": [
+    {
+      "surface_or_line_id": "S1",
+      "segments": [
+        [
+          [
+            245.0,
+            260.0
+          ],
+          [
+            315.0,
+            260.0
+          ]
+        ],
+        [
+          [
+            542.0,
+            260.0
+          ],
+          [
+            580.0,
+            260.0
+          ]
+        ]
+      ]
+    },
+    {
+      "surface_or_line_id": "S3",
+      "segments": [
+        [
+          [
+            580.0,
+            335.0
+          ],
+          [
+            580.0,
+            385.0
+          ]
+        ],
+        [
+          [
+            580.0,
+            260.0
+          ],
+          [
+            580.0,
+            308.0
+          ]
+        ]
+      ]
+    }
+  ],
+  "constants": {
+    "g": {
+      "number": 9.81,
+      "unit": "m/s^2",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 0.0
+    }
+  },
+  "params": {
+    "initial_speed": {
+      "number": 0.0,
+      "unit": "m/s",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    }
+  },
+  "bindings": [
+    {
+      "id": "mu",
+      "path": "surfaces.S1.mu_k",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.01,
+        "unit": "1",
+        "locked": false
+      },
+      "labels": [
+        "param_mu"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mu_static",
+      "path": "surfaces.S1.mu_s",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.01,
+        "unit": "1",
+        "locked": false
+      },
+      "labels": [
+        "param_mu_static"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B1",
+      "path": "bodies.B1.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B1"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B2",
+      "path": "bodies.B2.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B2"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "g",
+      "path": "constants.g",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 20.0,
+        "step": 0.01,
+        "unit": "m/s^2",
+        "locked": false
+      },
+      "labels": [],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    }
+  ],
+  "constraints": [],
+  "warnings": [],
+  "meta": {
+    "language": "en",
+    "style": "printed",
+    "provenance": "authored",
+    "region": null
+  }
+}

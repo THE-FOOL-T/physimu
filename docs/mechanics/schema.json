@@ -1,0 +1,1193 @@
+{
+  "$defs": {
+    "Annotation": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "geometry": {
+          "$ref": "#/$defs/Geometry"
+        },
+        "text_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Id"
+        },
+        "bound_to": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bound To"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "geometry",
+        "text_id",
+        "bound_to"
+      ],
+      "title": "Annotation",
+      "type": "object"
+    },
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "class": {
+          "enum": [
+            "physics",
+            "initial",
+            "geometry"
+          ],
+          "title": "Class",
+          "type": "string"
+        },
+        "control": {
+          "$ref": "#/$defs/Control"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Labels",
+          "type": "array"
+        },
+        "handle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Handle"
+        },
+        "drives": {
+          "items": {
+            "enum": [
+              "layout",
+              "solver",
+              "label"
+            ],
+            "type": "string"
+          },
+          "title": "Drives",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "class",
+        "control",
+        "labels",
+        "handle",
+        "drives"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "Body": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "bbox": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bbox",
+          "type": "array"
+        },
+        "mask": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 3,
+          "title": "Mask",
+          "type": "array"
+        },
+        "anchor": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Anchor",
+          "type": "array"
+        },
+        "label_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Label Ids",
+          "type": "array"
+        },
+        "mass": {
+          "$ref": "#/$defs/Value"
+        },
+        "radius_m": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "on_surface": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On Surface"
+        },
+        "initial": {
+          "$ref": "#/$defs/Initial"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "bbox",
+        "mask",
+        "anchor",
+        "label_ids",
+        "mass",
+        "radius_m",
+        "on_surface",
+        "initial"
+      ],
+      "title": "Body",
+      "type": "object"
+    },
+    "Constants": {
+      "additionalProperties": false,
+      "properties": {
+        "g": {
+          "$ref": "#/$defs/Value"
+        }
+      },
+      "required": [
+        "g"
+      ],
+      "title": "Constants",
+      "type": "object"
+    },
+    "Constraint": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Refs",
+          "type": "array"
+        },
+        "values": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Value"
+          },
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "refs",
+        "values"
+      ],
+      "title": "Constraint",
+      "type": "object"
+    },
+    "Control": {
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "title": "Min",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "type": "number"
+        },
+        "step": {
+          "exclusiveMinimum": 0,
+          "title": "Step",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "locked": {
+          "default": false,
+          "title": "Locked",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "min",
+        "max",
+        "step",
+        "unit",
+        "locked"
+      ],
+      "title": "Control",
+      "type": "object"
+    },
+    "Endpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "point": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Point",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ref",
+        "point"
+      ],
+      "title": "Endpoint",
+      "type": "object"
+    },
+    "Force": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "body": {
+          "title": "Body",
+          "type": "string"
+        },
+        "tail": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Tail",
+          "type": "array"
+        },
+        "head": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Head",
+          "type": "array"
+        },
+        "magnitude": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "body",
+        "tail",
+        "head",
+        "magnitude",
+        "label"
+      ],
+      "title": "Force",
+      "type": "object"
+    },
+    "Frame": {
+      "additionalProperties": false,
+      "properties": {
+        "gravity": {
+          "default": [
+            0.0,
+            1.0
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gravity",
+          "type": "array"
+        },
+        "px_per_m": {
+          "$ref": "#/$defs/Value"
+        },
+        "paper_color": {
+          "default": "#fffef7",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "title": "Paper Color",
+          "type": "string"
+        },
+        "ink_color": {
+          "default": "#202c3a",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "title": "Ink Color",
+          "type": "string"
+        },
+        "stroke_px": {
+          "default": 2.0,
+          "exclusiveMinimum": 0,
+          "title": "Stroke Px",
+          "type": "number"
+        }
+      },
+      "required": [
+        "gravity",
+        "px_per_m",
+        "paper_color",
+        "ink_color",
+        "stroke_px"
+      ],
+      "title": "Frame",
+      "type": "object"
+    },
+    "Geometry": {
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Points",
+          "type": "array"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bbox"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "radius_px": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Radius Px"
+        },
+        "start_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start Deg"
+        },
+        "end_deg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Deg"
+        }
+      },
+      "required": [
+        "points",
+        "bbox",
+        "text",
+        "radius_px",
+        "start_deg",
+        "end_deg"
+      ],
+      "title": "Geometry",
+      "type": "object"
+    },
+    "Image": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path",
+        "width",
+        "height"
+      ],
+      "title": "Image",
+      "type": "object"
+    },
+    "Initial": {
+      "additionalProperties": false,
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Vector"
+        },
+        "velocity": {
+          "$ref": "#/$defs/Vector"
+        }
+      },
+      "required": [
+        "position",
+        "velocity"
+      ],
+      "title": "Initial",
+      "type": "object"
+    },
+    "Link": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "a": {
+          "$ref": "#/$defs/Endpoint"
+        },
+        "b": {
+          "$ref": "#/$defs/Endpoint"
+        },
+        "polyline": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 2,
+          "title": "Polyline",
+          "type": "array"
+        },
+        "length_m": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "k": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rest_length_m": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "coils": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coils"
+        },
+        "damping": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "a",
+        "b",
+        "polyline",
+        "length_m",
+        "k",
+        "rest_length_m",
+        "coils",
+        "damping"
+      ],
+      "title": "Link",
+      "type": "object"
+    },
+    "Meta": {
+      "additionalProperties": false,
+      "properties": {
+        "language": {
+          "default": "en",
+          "enum": [
+            "en",
+            "bn"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "style": {
+          "default": "unknown",
+          "enum": [
+            "printed",
+            "handwritten",
+            "photo",
+            "unknown"
+          ],
+          "title": "Style",
+          "type": "string"
+        },
+        "provenance": {
+          "enum": [
+            "extracted",
+            "partial",
+            "authored",
+            "unsupported",
+            "demo_fallback"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        }
+      },
+      "required": [
+        "language",
+        "style",
+        "provenance",
+        "region"
+      ],
+      "title": "Meta",
+      "type": "object"
+    },
+    "Pulley": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "center": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Center",
+          "type": "array"
+        },
+        "radius_px": {
+          "exclusiveMinimum": 0,
+          "title": "Radius Px",
+          "type": "number"
+        },
+        "mass": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "center",
+        "radius_px",
+        "mass"
+      ],
+      "title": "Pulley",
+      "type": "object"
+    },
+    "Repair": {
+      "additionalProperties": false,
+      "properties": {
+        "surface_or_line_id": {
+          "title": "Surface Or Line Id",
+          "type": "string"
+        },
+        "segments": {
+          "items": {
+            "items": {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            "minItems": 2,
+            "type": "array"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "required": [
+        "surface_or_line_id",
+        "segments"
+      ],
+      "title": "Repair",
+      "type": "object"
+    },
+    "Surface": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "polyline": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 2,
+          "title": "Polyline",
+          "type": "array"
+        },
+        "angle_deg": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "length_m": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Value"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "mu_s": {
+          "$ref": "#/$defs/Value"
+        },
+        "mu_k": {
+          "$ref": "#/$defs/Value"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "polyline",
+        "angle_deg",
+        "length_m",
+        "mu_s",
+        "mu_k"
+      ],
+      "title": "Surface",
+      "type": "object"
+    },
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "number": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "given",
+            "solved",
+            "assumed",
+            "user"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "ocr",
+            "vlm",
+            "geometry",
+            "constraint",
+            "prior",
+            "user"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "number",
+        "unit",
+        "status",
+        "source",
+        "confidence"
+      ],
+      "title": "Value",
+      "type": "object"
+    },
+    "Vector": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "$ref": "#/$defs/Value"
+        },
+        "y": {
+          "$ref": "#/$defs/Value"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Vector",
+      "type": "object"
+    },
+    "Warning": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        },
+        "message_key": {
+          "title": "Message Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "ref",
+        "message_key"
+      ],
+      "title": "Warning",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "domain": {
+      "const": "mechanics",
+      "default": "mechanics",
+      "title": "Domain",
+      "type": "string"
+    },
+    "image": {
+      "$ref": "#/$defs/Image"
+    },
+    "archetype": {
+      "enum": [
+        "projectile",
+        "incline_block",
+        "pendulum",
+        "spring_mass",
+        "atwood",
+        "table_pulley",
+        "incline_pulley",
+        "collision_1d",
+        "unsupported"
+      ],
+      "title": "Archetype",
+      "type": "string"
+    },
+    "frame": {
+      "$ref": "#/$defs/Frame"
+    },
+    "bodies": {
+      "items": {
+        "$ref": "#/$defs/Body"
+      },
+      "title": "Bodies",
+      "type": "array"
+    },
+    "surfaces": {
+      "items": {
+        "$ref": "#/$defs/Surface"
+      },
+      "title": "Surfaces",
+      "type": "array"
+    },
+    "links": {
+      "items": {
+        "$ref": "#/$defs/Link"
+      },
+      "title": "Links",
+      "type": "array"
+    },
+    "pulleys": {
+      "items": {
+        "$ref": "#/$defs/Pulley"
+      },
+      "title": "Pulleys",
+      "type": "array"
+    },
+    "forces": {
+      "items": {
+        "$ref": "#/$defs/Force"
+      },
+      "title": "Forces",
+      "type": "array"
+    },
+    "annotations": {
+      "items": {
+        "$ref": "#/$defs/Annotation"
+      },
+      "title": "Annotations",
+      "type": "array"
+    },
+    "repairs": {
+      "items": {
+        "$ref": "#/$defs/Repair"
+      },
+      "title": "Repairs",
+      "type": "array"
+    },
+    "constants": {
+      "$ref": "#/$defs/Constants"
+    },
+    "params": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Value"
+      },
+      "title": "Params",
+      "type": "object"
+    },
+    "bindings": {
+      "items": {
+        "$ref": "#/$defs/Binding"
+      },
+      "title": "Bindings",
+      "type": "array"
+    },
+    "constraints": {
+      "items": {
+        "$ref": "#/$defs/Constraint"
+      },
+      "title": "Constraints",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/Warning"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "required": [
+    "version",
+    "domain",
+    "image",
+    "archetype",
+    "frame",
+    "bodies",
+    "surfaces",
+    "links",
+    "pulleys",
+    "forces",
+    "annotations",
+    "repairs",
+    "constants",
+    "params",
+    "bindings",
+    "constraints",
+    "warnings",
+    "meta"
+  ],
+  "title": "Scene",
+  "type": "object"
+}

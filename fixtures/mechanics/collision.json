@@ -1,0 +1,514 @@
+{
+  "version": 1,
+  "domain": "mechanics",
+  "image": {
+    "path": "collision.png",
+    "width": 800,
+    "height": 520
+  },
+  "archetype": "collision_1d",
+  "frame": {
+    "gravity": [
+      0.0,
+      1.0
+    ],
+    "px_per_m": {
+      "number": 100.0,
+      "unit": "px/m",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 1.0
+    },
+    "paper_color": "#fffef7",
+    "ink_color": "#202c3a",
+    "stroke_px": 2.0
+  },
+  "bodies": [
+    {
+      "id": "B1",
+      "type": "cart",
+      "bbox": [
+        175.0,
+        320.0,
+        225.0,
+        360.0
+      ],
+      "mask": [
+        [
+          175.0,
+          320.0
+        ],
+        [
+          225.0,
+          320.0
+        ],
+        [
+          225.0,
+          360.0
+        ],
+        [
+          175.0,
+          360.0
+        ]
+      ],
+      "anchor": [
+        200.0,
+        340.0
+      ],
+      "label_ids": [
+        "label_B1"
+      ],
+      "mass": {
+        "number": 1.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": "S1",
+      "initial": {
+        "position": {
+          "x": {
+            "number": 0.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": 2.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    },
+    {
+      "id": "B2",
+      "type": "cart",
+      "bbox": [
+        375.0,
+        320.0,
+        425.0,
+        360.0
+      ],
+      "mask": [
+        [
+          375.0,
+          320.0
+        ],
+        [
+          425.0,
+          320.0
+        ],
+        [
+          425.0,
+          360.0
+        ],
+        [
+          375.0,
+          360.0
+        ]
+      ],
+      "anchor": [
+        400.0,
+        340.0
+      ],
+      "label_ids": [
+        "label_B2"
+      ],
+      "mass": {
+        "number": 1.0,
+        "unit": "kg",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "radius_m": null,
+      "on_surface": "S1",
+      "initial": {
+        "position": {
+          "x": {
+            "number": 2.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        },
+        "velocity": {
+          "x": {
+            "number": -1.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          },
+          "y": {
+            "number": 0.0,
+            "unit": "m/s",
+            "status": "given",
+            "source": "user",
+            "confidence": 1.0
+          }
+        }
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "S1",
+      "type": "floor",
+      "polyline": [
+        [
+          40.0,
+          360.0
+        ],
+        [
+          760.0,
+          360.0
+        ]
+      ],
+      "angle_deg": null,
+      "length_m": null,
+      "mu_s": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "mu_k": {
+        "number": 0.0,
+        "unit": "1",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      }
+    }
+  ],
+  "links": [],
+  "pulleys": [],
+  "forces": [],
+  "annotations": [
+    {
+      "id": "title",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          20.0,
+          16.0,
+          760.0,
+          40.0
+        ],
+        "text": "SYNTHETIC / AUTHORED: collision",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B1",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          182.0,
+          332.0,
+          222.0,
+          352.0
+        ],
+        "text": "1 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "label_B2",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          382.0,
+          332.0,
+          422.0,
+          352.0
+        ],
+        "text": "1 kg",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": null
+    },
+    {
+      "id": "param_e",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          65.0,
+          790.0,
+          86.0
+        ],
+        "text": "e: 1 1",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "params.restitution"
+    },
+    {
+      "id": "param_v1",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          88.0,
+          790.0,
+          109.0
+        ],
+        "text": "v1: 2 m/s",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "bodies.B1.initial.velocity.x"
+    },
+    {
+      "id": "param_v2",
+      "type": "label",
+      "geometry": {
+        "points": [],
+        "bbox": [
+          570.0,
+          111.0,
+          790.0,
+          132.0
+        ],
+        "text": "v2: -1 m/s",
+        "radius_px": null,
+        "start_deg": null,
+        "end_deg": null
+      },
+      "text_id": null,
+      "bound_to": "bodies.B2.initial.velocity.x"
+    }
+  ],
+  "repairs": [
+    {
+      "surface_or_line_id": "S1",
+      "segments": [
+        [
+          [
+            170.0,
+            360.0
+          ],
+          [
+            230.0,
+            360.0
+          ]
+        ],
+        [
+          [
+            370.0,
+            360.0
+          ],
+          [
+            430.0,
+            360.0
+          ]
+        ]
+      ]
+    }
+  ],
+  "constants": {
+    "g": {
+      "number": 9.81,
+      "unit": "m/s^2",
+      "status": "assumed",
+      "source": "prior",
+      "confidence": 0.0
+    }
+  },
+  "params": {
+    "restitution": {
+      "number": 1.0,
+      "unit": "1",
+      "status": "given",
+      "source": "user",
+      "confidence": 1.0
+    }
+  },
+  "bindings": [
+    {
+      "id": "e",
+      "path": "params.restitution",
+      "class": "physics",
+      "control": {
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.01,
+        "unit": "1",
+        "locked": false
+      },
+      "labels": [
+        "param_e"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "v1",
+      "path": "bodies.B1.initial.velocity.x",
+      "class": "initial",
+      "control": {
+        "min": -5.0,
+        "max": 5.0,
+        "step": 0.1,
+        "unit": "m/s",
+        "locked": false
+      },
+      "labels": [
+        "param_v1"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "v2",
+      "path": "bodies.B2.initial.velocity.x",
+      "class": "initial",
+      "control": {
+        "min": -5.0,
+        "max": 5.0,
+        "step": 0.1,
+        "unit": "m/s",
+        "locked": false
+      },
+      "labels": [
+        "param_v2"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B1",
+      "path": "bodies.B1.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B1"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "mass_B2",
+      "path": "bodies.B2.mass",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 10.0,
+        "step": 0.1,
+        "unit": "kg",
+        "locked": false
+      },
+      "labels": [
+        "label_B2"
+      ],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    },
+    {
+      "id": "g",
+      "path": "constants.g",
+      "class": "physics",
+      "control": {
+        "min": 0.1,
+        "max": 20.0,
+        "step": 0.01,
+        "unit": "m/s^2",
+        "locked": false
+      },
+      "labels": [],
+      "handle": null,
+      "drives": [
+        "layout",
+        "solver",
+        "label"
+      ]
+    }
+  ],
+  "constraints": [],
+  "warnings": [],
+  "meta": {
+    "language": "en",
+    "style": "printed",
+    "provenance": "authored",
+    "region": null
+  }
+}
