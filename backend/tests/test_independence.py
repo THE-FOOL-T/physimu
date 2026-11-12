@@ -13,6 +13,25 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 UPSTREAM = "THE-FOOL-T/" + "circuit-sim"
+# M1 explicitly authorizes these shared boundaries (plan-M1.md). Pipeline,
+# solver, fixtures and every imported test source remain hash-protected.
+M1_SHARED_FILES = {
+    "backend/app/analysis.py",
+    "backend/app/jobs.py",
+    "backend/app/main.py",
+    "frontend/src/main.ts",
+    "frontend/src/ui/upload.ts",
+    "frontend/src/ui/canvas-editor.ts",
+    "frontend/src/ui/text-inspector.ts",
+    "frontend/src/i18n/en.json",
+    "frontend/src/i18n/bn.json",
+}
+M1_LAYOUT_SNAPSHOTS = {
+    f"frontend/browser-tests/layout.spec.ts-snapshots/{width}-{lang}-{theme}.png"
+    for width in (1440, 1024, 390)
+    for lang in ("en", "bn")
+    for theme in ("light", "dark")
+}
 
 
 def tracked_files():
@@ -86,6 +105,8 @@ def test_circuit_implementation_fixtures_and_original_tests_match_import():
         "fixtures/",
     )
     for item in manifest["files"]:
+        if item["path"] in M1_SHARED_FILES | M1_LAYOUT_SNAPSHOTS:
+            continue
         if item["path"].startswith(prefixes):
             path = ROOT / item["path"]
             data = path.read_bytes()
@@ -100,7 +121,13 @@ def test_circuit_implementation_fixtures_and_original_tests_match_import():
 
 def test_circuit_analysis_transport_is_local_except_the_opt_in_label_reader():
     forbidden = {"httpx", "requests", "urllib", "aiohttp", "http.client"}
-    for directory in (ROOT / "backend/pipeline", ROOT / "backend/solver", ROOT / "backend/app"):
+    for directory in (
+        ROOT / "backend/pipeline",
+        ROOT / "backend/solver",
+        ROOT / "backend/app",
+        ROOT / "backend/core",
+        ROOT / "backend/domains",
+    ):
         for path in directory.rglob("*.py"):
             if path.name == "label_reader.py":
                 continue

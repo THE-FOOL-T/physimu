@@ -44,7 +44,12 @@ class JobStore:
             self.active -= 1
             job["counted"] = False
 
-    def start(self, runner, request_id=None):
+    def start(self, runner, request_id=None, stages=STAGES):
+        stages = tuple(stages)
+        if len(stages) < 2 or stages[0] != "received" or stages[-1] != "done":
+            raise ValueError("Stages must start with received and end with done")
+        if len(set(stages)) != len(stages) or any(not isinstance(s, str) for s in stages):
+            raise ValueError("Stages must be unique strings")
         with self.lock:
             self.cleanup()
             if self.active >= self.limit:
@@ -70,6 +75,7 @@ class JobStore:
                 timings={},
                 history=["queued"],
                 runner=runner,
+                stages=stages,
             )
             self.jobs[id_] = job
             self.active += 1
@@ -132,7 +138,8 @@ class JobStore:
         with self.lock:
             self.cleanup()
             job = self.jobs[id_]
-            index = STAGES.index(job["stage"]) if job["stage"] in STAGES else 0
+            stages = job["stages"]
+            index = stages.index(job["stage"]) if job["stage"] in stages else 0
             partial = dict(job["partial"])
             if not include_image:
                 partial.pop("source_image", None)
@@ -141,8 +148,8 @@ class JobStore:
             return dict(
                 stage=job["stage"],
                 stage_index=index,
-                stage_count=len(STAGES),
-                percent=round(100 * index / (len(STAGES) - 1)),
+                stage_count=len(stages),
+                percent=round(100 * index / (len(stages) - 1)),
                 elapsed_seconds=round(
                     (job["updated"] if job["finished"] else time.monotonic()) - job["started"],
                     3,

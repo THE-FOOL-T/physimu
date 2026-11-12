@@ -5,14 +5,29 @@ import threading
 from ..pipeline.engine import analyze_page, image_url
 from ..pipeline.validate import fallback, safe_solve
 from ..pipeline.warnings import ordered
+from ..domains.circuit.adapter import CircuitDomain
 
 log = logging.getLogger("circuit_sim.analysis")
 HYBRID_ANALYSIS_LOCK = threading.Lock()
 
 
 def run_analysis(
-    decoded, problem_text, lang, style, use_label_reader=False, progress=None, request_id=None
+    decoded,
+    problem_text,
+    lang,
+    style,
+    use_label_reader=False,
+    progress=None,
+    request_id=None,
+    domain=None,
 ):
+    options = dict(
+        problem_text=problem_text, lang=lang, style=style, use_label_reader=use_label_reader
+    )
+    if domain is not None and domain.name != "circuit":
+        # Mechanics must never enter circuit warmup, normalization, or demo fallback.
+        return domain.analyze(decoded, options, progress)
+
     from ..config import load_config
     from .warmup import wait_for_models
 
@@ -29,9 +44,7 @@ def run_analysis(
             while not HYBRID_ANALYSIS_LOCK.acquire(timeout=0.05):
                 queued()
             acquired = True
-        result = analyze_page(
-            decoded, problem_text, lang, style, progress=progress, use_label_reader=use_label_reader
-        )
+        result = (domain or CircuitDomain(analyze_page)).analyze(decoded, options, progress)
     except Exception as exc:
         log.exception("Analysis failed request_id=%s error_type=%s", request_id, type(exc).__name__)
         net = fallback(code="pipeline_degraded")
@@ -57,4 +70,5 @@ def run_analysis(
     result["warnings"] = ordered(result["warnings"])
     if "observed_netlist" in result:
         result["observed_netlist"]["image"]["path"] = ""
+    result["domain"] = "circuit"
     return result

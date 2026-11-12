@@ -1,4 +1,10 @@
 {
+  "mech.domain": "Domain",
+  "mech.domain_circuit": "Circuit",
+  "mech.domain_mechanics": "Mechanics",
+  "mech.title": "Mechanics",
+  "mech.pending": "Mechanics is not implemented yet. No simulation is available.",
+  "mech.review": "Bangla text is pending human review.",
   "ui.x": "X (px)",
   "ui.y": "Y (px)",
   "ui.number": "number",

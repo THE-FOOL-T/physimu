@@ -16,7 +16,10 @@ import { rebuildTopology } from "./ui/topology";
 import { cloneForEdit } from "./ui/edit-history";
 import { precheck, draftWarnings } from "./ui/precheck";
 import { traceIssues, issueAt, type TraceIssue } from "./ui/trace-issues";
-import { UploadWorkspace } from "./ui/upload";
+import { UploadWorkspace, mountDomainSwitch } from "./shell";
+import { register } from "./domains";
+import { createCircuitDomain } from "./domains/circuit";
+import { mechanicsDomain } from "./domains/mechanics";
 import "./style.css";
 import "./workspace.css";
 import type { Netlist, Component } from "./types";
@@ -54,6 +57,7 @@ import { $, esc, options } from "./ui/dom";
 import shell from "./ui/shell.html?raw";
 import { ImageStore, selfContained, withoutImage } from "./ui/image-store";
 const appState = createAppState();
+let circuitActive = true;
 function renderControls() {
   renderParameters(appState);
 }
@@ -766,6 +770,7 @@ const uploadWorkspace = new UploadWorkspace(
     renderReadouts();
   },
   () => ({
+    domain: "circuit",
     problem_text: val("problem"),
     lang: language,
     style: val("style"),
@@ -845,6 +850,23 @@ canvasEditor = new CanvasEditor(renderer, {
     refresh();
   },
 });
+register(
+  createCircuitDomain({
+    elements: [
+      ...Array.from(root.children).filter((el) => el.tagName !== "HEADER"),
+      ...document.querySelectorAll(
+        ".part-popover, .text-popover, .ocr-selection",
+      ),
+    ] as HTMLElement[],
+    setActive(active) {
+      circuitActive = active;
+      uploadWorkspace.setActive(active);
+    },
+    getDocument: () => structuredClone(appState.net),
+  }),
+);
+register(mechanicsDomain);
+mountDomainSwitch(document.querySelector(".topnav")!, root, { t });
 function upload(file: File) {
   return uploadWorkspace.start(file);
 }
@@ -1034,7 +1056,7 @@ let lastFrame = performance.now(),
 function frame(now: number) {
   const elapsed = Math.min((now - lastFrame) / 1000, 0.1);
   lastFrame = now;
-  if (appState.net && appState.solution) {
+  if (circuitActive && appState.net && appState.solution) {
     if (
       !appState.editing &&
       appState.mode === "transient" &&

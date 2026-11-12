@@ -150,6 +150,7 @@ export class TextInspector {
       true,
     );
     document.addEventListener("keydown", (event) => {
+      if (canvas.closest("[inert]")) return;
       if (event.key === "Escape") {
         this.close();
         this.reading = false;

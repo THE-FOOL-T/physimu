@@ -896,6 +896,7 @@ export class CanvasEditor {
     }
   }
   private key(e: KeyboardEvent) {
+    if (this.renderer.canvas.closest("[inert]")) return;
     const input =
       e.target instanceof HTMLInputElement ||
       e.target instanceof HTMLTextAreaElement ||

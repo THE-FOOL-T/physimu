@@ -28,6 +28,7 @@ from ..solver.mna import transient
 from ..config import load_config
 from .jobs import JobStore
 from .warmup import state as model_state, start_warmup
+from ..domains import get as get_domain, names as domain_names
 
 ROOT = Path(__file__).resolve().parents[2]
 log = logging.getLogger("circuit_sim")
@@ -103,6 +104,13 @@ class SolveRequest(BaseModel):
     state: dict[str, float] = Field(default_factory=dict)
 
 
+@app.get("/api/domains")
+def domains():
+    return {
+        "domains": [{"name": name, "stages": get_domain(name).stages} for name in domain_names()]
+    }
+
+
 @app.get("/api/health")
 def health():
     readiness = dict(model_state)
@@ -167,8 +175,11 @@ async def analyze(
     page: str = Form("0"),
     style: str = Form("auto"),
     use_label_reader: bool = Form(False),
+    domain: str = Form("circuit"),
 ):
-    started = await analyze_start(request, image, problem_text, lang, page, style, use_label_reader)
+    started = await analyze_start(
+        request, image, problem_text, lang, page, style, use_label_reader, domain
+    )
     id_ = started["job_id"]
     try:
         async with asyncio.timeout(60):
@@ -221,7 +232,15 @@ async def analyze_start(
     page: str = Form("0"),
     style: str = Form("auto"),
     use_label_reader: bool = Form(False),
+    domain: str = Form("circuit"),
 ):
+    # FastAPI treats an empty optional form value as its default. It is still
+    # an explicit, unknown domain, so validate the submitted value when present.
+    domain = str((await request.form()).get("domain", domain))
+    try:
+        selected_domain = get_domain(domain)
+    except KeyError as exc:
+        raise HTTPException(400, detail={"code": "unknown_domain"}) from exc
     check_rate(request)
     data = await read_upload(image)
     decoded = await validated_image(image, data, page)
@@ -235,8 +254,10 @@ async def analyze_start(
                 progress=progress,
                 use_label_reader=use_label_reader,
                 request_id=request.state.request_id,
+                domain=selected_domain,
             ),
             request_id=request.state.request_id,
+            stages=selected_domain.stages,
         )
     except OverflowError as exc:
         raise HTTPException(429, detail={"code": "busy"}) from exc
@@ -254,6 +275,8 @@ async def analyze_start(
         "width": decoded.shape[1],
         "height": decoded.shape[0],
         "page_count": pages,
+        "domain": selected_domain.name,
+        "stages": selected_domain.stages,
     }
 
 

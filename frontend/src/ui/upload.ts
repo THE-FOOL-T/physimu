@@ -52,6 +52,7 @@ const node = <K extends keyof HTMLElementTagNameMap>(
 };
 
 export class UploadWorkspace {
+  private active = true;
   private file?: File;
   private url = "";
   private job = "";
@@ -203,7 +204,12 @@ export class UploadWorkspace {
         () => {},
       );
   }
+  setActive(active: boolean) {
+    this.active = active;
+    if (!active && !this.cancel.hidden) void this.stop();
+  }
   async start(file: File, page = 0) {
+    if (!this.active) return;
     document.dispatchEvent(new Event("workspace:importing"));
     this.stopPrevious();
     const generation = ++this.generation;
@@ -258,6 +264,16 @@ export class UploadWorkspace {
         return;
       }
       this.job = started.job_id;
+      if (
+        Array.isArray(started.stages) &&
+        started.stages.length >= 2 &&
+        started.stages.every((stage: unknown) => typeof stage === "string")
+      ) {
+        this.stepper.replaceChildren();
+        started.stages.forEach((stage: string) =>
+          node("li", this.stepper, "stage." + stage),
+        );
+      }
       this.page.max = String(started.page_count || 1);
       this.page.parentElement!.hidden = (started.page_count || 1) <= 1;
       if (!this.dimensions)
@@ -269,6 +285,7 @@ export class UploadWorkspace {
           headers: { "X-Include-Image": String(!this.partialImage) },
         });
         const job = await response.json();
+        if (generation !== this.generation) return;
         if (!response.ok) throw Error(job.detail?.code || "server_error");
         this.elapsed = job.elapsed_seconds;
         this.setStage(job.stage_index);
