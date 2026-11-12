@@ -116,7 +116,21 @@ def test_circuit_implementation_fixtures_and_original_tests_match_import():
             expected = item.get("text_sha256_lf", item["sha256"])
             assert hashlib.sha256(data).hexdigest() == expected, item["path"]
     original = next(item for item in manifest["files"] if item["path"] == "config.example.yaml")
-    assert hashlib.sha256((ROOT / original["path"]).read_bytes()).hexdigest() == original["sha256"]
+    config = (ROOT / original["path"]).read_bytes()
+    marker = b"\n# Mechanics M4: independent model; no runtime downloads.\n"
+    prefix, separator, addition = config.partition(marker)
+    # M4 explicitly adds mechanics configuration; every original config byte stays protected.
+    assert separator and hashlib.sha256(prefix).hexdigest() == original["sha256"]
+    import yaml
+
+    assert yaml.safe_load(addition) == {
+        "mechanics": {
+            "weights": "models/mechanics.pt",
+            "confidence": 0.25,
+            "input_size": 640,
+            "device": "cpu",
+        }
+    }
 
 
 def test_circuit_analysis_transport_is_local_except_the_opt_in_label_reader():

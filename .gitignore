@@ -31,3 +31,12 @@ docs/browser*.png
 config.local.yaml
 *.egg-info/
 /test-results/
+# Mechanics real data/gold are HUMAN-supplied and never committed.
+data/real_pool/**
+!data/real_pool/README.md
+data/eval/mechanics/**
+!data/eval/mechanics/README.md
+!data/eval/mechanics/printed/
+!data/eval/mechanics/printed/README.md
+!data/eval/mechanics/handwritten/
+!data/eval/mechanics/handwritten/README.md

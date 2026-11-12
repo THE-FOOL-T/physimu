@@ -6,6 +6,7 @@ from ..pipeline.style import estimate_style
 from ..pipeline.text import read_text
 from ..pipeline.engine import image_url
 from ..app.jobs import Cancelled, JobStore, STAGES
+from ..tools.leakage import check_frozen, duplicate_groups, signature, near
 
 __all__ = [
     "load_config",
@@ -19,4 +20,8 @@ __all__ = [
     "Cancelled",
     "JobStore",
     "STAGES",
+    "check_frozen",
+    "duplicate_groups",
+    "signature",
+    "near",
 ]

@@ -41,3 +41,10 @@ storage:
 solver:
   source_short_resistance: 0.05
   closed_switch_resistance: 0.001
+
+# Mechanics M4: independent model; no runtime downloads.
+mechanics:
+  weights: models/mechanics.pt
+  confidence: 0.25
+  input_size: 640
+  device: cpu
