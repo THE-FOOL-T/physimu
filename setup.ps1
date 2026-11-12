@@ -14,7 +14,6 @@ if (-not (Get-Command py -ErrorAction SilentlyContinue)) {
 if (-not (Get-Command npm.cmd -ErrorAction SilentlyContinue)) {
     throw 'Install Node.js 22 or newer, then reopen PowerShell and rerun setup.'
 }
-Invoke-Checked 'py' @('-3.12', '-m', 'backend.tools.check_models')
 if (-not (Test-Path -LiteralPath '.venv\Scripts\python.exe')) {
     Invoke-Checked 'py' @('-3.12', '-m', 'venv', '.venv')
 }
@@ -27,4 +26,6 @@ try {
 } finally {
     Pop-Location
 }
-Write-Host 'Setup complete. Run: powershell -ExecutionPolicy Bypass -File .\run.ps1'
+Write-Host 'Setup complete. Models are optional for startup; automatic extraction needs local weights.'
+Write-Host 'To check manually supplied models: .\.venv\Scripts\python.exe manage.py doctor'
+Write-Host 'Run: powershell -ExecutionPolicy Bypass -File .\run.ps1'

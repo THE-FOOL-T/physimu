@@ -1,1 +1,1 @@
-"""Source-aligned circuit simulation; independent of AugmentedPhysics."""
+"""Physimu: local source-aligned physics, with the preserved circuit workspace."""

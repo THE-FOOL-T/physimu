@@ -6,11 +6,15 @@ import sys
 
 
 def ensure_package():
-    if "circuit_sim" not in sys.modules:
+    module = sys.modules.get("augphys") or sys.modules.get("circuit_sim")
+    if module is None:
         root = Path(__file__).resolve().parent
         spec = importlib.util.spec_from_file_location(
-            "circuit_sim", root / "__init__.py", submodule_search_locations=[str(root)]
+            "augphys", root / "__init__.py", submodule_search_locations=[str(root)]
         )
         module = importlib.util.module_from_spec(spec)
-        sys.modules["circuit_sim"] = module
+        sys.modules["augphys"] = module
         spec.loader.exec_module(module)
+    # Compatibility names both expose the copied source, never another checkout.
+    sys.modules.setdefault("augphys", module)
+    sys.modules.setdefault("circuit_sim", module)

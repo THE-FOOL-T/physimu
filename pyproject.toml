@@ -1,7 +1,7 @@
 [project]
-name = "circuit-sim"
+name = "augphys"
 version = "0.1.0"
-description = "Source-aligned interactive circuit simulation"
+description = "Physimu source-aligned interactive physics workspace"
 requires-python = ">=3.12,<3.13"
 dynamic = ["dependencies"]
 
@@ -23,5 +23,5 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["circuit_sim", "circuit_sim.backend", "circuit_sim.backend.app", "circuit_sim.backend.pipeline", "circuit_sim.backend.pipeline.ocr_hybrid", "circuit_sim.backend.solver", "circuit_sim.backend.tools"]
-package-dir = {"circuit_sim" = "."}
+packages = ["augphys", "augphys.backend", "augphys.backend.app", "augphys.backend.pipeline", "augphys.backend.pipeline.ocr_hybrid", "augphys.backend.solver", "augphys.backend.tools", "circuit_sim", "circuit_sim.backend", "circuit_sim.backend.app", "circuit_sim.backend.pipeline", "circuit_sim.backend.pipeline.ocr_hybrid", "circuit_sim.backend.solver", "circuit_sim.backend.tools"]
+package-dir = {"augphys" = ".", "circuit_sim" = "."}
