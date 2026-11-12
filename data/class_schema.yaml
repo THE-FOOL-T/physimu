@@ -1,0 +1,2 @@
+# IDs 0–3 exactly preserve v2. voltage_source maps to dc_source in the netlist.
+names: [resistor, voltage_source, capacitor, switch, rheostat, potentiometer, inductor, battery, ac_source, current_source, ground, diode, lamp, fuse, ammeter, voltmeter, galvanometer, junction, text_label, terminal_marker, plus_minus_mark, arrow]

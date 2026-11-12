@@ -1,0 +1,7 @@
+{
+  "samples": 100,
+  "median_ms": 6.300000011920929,
+  "p95_ms": 12.200000002980232,
+  "max_ms": 13.400000005960464,
+  "scope": "Synchronous browser parameter event through solver and readout DOM update; excludes next paint"
+}

@@ -1,0 +1,4 @@
+# Also installed by requirements.txt; retained for existing hybrid-only setup commands.
+rapidocr==3.10.0
+onnxruntime==1.31.1
+# easyocr==1.7.2 is already part of requirements.txt

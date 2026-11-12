@@ -1,0 +1,33 @@
+{
+  "scope": "Round 2 verification environment; CPU only",
+  "python": "3.12.10",
+  "os": "Windows-11-10.0.26300-SP0",
+  "cpu": "AMD Ryzen 5 PRO 5675U with Radeon Graphics (6 cores / 12 logical processors)",
+  "packages": {
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "torch": "2.13.0",
+    "torchvision": "0.28.0",
+    "ultralytics": "8.4.193",
+    "fastapi": "0.111.0",
+    "uvicorn": "0.30.1",
+    "pydantic": "2.13.5",
+    "python-multipart": "0.0.32",
+    "opencv-python-headless": "4.10.0.84",
+    "scikit-image": "0.26.0",
+    "Pillow": "12.3.0",
+    "PyYAML": "6.0.3",
+    "easyocr": "1.7.2",
+    "pytesseract": "0.3.13",
+    "pypdfium2": "5.0.0",
+    "pillow-heif": "1.1.1",
+    "networkx": "3.6.1",
+    "matplotlib": "3.11.1",
+    "httpx": "0.28.1",
+    "pytest": "9.1.1",
+    "ruff": "0.17.4",
+    "polars": "1.44.2",
+    "opencv-python": "4.10.0.84"
+  },
+  "cv2_runtime": "4.10.0"
+}

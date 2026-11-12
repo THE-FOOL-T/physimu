@@ -1,0 +1,16 @@
+{
+  "records": 3,
+  "annotated_text_regions": 24,
+  "assigned_text_regions": 20,
+  "correct_assignments": 20,
+  "wrong_assignments": 0,
+  "unassigned_text_regions": 4,
+  "precision_when_assigned": 1.0,
+  "assignment_coverage": 0.8333,
+  "correct_over_all_annotated": 0.8333,
+  "meets_90_percent_precision_and_coverage": false,
+  "unassigned_reasons": {
+    "unmatched": 2,
+    "not_selected": 2
+  }
+}

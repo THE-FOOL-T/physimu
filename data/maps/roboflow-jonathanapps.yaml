@@ -1,0 +1,35 @@
+names:
+- resistor
+- voltage_source
+- capacitor
+- switch
+- rheostat
+- potentiometer
+- inductor
+- battery
+- ac_source
+- current_source
+- ground
+- diode
+- lamp
+- fuse
+- ammeter
+- voltmeter
+- galvanometer
+- junction
+- text_label
+- terminal_marker
+- plus_minus_mark
+- arrow
+license_verified_by_owner: false
+source: https://universe.roboflow.com/jonathanapps/circuit-component-detection
+license: CC-BY-4.0
+license_url: https://universe.roboflow.com/jonathanapps/circuit-component-detection
+license_verified: true
+map:
+  resistor: resistor
+  capacitor: capacitor
+  diode: diode
+  inductor: inductor
+  ac: ac_source
+  dc: voltage_source

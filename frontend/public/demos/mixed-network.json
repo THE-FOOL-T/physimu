@@ -1,0 +1,773 @@
+{
+  "version": 1,
+  "image": {
+    "path": "/demos/mixed-network.png",
+    "width": 606,
+    "height": 366
+  },
+  "components": [
+    {
+      "id": "R1",
+      "type": "resistor",
+      "label": "R1",
+      "bbox": [
+        145.0,
+        39.0,
+        209.0,
+        55.0
+      ],
+      "orientation_deg": 0.0,
+      "terminals": [
+        {
+          "id": "R1.a",
+          "xy": [
+            153.0,
+            47.0
+          ],
+          "node": "p"
+        },
+        {
+          "id": "R1.b",
+          "xy": [
+            201.0,
+            47.0
+          ],
+          "node": "a"
+        }
+      ],
+      "value": {
+        "number": 5000.0,
+        "unit": "ohm",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": null,
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "label": "R2",
+      "bbox": [
+        259.0,
+        171.0,
+        275.0,
+        237.0
+      ],
+      "orientation_deg": 90.0,
+      "terminals": [
+        {
+          "id": "R2.a",
+          "xy": [
+            267.0,
+            179.0
+          ],
+          "node": "a"
+        },
+        {
+          "id": "R2.b",
+          "xy": [
+            267.0,
+            229.0
+          ],
+          "node": "b"
+        }
+      ],
+      "value": {
+        "number": 10000.0,
+        "unit": "ohm",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": null,
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    },
+    {
+      "id": "R3",
+      "type": "resistor",
+      "label": "R3",
+      "bbox": [
+        414.0,
+        103.0,
+        430.0,
+        171.0
+      ],
+      "orientation_deg": 90.0,
+      "terminals": [
+        {
+          "id": "R3.a",
+          "xy": [
+            422.0,
+            111.0
+          ],
+          "node": "a"
+        },
+        {
+          "id": "R3.b",
+          "xy": [
+            422.0,
+            163.0
+          ],
+          "node": "c"
+        }
+      ],
+      "value": {
+        "number": 6000.0,
+        "unit": "ohm",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": null,
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    },
+    {
+      "id": "R4",
+      "type": "resistor",
+      "label": "R4",
+      "bbox": [
+        524.0,
+        103.0,
+        540.0,
+        170.0
+      ],
+      "orientation_deg": 90.0,
+      "terminals": [
+        {
+          "id": "R4.a",
+          "xy": [
+            532.0,
+            111.0
+          ],
+          "node": "a"
+        },
+        {
+          "id": "R4.b",
+          "xy": [
+            532.0,
+            162.0
+          ],
+          "node": "c"
+        }
+      ],
+      "value": {
+        "number": 3000.0,
+        "unit": "ohm",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": null,
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    },
+    {
+      "id": "R5",
+      "type": "resistor",
+      "label": "R5",
+      "bbox": [
+        414.0,
+        254.0,
+        430.0,
+        323.0
+      ],
+      "orientation_deg": 90.0,
+      "terminals": [
+        {
+          "id": "R5.a",
+          "xy": [
+            422.0,
+            262.0
+          ],
+          "node": "c"
+        },
+        {
+          "id": "R5.b",
+          "xy": [
+            422.0,
+            315.0
+          ],
+          "node": "b"
+        }
+      ],
+      "value": {
+        "number": 8000.0,
+        "unit": "ohm",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": null,
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    },
+    {
+      "id": "R6",
+      "type": "resistor",
+      "label": "R6",
+      "bbox": [
+        145.0,
+        349.0,
+        210.0,
+        365.0
+      ],
+      "orientation_deg": 0.0,
+      "terminals": [
+        {
+          "id": "R6.a",
+          "xy": [
+            202.0,
+            357.0
+          ],
+          "node": "b"
+        },
+        {
+          "id": "R6.b",
+          "xy": [
+            153.0,
+            357.0
+          ],
+          "node": "g"
+        }
+      ],
+      "value": {
+        "number": 2000.0,
+        "unit": "ohm",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": null,
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    },
+    {
+      "id": "V1",
+      "type": "dc_source",
+      "label": "V1",
+      "bbox": [
+        37.0,
+        179.0,
+        53.0,
+        226.0
+      ],
+      "orientation_deg": 90.0,
+      "terminals": [
+        {
+          "id": "V1.a",
+          "xy": [
+            45.0,
+            187.0
+          ],
+          "node": "p"
+        },
+        {
+          "id": "V1.b",
+          "xy": [
+            45.0,
+            218.0
+          ],
+          "node": "g"
+        }
+      ],
+      "value": {
+        "number": 24.0,
+        "unit": "V",
+        "status": "given",
+        "source": "user",
+        "confidence": 1.0
+      },
+      "polarity": {
+        "positive_terminal": "V1.a"
+      },
+      "switch_closed": true,
+      "internal_resistance": null,
+      "initial_voltage": 0.0,
+      "initial_current": 0.0,
+      "virtual": false,
+      "confidence": 1.0,
+      "disabled": false
+    }
+  ],
+  "nodes": [
+    {
+      "id": "p",
+      "is_ground": false,
+      "label": null
+    },
+    {
+      "id": "a",
+      "is_ground": false,
+      "label": null
+    },
+    {
+      "id": "b",
+      "is_ground": false,
+      "label": null
+    },
+    {
+      "id": "c",
+      "is_ground": false,
+      "label": null
+    },
+    {
+      "id": "g",
+      "is_ground": true,
+      "label": null
+    }
+  ],
+  "wire_graph": {
+    "points": [
+      {
+        "id": "R1.a",
+        "xy": [
+          153.0,
+          47.0
+        ],
+        "kind": "terminal",
+        "node": "p"
+      },
+      {
+        "id": "R1.b",
+        "xy": [
+          201.0,
+          47.0
+        ],
+        "kind": "terminal",
+        "node": "a"
+      },
+      {
+        "id": "R2.a",
+        "xy": [
+          267.0,
+          179.0
+        ],
+        "kind": "terminal",
+        "node": "a"
+      },
+      {
+        "id": "R2.b",
+        "xy": [
+          267.0,
+          229.0
+        ],
+        "kind": "terminal",
+        "node": "b"
+      },
+      {
+        "id": "R3.a",
+        "xy": [
+          422.0,
+          111.0
+        ],
+        "kind": "terminal",
+        "node": "a"
+      },
+      {
+        "id": "R3.b",
+        "xy": [
+          422.0,
+          163.0
+        ],
+        "kind": "terminal",
+        "node": "c"
+      },
+      {
+        "id": "R4.a",
+        "xy": [
+          532.0,
+          111.0
+        ],
+        "kind": "terminal",
+        "node": "a"
+      },
+      {
+        "id": "R4.b",
+        "xy": [
+          532.0,
+          162.0
+        ],
+        "kind": "terminal",
+        "node": "c"
+      },
+      {
+        "id": "R5.a",
+        "xy": [
+          422.0,
+          262.0
+        ],
+        "kind": "terminal",
+        "node": "c"
+      },
+      {
+        "id": "R5.b",
+        "xy": [
+          422.0,
+          315.0
+        ],
+        "kind": "terminal",
+        "node": "b"
+      },
+      {
+        "id": "R6.a",
+        "xy": [
+          202.0,
+          357.0
+        ],
+        "kind": "terminal",
+        "node": "b"
+      },
+      {
+        "id": "R6.b",
+        "xy": [
+          153.0,
+          357.0
+        ],
+        "kind": "terminal",
+        "node": "g"
+      },
+      {
+        "id": "V1.a",
+        "xy": [
+          45.0,
+          187.0
+        ],
+        "kind": "terminal",
+        "node": "p"
+      },
+      {
+        "id": "V1.b",
+        "xy": [
+          45.0,
+          218.0
+        ],
+        "kind": "terminal",
+        "node": "g"
+      },
+      {
+        "id": "J1",
+        "xy": [
+          267.0,
+          47.0
+        ],
+        "kind": "junction",
+        "node": "a"
+      },
+      {
+        "id": "J2",
+        "xy": [
+          422.0,
+          47.0
+        ],
+        "kind": "junction",
+        "node": "a"
+      },
+      {
+        "id": "J3",
+        "xy": [
+          422.0,
+          224.0
+        ],
+        "kind": "junction",
+        "node": "c"
+      },
+      {
+        "id": "J4",
+        "xy": [
+          267.0,
+          357.0
+        ],
+        "kind": "junction",
+        "node": "b"
+      }
+    ],
+    "segments": [
+      {
+        "id": "w1",
+        "from": "V1.a",
+        "to": "R1.a",
+        "polyline": [
+          [
+            45.0,
+            187.0
+          ],
+          [
+            45.0,
+            47.0
+          ],
+          [
+            153.0,
+            47.0
+          ]
+        ],
+        "node": "p",
+        "confidence": 1.0
+      },
+      {
+        "id": "w2",
+        "from": "R1.b",
+        "to": "J1",
+        "polyline": [
+          [
+            201.0,
+            47.0
+          ],
+          [
+            267.0,
+            47.0
+          ]
+        ],
+        "node": "a",
+        "confidence": 1.0
+      },
+      {
+        "id": "w3",
+        "from": "J1",
+        "to": "R2.a",
+        "polyline": [
+          [
+            267.0,
+            47.0
+          ],
+          [
+            267.0,
+            179.0
+          ]
+        ],
+        "node": "a",
+        "confidence": 1.0
+      },
+      {
+        "id": "w4",
+        "from": "J1",
+        "to": "J2",
+        "polyline": [
+          [
+            267.0,
+            47.0
+          ],
+          [
+            422.0,
+            47.0
+          ]
+        ],
+        "node": "a",
+        "confidence": 1.0
+      },
+      {
+        "id": "w5",
+        "from": "J2",
+        "to": "R3.a",
+        "polyline": [
+          [
+            422.0,
+            47.0
+          ],
+          [
+            422.0,
+            111.0
+          ]
+        ],
+        "node": "a",
+        "confidence": 1.0
+      },
+      {
+        "id": "w6",
+        "from": "J2",
+        "to": "R4.a",
+        "polyline": [
+          [
+            422.0,
+            47.0
+          ],
+          [
+            532.0,
+            47.0
+          ],
+          [
+            532.0,
+            111.0
+          ]
+        ],
+        "node": "a",
+        "confidence": 1.0
+      },
+      {
+        "id": "w7",
+        "from": "R3.b",
+        "to": "J3",
+        "polyline": [
+          [
+            422.0,
+            163.0
+          ],
+          [
+            422.0,
+            224.0
+          ]
+        ],
+        "node": "c",
+        "confidence": 1.0
+      },
+      {
+        "id": "w8",
+        "from": "R4.b",
+        "to": "J3",
+        "polyline": [
+          [
+            532.0,
+            162.0
+          ],
+          [
+            532.0,
+            224.0
+          ],
+          [
+            422.0,
+            224.0
+          ]
+        ],
+        "node": "c",
+        "confidence": 1.0
+      },
+      {
+        "id": "w9",
+        "from": "J3",
+        "to": "R5.a",
+        "polyline": [
+          [
+            422.0,
+            224.0
+          ],
+          [
+            422.0,
+            262.0
+          ]
+        ],
+        "node": "c",
+        "confidence": 1.0
+      },
+      {
+        "id": "w10",
+        "from": "R5.b",
+        "to": "J4",
+        "polyline": [
+          [
+            422.0,
+            315.0
+          ],
+          [
+            422.0,
+            357.0
+          ],
+          [
+            267.0,
+            357.0
+          ]
+        ],
+        "node": "b",
+        "confidence": 1.0
+      },
+      {
+        "id": "w11",
+        "from": "R2.b",
+        "to": "J4",
+        "polyline": [
+          [
+            267.0,
+            229.0
+          ],
+          [
+            267.0,
+            357.0
+          ]
+        ],
+        "node": "b",
+        "confidence": 1.0
+      },
+      {
+        "id": "w12",
+        "from": "J4",
+        "to": "R6.a",
+        "polyline": [
+          [
+            267.0,
+            357.0
+          ],
+          [
+            202.0,
+            357.0
+          ]
+        ],
+        "node": "b",
+        "confidence": 1.0
+      },
+      {
+        "id": "w13",
+        "from": "R6.b",
+        "to": "V1.b",
+        "polyline": [
+          [
+            153.0,
+            357.0
+          ],
+          [
+            45.0,
+            357.0
+          ],
+          [
+            45.0,
+            218.0
+          ]
+        ],
+        "node": "g",
+        "confidence": 1.0
+      }
+    ]
+  },
+  "constraints": [],
+  "warnings": [],
+  "meta": {
+    "problem_text": null,
+    "language": "en",
+    "degraded": false,
+    "style": "unknown",
+    "region": null,
+    "provenance": "manually authored from source image; values absent from image are assumed"
+  }
+}

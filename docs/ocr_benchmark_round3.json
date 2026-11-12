@@ -1,0 +1,159 @@
+{
+  "samples": 18,
+  "before_recall": 0.0,
+  "after_recall": 0.2777777777777778,
+  "rows": [
+    {
+      "height": 10,
+      "label": "4 Ω",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 10,
+      "label": "12 V",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 10,
+      "label": "2.2 kΩ",
+      "before": false,
+      "after": true
+    },
+    {
+      "height": 10,
+      "label": "100 µF",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 10,
+      "label": "২Ω",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 10,
+      "label": "R₁",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 10,
+      "before_seconds": 7.884217899998475,
+      "after_seconds": 6.260407599998871,
+      "before_text": [],
+      "after_text": [
+        " 4 _",
+        "\"12 V",
+        "2.2 ko",
+        "\"100 HF",
+        "Ri",
+        "x0"
+      ]
+    },
+    {
+      "height": 12,
+      "label": "4 Ω",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 12,
+      "label": "12 V",
+      "before": false,
+      "after": true
+    },
+    {
+      "height": 12,
+      "label": "2.2 kΩ",
+      "before": false,
+      "after": true
+    },
+    {
+      "height": 12,
+      "label": "100 µF",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 12,
+      "label": "২Ω",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 12,
+      "label": "R₁",
+      "before": false,
+      "after": true
+    },
+    {
+      "height": 12,
+      "before_seconds": 8.865614099995582,
+      "after_seconds": 5.601862199997413,
+      "before_text": [],
+      "after_text": [
+        "4 _",
+        "12 V",
+        "2.2 kQ",
+        "100 p",
+        "২০",
+        "R1"
+      ]
+    },
+    {
+      "height": 14,
+      "label": "4 Ω",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 14,
+      "label": "12 V",
+      "before": false,
+      "after": true
+    },
+    {
+      "height": 14,
+      "label": "2.2 kΩ",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 14,
+      "label": "100 µF",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 14,
+      "label": "২Ω",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 14,
+      "label": "R₁",
+      "before": false,
+      "after": false
+    },
+    {
+      "height": 14,
+      "before_seconds": 13.969838199998776,
+      "after_seconds": 4.696700200001942,
+      "before_text": [],
+      "after_text": [
+        "40",
+        "12 V",
+        "2.2",
+        "k",
+        "100 5",
+        "Ri",
+        "80"
+      ]
+    }
+  ],
+  "scope": "Exact normalized string recall; 640 px English baseline vs native tiled EN + ambiguous BN refinement; warm local CPU, no downloads. Synthetic typography, not handwritten accuracy."
+}

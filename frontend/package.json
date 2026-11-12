@@ -1,0 +1,20 @@
+{
+  "name": "circuit-sim",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.15.30",
+    "prettier": "3.6.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2",
+    "vite": "6.4.5"
+  }
+}

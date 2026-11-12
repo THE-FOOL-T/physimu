@@ -1,0 +1,40 @@
+names:
+- resistor
+- voltage_source
+- capacitor
+- switch
+- rheostat
+- potentiometer
+- inductor
+- battery
+- ac_source
+- current_source
+- ground
+- diode
+- lamp
+- fuse
+- ammeter
+- voltmeter
+- galvanometer
+- junction
+- text_label
+- terminal_marker
+- plus_minus_mark
+- arrow
+license_verified_by_owner: false
+source: https://github.com/CKnievel/aitee-dataset
+license: Apache-2.0
+license_url: https://raw.githubusercontent.com/CKnievel/aitee-dataset/main/LICENSE
+license_verified: true
+map:
+  '0': voltage_source
+  '1': ground
+  '2': current_source
+  '3': null
+  '4': resistor
+  '5': null
+  '6': text_label
+  '7': arrow
+  '8': text_label
+  '9': text_label
+  '10': arrow

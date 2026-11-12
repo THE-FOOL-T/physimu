@@ -1,0 +1,44 @@
+names:
+- resistor
+- voltage_source
+- capacitor
+- switch
+- rheostat
+- potentiometer
+- inductor
+- battery
+- ac_source
+- current_source
+- ground
+- diode
+- lamp
+- fuse
+- ammeter
+- voltmeter
+- galvanometer
+- junction
+- text_label
+- terminal_marker
+- plus_minus_mark
+- arrow
+license_verified_by_owner: false
+source: https://github.com/DFKI/cghd
+license: CC0-1.0
+license_url: https://raw.githubusercontent.com/DFKI/cghd/main/LICENSE
+license_verified: true
+map:
+  resistor: resistor
+  resistor.adjustable: rheostat
+  capacitor.unpolarized: capacitor
+  capacitor.polarized: capacitor
+  voltage.dc: voltage_source
+  voltage.ac: ac_source
+  voltage.battery: battery
+  gnd: ground
+  inductor: inductor
+  switch: switch
+  fuse: fuse
+  lamp: lamp
+  junction: junction
+  text: text_label
+  terminal: terminal_marker

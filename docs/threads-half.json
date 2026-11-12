@@ -1,0 +1,34 @@
+{
+  "threads": 6,
+  "warmup_seconds": 16.01081510000222,
+  "image": "mixed-network.png",
+  "count": 3,
+  "records": [
+    {
+      "detect_seconds": 0.08735699999670032,
+      "ocr_seconds": 8.360720999990008,
+      "readings": 38,
+      "warnings": [
+        "time_budget"
+      ]
+    },
+    {
+      "detect_seconds": 0.08591429999796674,
+      "ocr_seconds": 7.064575900003547,
+      "readings": 38,
+      "warnings": [
+        "time_budget"
+      ]
+    },
+    {
+      "detect_seconds": 0.08378790000278968,
+      "ocr_seconds": 7.012442400009604,
+      "readings": 38,
+      "warnings": [
+        "time_budget"
+      ]
+    }
+  ],
+  "detect_median_seconds": 0.08591429999796674,
+  "ocr_median_seconds": 7.064575900003547
+}

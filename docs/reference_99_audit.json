@@ -1,0 +1,506 @@
+{
+  "images": 99,
+  "all_published_hashes_match": true,
+  "exact_overlap_count": 0,
+  "recorded_prior_image_hashes": 695,
+  "review": "User confirmed manual verification and correction of model-assisted CVAT annotations.",
+  "role": "Reference/evaluation dataset. Not used to retrain the current v2 checkpoint.",
+  "warning": "Exact byte disjointness does not establish conceptual/source independence; 40 same-size synthetic diagrams are present and this is not split by handwriting style. No gold netlists.",
+  "records": [
+    {
+      "image": "images/test/000__028011e73180adfce70ae48645d60c5a896fb93c.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/001__0335e8673e62e26e8244d13ef9ba5ae49aef46bc.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/002__106ff091f205a0aad3eaa40282a0c25afba5b804.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/003__109cd52d55fd45955c9be1ce241c263819133ce2.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/004__2e6b9f90-2da4-4451-a08b-00c0403c5a7a.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/005__2wfhfdf.jpg",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/006__62948304-45b0-4582-ba53-db95dafdb062.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/007__6988ae0d-e03b-442e-adff-41e02dc2697a.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/008__720ab18e785d1ac289662eaed3e96496c8336f77.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/009__79b93cf03346138b-1686731393325.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/010__92bb9fa7-a474-4ebe-b440-bdd42e6ad22b.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/011__CNX_UPhysics_27_03_P10_img.jpg",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/012__DC_001.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/013__DC_002.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/014__DC_003.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/015__DC_004.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/016__DC_005.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/017__DC_006.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/018__DC_007.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/019__DC_008.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/020__DC_009.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/021__DC_010.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/022__DC_011.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/023__DC_012.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/024__DC_013.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/025__DC_014.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/026__DC_015.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/027__DC_016.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/028__DC_017.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/029__DC_018.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/030__DC_019.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/031__DC_020.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/032__DC_021.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/033__DC_022.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/034__DC_023.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/035__DC_024.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/036__DC_025.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/037__DC_026.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/038__DC_027.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/039__DC_028.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/040__DC_029.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/041__DC_030.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/042__DC_031.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/043__DC_032.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/044__DC_033.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/045__DC_034.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/046__DC_035.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/047__DC_036.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/048__DC_037.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/049__DC_038.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/050__DC_039.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/051__DC_040.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/052__Screenshot 2026-11-03 205624.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/053__Screenshot 2026-11-03 205701.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/054__Screenshot 2026-11-03 210053.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/055__Screenshot 2026-11-03 210129.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/056__Screenshot 2026-11-03 210157.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/057__Screenshot 2026-11-03 210215.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/058__Screenshot 2026-11-03 210231.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/059__Screenshot 2026-11-03 210255.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/060__Screenshot 2026-11-03 210316.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/061__Screenshot 2026-11-03 210337.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/062__Screenshot 2026-11-03 210356.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/063__Screenshot 2026-11-03 210416.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/064__Screenshot 2026-11-03 210431.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/065__Screenshot 2026-11-03 210449.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/066__Screenshot 2026-11-03 210657.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/067__Screenshot 2026-11-03 210719.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/068__Screenshot 2026-11-03 210736.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/069__Screenshot 2026-11-03 210752.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/070__Screenshot 2026-11-03 210834.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/071__Screenshot 2026-11-03 210856.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/072__Screenshot 2026-11-03 210911.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/073__Screenshot 2026-11-03 210933.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/074__Screenshot 2026-11-03 211007.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/075__Screenshot 2026-11-03 211026.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/076__Screenshot 2026-11-03 211048.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/077__Screenshot 2026-11-03 212654.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/078__Screenshot 2026-11-03 212727.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/079__Screenshot 2026-11-03 212804.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/080__Screenshot 2026-11-03 213028.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/081__Screenshot 2026-11-03 213052.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/082__Screenshot 2026-11-03 215031.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/083__Screenshot 2026-11-03 215056.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/084__Screenshot 2026-11-03 215120.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/085__Screenshot 2026-11-03 215140.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/086__Screenshot 2026-11-03 223253.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/087__Screenshot 2026-11-03 225814.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/088__Screenshot 2026-11-03 232716.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/089__a91f5aae-b269-4da9-86e3-7565cbf57a16.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/090__b16c52ce-5ba4-4879-8296-4155dc76255e.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/091__b32d109d363bfd42-1678121300920.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/092__b9c92838977c91b0656838c4ed01f513444b83ab.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/093__bfcabb7b7c7cb1f8c092fe33c4d11df0e8a0acfb.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/094__d7d1b05e7a762040ad17e60f03486a8ce106ba30.jpg",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/095__d7d1b05e7a762040ad17e60f03486a8ce106ba30.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/096__e8b837d3c52554a3afd1f13fcf72eff49d59324c.webp",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/097__f1751f0b-5fd9-4ffd-8688-b1fecaf2c3c4.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    },
+    {
+      "image": "images/test/098__f68b5256-a54d-44b2-82e5-637e64713462.png",
+      "matches_published_hash": true,
+      "exact_overlap_with_recorded_prior_images": false
+    }
+  ]
+}

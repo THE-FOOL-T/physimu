@@ -1,0 +1,619 @@
+{
+  "$defs": {
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "bbox": {
+          "default": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bbox",
+          "type": "array"
+        },
+        "orientation_deg": {
+          "default": 0,
+          "title": "Orientation Deg",
+          "type": "number"
+        },
+        "terminals": {
+          "items": {
+            "$ref": "#/$defs/Terminal"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Terminals",
+          "type": "array"
+        },
+        "value": {
+          "$ref": "#/$defs/Value"
+        },
+        "polarity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Polarity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "switch_closed": {
+          "default": true,
+          "title": "Switch Closed",
+          "type": "boolean"
+        },
+        "internal_resistance": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Internal Resistance"
+        },
+        "initial_voltage": {
+          "default": 0,
+          "title": "Initial Voltage",
+          "type": "number"
+        },
+        "initial_current": {
+          "default": 0,
+          "title": "Initial Current",
+          "type": "number"
+        },
+        "virtual": {
+          "default": false,
+          "title": "Virtual",
+          "type": "boolean"
+        },
+        "confidence": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "disabled": {
+          "default": false,
+          "title": "Disabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "terminals"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "Constraint": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "current",
+            "voltage",
+            "power",
+            "equivalent_resistance",
+            "ratio"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "target": {
+          "description": "Component id/label; total for aggregate current/power/equivalent resistance; A-B for node-label voltage; R1/R2 for a ratio.",
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "unit": {
+          "default": "",
+          "title": "Unit",
+          "type": "string"
+        },
+        "source": {
+          "default": "problem_text",
+          "enum": [
+            "problem_text",
+            "diagram"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target",
+        "value"
+      ],
+      "title": "Constraint",
+      "type": "object"
+    },
+    "Image": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "default": "",
+          "title": "Path",
+          "type": "string"
+        },
+        "width": {
+          "default": 800,
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "default": 500,
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        }
+      },
+      "title": "Image",
+      "type": "object"
+    },
+    "Meta": {
+      "additionalProperties": false,
+      "properties": {
+        "problem_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Problem Text"
+        },
+        "language": {
+          "default": "en",
+          "enum": [
+            "en",
+            "bn"
+          ],
+          "title": "Language",
+          "type": "string"
+        },
+        "degraded": {
+          "default": false,
+          "title": "Degraded",
+          "type": "boolean"
+        },
+        "style": {
+          "default": "unknown",
+          "title": "Style",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "integer"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        },
+        "provenance": {
+          "default": "extracted",
+          "enum": [
+            "extracted",
+            "partial",
+            "demo_fallback",
+            "edited"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        }
+      },
+      "title": "Meta",
+      "type": "object"
+    },
+    "Node": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "is_ground": {
+          "default": false,
+          "title": "Is Ground",
+          "type": "boolean"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Node",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "xy": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Xy",
+          "type": "array"
+        },
+        "kind": {
+          "default": "bend",
+          "enum": [
+            "junction",
+            "terminal",
+            "bend"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "node": {
+          "title": "Node",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "xy",
+        "node"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "Polarity": {
+      "additionalProperties": false,
+      "properties": {
+        "positive_terminal": {
+          "title": "Positive Terminal",
+          "type": "string"
+        }
+      },
+      "required": [
+        "positive_terminal"
+      ],
+      "title": "Polarity",
+      "type": "object"
+    },
+    "Segment": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "from": {
+          "title": "From",
+          "type": "string"
+        },
+        "to": {
+          "title": "To",
+          "type": "string"
+        },
+        "polyline": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "minItems": 2,
+          "title": "Polyline",
+          "type": "array"
+        },
+        "node": {
+          "title": "Node",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "from",
+        "to",
+        "polyline",
+        "node"
+      ],
+      "title": "Segment",
+      "type": "object"
+    },
+    "Terminal": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "xy": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Xy",
+          "type": "array"
+        },
+        "node": {
+          "title": "Node",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "xy",
+        "node"
+      ],
+      "title": "Terminal",
+      "type": "object"
+    },
+    "Value": {
+      "additionalProperties": false,
+      "properties": {
+        "number": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Number"
+        },
+        "unit": {
+          "default": "ohm",
+          "title": "Unit",
+          "type": "string"
+        },
+        "status": {
+          "default": "assumed",
+          "enum": [
+            "given",
+            "solved",
+            "assumed",
+            "user"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "source": {
+          "default": "prior",
+          "enum": [
+            "ocr",
+            "vlm",
+            "constraint",
+            "prior",
+            "user"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "confidence": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "unit_inferred": {
+          "default": false,
+          "title": "Unit Inferred",
+          "type": "boolean"
+        }
+      },
+      "title": "Value",
+      "type": "object"
+    },
+    "Warning": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref"
+        },
+        "message_key": {
+          "title": "Message Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message_key"
+      ],
+      "title": "Warning",
+      "type": "object"
+    },
+    "WireGraph": {
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "items": {
+            "$ref": "#/$defs/Point"
+          },
+          "title": "Points",
+          "type": "array"
+        },
+        "segments": {
+          "items": {
+            "$ref": "#/$defs/Segment"
+          },
+          "title": "Segments",
+          "type": "array"
+        }
+      },
+      "title": "WireGraph",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "image": {
+      "$ref": "#/$defs/Image"
+    },
+    "components": {
+      "items": {
+        "$ref": "#/$defs/Component"
+      },
+      "title": "Components",
+      "type": "array"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/Node"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "wire_graph": {
+      "$ref": "#/$defs/WireGraph"
+    },
+    "constraints": {
+      "items": {
+        "$ref": "#/$defs/Constraint"
+      },
+      "title": "Constraints",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/Warning"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "title": "Netlist",
+  "type": "object"
+}

@@ -1,0 +1,140 @@
+{
+  "seen_images": 59,
+  "frozen_images": 99,
+  "synthetic_images": 24,
+  "aitee_images": 828,
+  "classes": {
+    "resistor": {
+      "seen59": 203,
+      "frozen99": 739,
+      "synthetic": 9,
+      "aitee": 2146
+    },
+    "voltage_source": {
+      "seen59": 72,
+      "frozen99": 138,
+      "synthetic": 34,
+      "aitee": 4583
+    },
+    "capacitor": {
+      "seen59": 4,
+      "frozen99": 3,
+      "synthetic": 12,
+      "aitee": 0
+    },
+    "switch": {
+      "seen59": 3,
+      "frozen99": 20,
+      "synthetic": 13,
+      "aitee": 0
+    },
+    "rheostat": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 15,
+      "aitee": 0
+    },
+    "potentiometer": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 15,
+      "aitee": 0
+    },
+    "inductor": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 13,
+      "aitee": 0
+    },
+    "battery": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 14,
+      "aitee": 0
+    },
+    "ac_source": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 15,
+      "aitee": 0
+    },
+    "current_source": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 13,
+      "aitee": 294
+    },
+    "ground": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 24,
+      "aitee": 0
+    },
+    "diode": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 10,
+      "aitee": 0
+    },
+    "lamp": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 8,
+      "aitee": 0
+    },
+    "fuse": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 8,
+      "aitee": 0
+    },
+    "ammeter": {
+      "seen59": 0,
+      "frozen99": 12,
+      "synthetic": 7,
+      "aitee": 0
+    },
+    "voltmeter": {
+      "seen59": 0,
+      "frozen99": 4,
+      "synthetic": 7,
+      "aitee": 0
+    },
+    "galvanometer": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 8,
+      "aitee": 0
+    },
+    "junction": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 116,
+      "aitee": 0
+    },
+    "text_label": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 201,
+      "aitee": 3941
+    },
+    "terminal_marker": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 96,
+      "aitee": 0
+    },
+    "plus_minus_mark": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 24,
+      "aitee": 0
+    },
+    "arrow": {
+      "seen59": 0,
+      "frozen99": 0,
+      "synthetic": 24,
+      "aitee": 1261
+    }
+  }
+}

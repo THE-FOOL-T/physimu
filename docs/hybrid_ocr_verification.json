@@ -1,0 +1,334 @@
+{
+  "date": "2026-11-10",
+  "default_backend": "legacy",
+  "promotion_ready": false,
+  "environment": {
+    "platform": "Windows",
+    "python": "3.12.11",
+    "inference_threads": 2,
+    "packages": {
+      "rapidocr": "3.10.0",
+      "onnxruntime": "1.31.1",
+      "easyocr": "1.7.2"
+    },
+    "tesseract_available": false
+  },
+  "baseline_relevant_tests": {
+    "passed": 227,
+    "skipped": 1
+  },
+  "backend_tests": {
+    "passed": 371,
+    "skipped": 1,
+    "failed": 0
+  },
+  "frontend_unit_tests": {
+    "passed": 82,
+    "failed": 0
+  },
+  "browser_tests": {
+    "passed": 67,
+    "failed": 0
+  },
+  "build": "passed",
+  "ruff_lint": "passed",
+  "prettier": "passed",
+  "manage_check": {
+    "status": "failed_on_preexisting_formatting",
+    "unchanged_files": [
+      "backend/pipeline/associate.py",
+      "backend/tests/test_associate.py",
+      "backend/tools/eval_association.py"
+    ]
+  },
+  "synthetic": {
+    "legacy": {
+      "regions": 6,
+      "ocr_exact_normalized_text_accuracy": 0.0,
+      "association_precision": 1.0,
+      "association_coverage": 0.0,
+      "association_recall": 0.0,
+      "false_assignments": 0,
+      "false_assignment_rate_among_assigned": 0.0,
+      "correct_component_value_assignment_rate": 0.0,
+      "mean_absolute_SI_value_error_by_unit": {},
+      "ambiguous_correctly_unassigned": 0,
+      "seconds": 12.924087899998995,
+      "warmup_seconds": 30.67200109999976,
+      "warnings": [
+        [
+          "time_budget",
+          null
+        ]
+      ]
+    },
+    "hybrid": {
+      "regions": 6,
+      "ocr_exact_normalized_text_accuracy": 1.0,
+      "association_precision": 1.0,
+      "association_coverage": 1.0,
+      "association_recall": 1.0,
+      "false_assignments": 0,
+      "false_assignment_rate_among_assigned": 0.0,
+      "correct_component_value_assignment_rate": 1.0,
+      "mean_absolute_SI_value_error_by_unit": {
+        "ohm": 0.0,
+        "V": 0.0,
+        "F": 0.0
+      },
+      "ambiguous_correctly_unassigned": 0,
+      "seconds": 16.217188000002352,
+      "warmup_seconds": 28.405939100004616,
+      "warnings": [
+        [
+          "time_budget",
+          null
+        ]
+      ]
+    }
+  },
+  "synthetic_scope": "Six generated 24px labels, exact native component boxes. Full text matching requires IoU >= 0.5; supported name subspans count only toward association precision. Not the prior 18 tiny-label test and not independently reviewed real-image accuracy. SI micro aliases normalize only in numeric-unit position. Scores recomputed from saved native OCR records with the final normalizer.",
+  "synthetic_ambiguity": {
+    "cases": 2,
+    "correctly_unassigned": 2,
+    "records": [
+      {
+        "text": "10 Ω",
+        "correctly_unassigned": true,
+        "reason": "ambiguous"
+      },
+      {
+        "text": "R1 = 10 Ω",
+        "correctly_unassigned": true,
+        "reason": "ambiguous"
+      }
+    ]
+  },
+  "recorded_real_association": {
+    "legacy": {
+      "scope": "Frozen OCR association replay; no new OCR or value gold",
+      "annotated": 24,
+      "assigned": 21,
+      "correct": 21,
+      "wrong": 0,
+      "precision": 1.0,
+      "coverage": 0.875,
+      "recall": 0.875
+    },
+    "hybrid": {
+      "scope": "Frozen OCR association replay; no new OCR or value gold",
+      "annotated": 24,
+      "assigned": 7,
+      "correct": 7,
+      "wrong": 0,
+      "precision": 1.0,
+      "coverage": 0.2916666666666667,
+      "recall": 0.2916666666666667
+    }
+  },
+  "baseline_note": "Original HEAD assignment implementation and feature legacy both assign 21/24 correctly on this runtime. The task reference was 20/24; no improvement is claimed.",
+  "orientation_smoke": [
+    {
+      "input_rotation_clockwise": 0,
+      "exact_reading_found": true
+    },
+    {
+      "input_rotation_clockwise": 90,
+      "exact_reading_found": true
+    },
+    {
+      "input_rotation_clockwise": 180,
+      "exact_reading_found": true
+    },
+    {
+      "input_rotation_clockwise": 270,
+      "exact_reading_found": true
+    }
+  ],
+  "offline_network_attempts_ocr": [],
+  "offline_network_attempts_real_analysis": [],
+  "offline_note": "Socket connections denied by evaluation harness; YOLO_OFFLINE=true for real-image analysis. No model downloads.",
+  "real_images": [
+    {
+      "image": "Screenshot 2026-10-30 232522.png",
+      "topology_equal_between_backends": true,
+      "independent_accuracy": null,
+      "runs": {
+        "legacy": {
+          "components": 4,
+          "seconds": 12.265246700000716,
+          "text_seconds": 5.791595100003178,
+          "texts": 33,
+          "given_components": 0,
+          "engine_stages": [
+            {
+              "stage": "tesseract",
+              "status": "unavailable"
+            },
+            {
+              "stage": "easyocr",
+              "status": "ready",
+              "readings": 33
+            }
+          ]
+        },
+        "hybrid": {
+          "components": 4,
+          "seconds": 11.621410899999319,
+          "text_seconds": 5.085924300001352,
+          "texts": 15,
+          "given_components": 0,
+          "engine_stages": [
+            {
+              "stage": "rapidocr",
+              "status": "ready",
+              "readings": 15,
+              "seconds": 1.4210000000020955
+            },
+            {
+              "stage": "easyocr-bn",
+              "status": "ready",
+              "readings": 5,
+              "seconds": 3.562999999994645
+            }
+          ]
+        }
+      }
+    },
+    {
+      "image": "Screenshot 2026-10-30 232632.png",
+      "topology_equal_between_backends": true,
+      "independent_accuracy": null,
+      "runs": {
+        "legacy": {
+          "components": 5,
+          "seconds": 12.582968399998208,
+          "text_seconds": 8.420318299999053,
+          "texts": 35,
+          "given_components": 0,
+          "engine_stages": [
+            {
+              "stage": "tesseract",
+              "status": "unavailable"
+            },
+            {
+              "stage": "easyocr",
+              "status": "ready",
+              "readings": 35
+            }
+          ]
+        },
+        "hybrid": {
+          "components": 5,
+          "seconds": 6.877783999996609,
+          "text_seconds": 3.6651065000041854,
+          "texts": 10,
+          "given_components": 0,
+          "engine_stages": [
+            {
+              "stage": "rapidocr",
+              "status": "ready",
+              "readings": 6,
+              "seconds": 0.9680000000007567
+            },
+            {
+              "stage": "easyocr-bn",
+              "status": "ready",
+              "readings": 6,
+              "seconds": 2.6409999999959837
+            }
+          ]
+        }
+      }
+    },
+    {
+      "image": "Screenshot 2026-10-30 232905.png",
+      "topology_equal_between_backends": true,
+      "independent_accuracy": null,
+      "runs": {
+        "legacy": {
+          "components": 7,
+          "seconds": 13.745880100002978,
+          "text_seconds": 10.313976500001445,
+          "texts": 38,
+          "given_components": 6,
+          "engine_stages": [
+            {
+              "stage": "tesseract",
+              "status": "unavailable"
+            },
+            {
+              "stage": "easyocr",
+              "status": "ready",
+              "readings": 38
+            }
+          ]
+        },
+        "hybrid": {
+          "components": 7,
+          "seconds": 9.622208299995691,
+          "text_seconds": 6.011290000002191,
+          "texts": 15,
+          "given_components": 5,
+          "engine_stages": [
+            {
+              "stage": "rapidocr",
+              "status": "ready",
+              "readings": 15,
+              "seconds": 1.2660000000032596
+            },
+            {
+              "stage": "easyocr-bn",
+              "status": "ready",
+              "readings": 10,
+              "seconds": 4.60899999999674
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "http_smoke": {
+    "legacy": {
+      "count": 3,
+      "produced": 3,
+      "degraded": 2,
+      "provenance": {
+        "partial": 2,
+        "extracted": 1
+      },
+      "median_seconds": 11.787773899999593,
+      "p95_seconds": 16.70554382000009,
+      "max_seconds": 17.25196270000015,
+      "over_10_seconds": 3,
+      "warmup_seconds": 14.505,
+      "end_to_end_accuracy": null,
+      "pipeline_median_seconds": 11.685771599997679,
+      "pipeline_p95_seconds": 16.401829560001715
+    },
+    "hybrid": {
+      "count": 3,
+      "produced": 3,
+      "degraded": 2,
+      "provenance": {
+        "partial": 2,
+        "extracted": 1
+      },
+      "median_seconds": 9.856218099997932,
+      "p95_seconds": 20.629364530000746,
+      "max_seconds": 21.82638080000106,
+      "over_10_seconds": 1,
+      "warmup_seconds": 22.77,
+      "end_to_end_accuracy": null,
+      "pipeline_median_seconds": 9.770473999997193,
+      "pipeline_p95_seconds": 20.428092109997667
+    }
+  },
+  "limitations": [
+    "No independently reviewed full-image text/value/netlist gold was available.",
+    "Three-image latency is exploratory; cold loading and overlapping CPU work affect the tails.",
+    "Frozen OCR replay is an association-only comparison; hybrid rejects inferred/unitless/low-confidence readings.",
+    "Native inference calls are atomic and may exceed a cooperative deadline.",
+    "Bengali and circuit symbols only; ambiguous symbol proposals require review."
+  ]
+}

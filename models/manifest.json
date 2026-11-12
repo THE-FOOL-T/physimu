@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "ocr_backend": "hybrid",
+  "inference_threads": 2,
+  "models": [
+    {
+      "path": "models/v2_original.pt",
+      "bytes": 5493957,
+      "sha256": "95bc8a1f76aaed83ad907e87bdee0255da1837fdb8f9c8405a723779e8ed0c46",
+      "role": "Circuit detector",
+      "source": "Local fine-tuned Ultralytics YOLO26 checkpoint; see MODEL_CARD.md",
+      "license": "Ultralytics AGPL-3.0 / applicable Enterprise terms"
+    },
+    {
+      "path": "models/ocr/rapidocr/PP-OCRv6_det_small.onnx",
+      "bytes": 9929594,
+      "sha256": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f",
+      "role": "Text detector",
+      "source": "https://modelscope.cn/models/RapidAI/RapidOCR",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "models/ocr/rapidocr/PP-OCRv6_rec_small.onnx",
+      "bytes": 21234383,
+      "sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+      "role": "English/numeric text recognition",
+      "source": "https://modelscope.cn/models/RapidAI/RapidOCR",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "models/ocr/rapidocr/ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "bytes": 585532,
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+      "role": "Text orientation",
+      "source": "https://github.com/RapidAI/RapidOCR",
+      "license": "Apache-2.0"
+    },
+    {
+      "path": "models/ocr/easyocr/bengali.pth",
+      "bytes": 215369934,
+      "sha256": "28d10d7dab96bf38c1d190d09a65a732130f5f34b28dcbd7e51aba3366146896",
+      "role": "Bengali text recognition",
+      "source": "https://github.com/JaidedAI/EasyOCR/releases/tag/v1.1.8",
+      "license": "Apache-2.0"
+    }
+  ]
+}

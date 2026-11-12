@@ -1,0 +1,25 @@
+{
+  "scope": "Recorded owner case 002: enter visibly printed R5 8 kOhm as a user correction; no topology or other value changes.",
+  "r5": {
+    "number": 8000.0,
+    "unit": "ohm",
+    "status": "user",
+    "source": "user",
+    "confidence": 1.0,
+    "unit_inferred": false
+  },
+  "source_current": -0.0020000000000000005,
+  "equivalent_resistance": 11999.999999999996,
+  "invariants": {
+    "kcl": {
+      "n3": -4.336808689942018e-19,
+      "n4": 0.0,
+      "n7": -2.168404344971009e-19,
+      "n8": 4.336808689942018e-19,
+      "n11": -2.168404344971009e-19
+    },
+    "max_kcl_error": 4.336808689942018e-19,
+    "relative_power_error": 2.891205793294678e-16,
+    "regularization_power": 0.0
+  }
+}

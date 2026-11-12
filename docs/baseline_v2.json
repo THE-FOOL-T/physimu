@@ -1,0 +1,81 @@
+{
+  "count": 59,
+  "classes": {
+    "resistor": {
+      "gold": 203,
+      "precision_conf025": 0.9847715736040609,
+      "recall_conf025": 0.9556650246305419,
+      "AP50": 0.9696631248490702,
+      "AP50_95": 0.7493513528115112
+    },
+    "voltage_source": {
+      "gold": 72,
+      "precision_conf025": 0.971830985915493,
+      "recall_conf025": 0.9583333333333334,
+      "AP50": 0.9667641878386543,
+      "AP50_95": 0.7134596594155818
+    },
+    "capacitor": {
+      "gold": 4,
+      "precision_conf025": 0.8,
+      "recall_conf025": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.4508250825082508
+    },
+    "switch": {
+      "gold": 3,
+      "precision_conf025": 0.0,
+      "recall_conf025": 0.0,
+      "AP50": 0.0,
+      "AP50_95": 0.0
+    }
+  },
+  "mAP50": 0.7341068281719312,
+  "mAP50_95": 0.478409023683836,
+  "confusion_matrix_rows_gold_columns_predicted": [
+    [
+      194,
+      0,
+      0,
+      0,
+      9
+    ],
+    [
+      0,
+      69,
+      0,
+      1,
+      2
+    ],
+    [
+      0,
+      0,
+      4,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      3
+    ],
+    [
+      3,
+      2,
+      1,
+      2,
+      0
+    ]
+  ],
+  "class_order": [
+    "resistor",
+    "voltage_source",
+    "capacitor",
+    "switch",
+    "background"
+  ],
+  "imgsz": 640,
+  "split": "seen-image regression; NOT held out"
+}

@@ -1,0 +1,36 @@
+# End-to-end held-out evaluation
+
+Metrics are null when no frozen gold netlists are supplied; no scores are fabricated.
+
+```json
+{
+  "printed": {
+    "count": 0,
+    "metrics": {
+      "simulation_produced": null,
+      "graph_match": null,
+      "electrical_correct": null,
+      "component_recall": null,
+      "value_fraction": null,
+      "status_fraction": null,
+      "seconds": null
+    },
+    "records": [],
+    "status": "HUMAN task: no frozen, independently labeled held-out examples supplied"
+  },
+  "handwritten": {
+    "count": 0,
+    "metrics": {
+      "simulation_produced": null,
+      "graph_match": null,
+      "electrical_correct": null,
+      "component_recall": null,
+      "value_fraction": null,
+      "status_fraction": null,
+      "seconds": null
+    },
+    "records": [],
+    "status": "HUMAN task: no frozen, independently labeled held-out examples supplied"
+  }
+}
+```

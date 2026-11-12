@@ -1,0 +1,1513 @@
+[
+  {
+    "image": "Screenshot 2026-10-30 232522.png",
+    "before": {
+      "nodes": 8,
+      "parts": 4,
+      "disabled": 0,
+      "provenance": "extracted",
+      "nonzero_current": false,
+      "score": 42,
+      "warnings": [
+        {
+          "code": "time_budget",
+          "ref": null,
+          "message_key": "warn.time_budget"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": null,
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n2",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n4",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n6",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n10",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n15",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n16",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n21",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p3",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p4",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p5",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p7",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p9",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p13",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p15",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p19",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p21",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p24",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p28",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p30",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p31",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "R1",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "R2",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "R3",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "V1",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R1",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R2",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R3",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "V1",
+          "message_key": "warn.value_not_found"
+        }
+      ]
+    },
+    "after": {
+      "nodes": 5,
+      "parts": 4,
+      "disabled": 0,
+      "provenance": "partial",
+      "nonzero_current": false,
+      "score": 31,
+      "warnings": [
+        {
+          "code": "off_axis_snap",
+          "ref": "R1",
+          "message_key": "warn.off_axis_snap"
+        },
+        {
+          "code": "off_axis_snap",
+          "ref": "R3",
+          "message_key": "warn.off_axis_snap"
+        },
+        {
+          "code": "source_open_loop",
+          "ref": "V1",
+          "message_key": "warn.source_open_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": null,
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R3",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "V1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n17",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n21",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n27",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n29",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p2",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p3",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p5",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p11",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p12",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p13",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p21",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p22",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p25",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p28",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p30",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p32",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p33",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p34",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p35",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p40",
+          "message_key": "warn.dangling_wire"
+        }
+      ]
+    },
+    "trace": {
+      "alternative_threshold": false,
+      "repair": false,
+      "terminals_snapped": 8,
+      "terminals_floating": 0,
+      "off_axis_snaps": 2,
+      "gaps_bridged": 0,
+      "stroke_width": 3.0,
+      "ghosts": [
+        {
+          "bbox": [
+            254,
+            247,
+            269,
+            301
+          ],
+          "from": [
+            260,
+            295
+          ],
+          "to": [
+            263,
+            253
+          ],
+          "reason": "missing_part"
+        }
+      ]
+    },
+    "seconds": 2.7225356999988435,
+    "scope": "Tracing-only replay on identical WP-A detections/texts; no gold topology accuracy."
+  },
+  {
+    "image": "Screenshot 2026-10-30 232905.png",
+    "before": {
+      "nodes": 7,
+      "parts": 7,
+      "disabled": 0,
+      "provenance": "extracted",
+      "nonzero_current": true,
+      "score": 12,
+      "warnings": [
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n6",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n8",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n12",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p26",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p29",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p33",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "R5",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R5",
+          "message_key": "warn.value_not_found"
+        }
+      ]
+    },
+    "after": {
+      "nodes": 5,
+      "parts": 7,
+      "disabled": 0,
+      "provenance": "extracted",
+      "nonzero_current": true,
+      "score": 4,
+      "warnings": [
+        {
+          "code": "ambiguous_crossing",
+          "ref": "xy:442,299",
+          "message_key": "warn.ambiguous_crossing"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p1",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p4",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p9",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p33",
+          "message_key": "warn.dangling_wire"
+        }
+      ]
+    },
+    "trace": {
+      "alternative_threshold": false,
+      "repair": false,
+      "terminals_snapped": 14,
+      "terminals_floating": 0,
+      "off_axis_snaps": 0,
+      "gaps_bridged": 0,
+      "stroke_width": 1.7999999523162842,
+      "ghosts": []
+    },
+    "seconds": 2.4327978000001167,
+    "scope": "Tracing-only replay on identical WP-A detections/texts; no gold topology accuracy."
+  },
+  {
+    "image": "Screenshot 2026-10-30 234003.png",
+    "before": {
+      "nodes": 9,
+      "parts": 6,
+      "disabled": 0,
+      "provenance": "extracted",
+      "nonzero_current": false,
+      "score": 35,
+      "warnings": [
+        {
+          "code": "unit_inferred",
+          "ref": "R1",
+          "message_key": "warn.unit_inferred"
+        },
+        {
+          "code": "gap_bridged",
+          "ref": null,
+          "message_key": "warn.gap_bridged"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "S2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": null,
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R2.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.S2.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.S2.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n1",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n8",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n17",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n23",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p4",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p7",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p9",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p22",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p26",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p29",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p30",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "R2",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "S1",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "R3",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "S2",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R2",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "S1",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R3",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "S2",
+          "message_key": "warn.value_not_found"
+        }
+      ]
+    },
+    "after": {
+      "nodes": 10,
+      "parts": 6,
+      "disabled": 0,
+      "provenance": "partial",
+      "nonzero_current": false,
+      "score": 40,
+      "warnings": [
+        {
+          "code": "gap_bridged",
+          "ref": null,
+          "message_key": "warn.gap_bridged"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "S1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "S2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "V1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "source_open_loop",
+          "ref": "V1",
+          "message_key": "warn.source_open_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": null,
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "S1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R3",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "S2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "V1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R2.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R2.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.S1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.S1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.S2.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.S2.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n16",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p8",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p14",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p18",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p20",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p24",
+          "message_key": "warn.dangling_wire"
+        }
+      ]
+    },
+    "trace": {
+      "alternative_threshold": false,
+      "repair": false,
+      "terminals_snapped": 5,
+      "terminals_floating": 7,
+      "off_axis_snaps": 0,
+      "gaps_bridged": 1,
+      "stroke_width": 1.0,
+      "ghosts": []
+    },
+    "seconds": 2.0603134999983013,
+    "scope": "Tracing-only replay on identical WP-A detections/texts; no gold topology accuracy."
+  },
+  {
+    "image": "Screenshot 2026-10-31 000926.png",
+    "before": {
+      "nodes": 11,
+      "parts": 7,
+      "disabled": 6,
+      "provenance": "partial",
+      "nonzero_current": true,
+      "score": 47,
+      "warnings": [
+        {
+          "code": "unit_inferred",
+          "ref": "R1",
+          "message_key": "warn.unit_inferred"
+        },
+        {
+          "code": "unit_inferred",
+          "ref": "R2",
+          "message_key": "warn.unit_inferred"
+        },
+        {
+          "code": "unit_inferred",
+          "ref": "R4",
+          "message_key": "warn.unit_inferred"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "V1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "C1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "V1",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R1",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R2",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R3",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "C1",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R4",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V2",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R2.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.C1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n1",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n2",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n4",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n6",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n9",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n13",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p10",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p14",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p18",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p21",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p24",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p30",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p31",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p32",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p35",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "V2",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R3",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "V2",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "C1",
+          "message_key": "warn.value_not_found"
+        }
+      ]
+    },
+    "after": {
+      "nodes": 11,
+      "parts": 7,
+      "disabled": 0,
+      "provenance": "partial",
+      "nonzero_current": false,
+      "score": 46,
+      "warnings": [
+        {
+          "code": "uncertain_topology",
+          "ref": "V1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "off_axis_snap",
+          "ref": "V1",
+          "message_key": "warn.off_axis_snap"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "V2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "off_axis_snap",
+          "ref": "V2",
+          "message_key": "warn.off_axis_snap"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "C1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "source_open_loop",
+          "ref": "V1",
+          "message_key": "warn.source_open_loop"
+        },
+        {
+          "code": "source_open_loop",
+          "ref": "V2",
+          "message_key": "warn.source_open_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": null,
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "not_connected",
+          "ref": "V1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R3",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "V2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "C1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R4",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V2",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V2.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.C1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n6",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n13",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n15",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n16",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n18",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p14",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p19",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p22",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p27",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p28",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p30",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p32",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p35",
+          "message_key": "warn.dangling_wire"
+        }
+      ]
+    },
+    "trace": {
+      "alternative_threshold": false,
+      "repair": false,
+      "terminals_snapped": 10,
+      "terminals_floating": 4,
+      "off_axis_snaps": 2,
+      "gaps_bridged": 0,
+      "stroke_width": 1.0,
+      "ghosts": []
+    },
+    "seconds": 2.1246922999998787,
+    "scope": "Tracing-only replay on identical WP-A detections/texts; no gold topology accuracy."
+  },
+  {
+    "image": "Screenshot 2026-10-31 000946.png",
+    "before": {
+      "nodes": 9,
+      "parts": 6,
+      "disabled": 5,
+      "provenance": "partial",
+      "nonzero_current": true,
+      "score": 35,
+      "warnings": [
+        {
+          "code": "unit_inferred",
+          "ref": "R2",
+          "message_key": "warn.unit_inferred"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "V1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "V1",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R1",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R2",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R3",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "partial_circuit",
+          "ref": "R4",
+          "message_key": "warn.partial_circuit"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V2",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n1",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n4",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n5",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n7",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n12",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n16",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p3",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p6",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p14",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p16",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p20",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p23",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p27",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "assumed_value",
+          "ref": "V2",
+          "message_key": "warn.assumed_value"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R1",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R3",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "V2",
+          "message_key": "warn.value_not_found"
+        },
+        {
+          "code": "value_not_found",
+          "ref": "R4",
+          "message_key": "warn.value_not_found"
+        }
+      ]
+    },
+    "after": {
+      "nodes": 9,
+      "parts": 6,
+      "disabled": 0,
+      "provenance": "partial",
+      "nonzero_current": false,
+      "score": 35,
+      "warnings": [
+        {
+          "code": "uncertain_topology",
+          "ref": "V1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "R1",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "uncertain_topology",
+          "ref": "V2",
+          "message_key": "warn.uncertain_topology"
+        },
+        {
+          "code": "off_axis_snap",
+          "ref": "V2",
+          "message_key": "warn.off_axis_snap"
+        },
+        {
+          "code": "source_open_loop",
+          "ref": "V1",
+          "message_key": "warn.source_open_loop"
+        },
+        {
+          "code": "source_open_loop",
+          "ref": "V2",
+          "message_key": "warn.source_open_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": null,
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "not_connected",
+          "ref": "V1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R1",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R3",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "V2",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "not_connected",
+          "ref": "R4",
+          "message_key": "warn.not_connected"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V1",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "polarity_uncertain",
+          "ref": "V2",
+          "message_key": "warn.polarity_uncertain"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V1.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.R1.b",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "isolated.V2.a",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n11",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n20",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "no_closed_loop",
+          "ref": "n26",
+          "message_key": "warn.no_closed_loop"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p7",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p14",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p19",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p22",
+          "message_key": "warn.dangling_wire"
+        },
+        {
+          "code": "dangling_wire",
+          "ref": "p25",
+          "message_key": "warn.dangling_wire"
+        }
+      ]
+    },
+    "trace": {
+      "alternative_threshold": false,
+      "repair": false,
+      "terminals_snapped": 8,
+      "terminals_floating": 4,
+      "off_axis_snaps": 1,
+      "gaps_bridged": 0,
+      "stroke_width": 1.0,
+      "ghosts": [
+        {
+          "bbox": [
+            157,
+            123,
+            227,
+            146
+          ],
+          "from": [
+            163,
+            129
+          ],
+          "to": [
+            221,
+            140
+          ],
+          "reason": "missing_part"
+        }
+      ]
+    },
+    "seconds": 1.6508915000013076,
+    "scope": "Tracing-only replay on identical WP-A detections/texts; no gold topology accuracy."
+  }
+]

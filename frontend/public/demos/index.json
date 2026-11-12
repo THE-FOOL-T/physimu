@@ -1,0 +1,27 @@
+[
+  {
+    "id": "parallel-three",
+    "title": "Parallel Three",
+    "netlist": "/demos/parallel-three.json"
+  },
+  {
+    "id": "parallel-two",
+    "title": "Parallel Two",
+    "netlist": "/demos/parallel-two.json"
+  },
+  {
+    "id": "mixed-network",
+    "title": "Mixed Network",
+    "netlist": "/demos/mixed-network.json"
+  },
+  {
+    "id": "loaded-bridge",
+    "title": "Loaded Bridge",
+    "netlist": "/demos/loaded-bridge.json"
+  },
+  {
+    "id": "series-parallel",
+    "title": "Series Parallel",
+    "netlist": "/demos/series-parallel.json"
+  }
+]

@@ -1,0 +1,261 @@
+{
+  "name": "current_source",
+  "netlist": {
+    "version": 1,
+    "image": {
+      "path": "",
+      "width": 800,
+      "height": 500
+    },
+    "components": [
+      {
+        "id": "I1",
+        "type": "current_source",
+        "label": "I1",
+        "bbox": [
+          155.0,
+          165.0,
+          205.0,
+          195.0
+        ],
+        "orientation_deg": 0.0,
+        "terminals": [
+          {
+            "id": "I1.a",
+            "xy": [
+              150.0,
+              180.0
+            ],
+            "node": "g"
+          },
+          {
+            "id": "I1.b",
+            "xy": [
+              210.0,
+              180.0
+            ],
+            "node": "p"
+          }
+        ],
+        "value": {
+          "number": 2.0,
+          "unit": "ohm",
+          "status": "given",
+          "source": "user",
+          "confidence": 1.0
+        },
+        "polarity": null,
+        "switch_closed": true,
+        "internal_resistance": null,
+        "initial_voltage": 0.0,
+        "initial_current": 0.0,
+        "virtual": false,
+        "confidence": 1.0,
+        "disabled": false
+      },
+      {
+        "id": "R1",
+        "type": "resistor",
+        "label": "R1",
+        "bbox": [
+          300.0,
+          165.0,
+          350.0,
+          195.0
+        ],
+        "orientation_deg": 0.0,
+        "terminals": [
+          {
+            "id": "R1.a",
+            "xy": [
+              295.0,
+              180.0
+            ],
+            "node": "p"
+          },
+          {
+            "id": "R1.b",
+            "xy": [
+              355.0,
+              180.0
+            ],
+            "node": "g"
+          }
+        ],
+        "value": {
+          "number": 5.0,
+          "unit": "ohm",
+          "status": "given",
+          "source": "user",
+          "confidence": 1.0
+        },
+        "polarity": null,
+        "switch_closed": true,
+        "internal_resistance": null,
+        "initial_voltage": 0.0,
+        "initial_current": 0.0,
+        "virtual": false,
+        "confidence": 1.0,
+        "disabled": false
+      }
+    ],
+    "nodes": [
+      {
+        "id": "g",
+        "is_ground": true,
+        "label": null
+      },
+      {
+        "id": "p",
+        "is_ground": false,
+        "label": null
+      }
+    ],
+    "wire_graph": {
+      "points": [
+        {
+          "id": "I1.a",
+          "xy": [
+            150.0,
+            180.0
+          ],
+          "kind": "terminal",
+          "node": "g"
+        },
+        {
+          "id": "I1.b",
+          "xy": [
+            210.0,
+            180.0
+          ],
+          "kind": "terminal",
+          "node": "p"
+        },
+        {
+          "id": "R1.a",
+          "xy": [
+            295.0,
+            180.0
+          ],
+          "kind": "terminal",
+          "node": "p"
+        },
+        {
+          "id": "R1.b",
+          "xy": [
+            355.0,
+            180.0
+          ],
+          "kind": "terminal",
+          "node": "g"
+        },
+        {
+          "id": "hub.g",
+          "xy": [
+            110.0,
+            110.0
+          ],
+          "kind": "junction",
+          "node": "g"
+        },
+        {
+          "id": "hub.p",
+          "xy": [
+            360.0,
+            110.0
+          ],
+          "kind": "junction",
+          "node": "p"
+        }
+      ],
+      "segments": [
+        {
+          "id": "w.I1.a",
+          "from": "hub.g",
+          "to": "I1.a",
+          "polyline": [
+            [
+              110.0,
+              110.0
+            ],
+            [
+              150.0,
+              180.0
+            ]
+          ],
+          "node": "g",
+          "confidence": 1.0
+        },
+        {
+          "id": "w.R1.b",
+          "from": "hub.g",
+          "to": "R1.b",
+          "polyline": [
+            [
+              110.0,
+              110.0
+            ],
+            [
+              355.0,
+              180.0
+            ]
+          ],
+          "node": "g",
+          "confidence": 1.0
+        },
+        {
+          "id": "w.I1.b",
+          "from": "hub.p",
+          "to": "I1.b",
+          "polyline": [
+            [
+              360.0,
+              110.0
+            ],
+            [
+              210.0,
+              180.0
+            ]
+          ],
+          "node": "p",
+          "confidence": 1.0
+        },
+        {
+          "id": "w.R1.a",
+          "from": "hub.p",
+          "to": "R1.a",
+          "polyline": [
+            [
+              360.0,
+              110.0
+            ],
+            [
+              295.0,
+              180.0
+            ]
+          ],
+          "node": "p",
+          "confidence": 1.0
+        }
+      ]
+    },
+    "constraints": [],
+    "warnings": [],
+    "meta": {
+      "problem_text": null,
+      "language": "en",
+      "degraded": false,
+      "style": "unknown",
+      "region": null,
+      "provenance": "automatic"
+    }
+  },
+  "expected": {
+    "node_voltages": {
+      "p": 10
+    },
+    "currents": {
+      "R1": 2
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "count": 20,
+  "produced": 20,
+  "degraded": 14,
+  "provenance": {
+    "partial": 14,
+    "extracted": 6
+  },
+  "median_seconds": 9.649459349995595,
+  "p95_seconds": 12.257834439999716,
+  "max_seconds": 12.736969599995064,
+  "over_10_seconds": 8,
+  "warmup_seconds": 17.935,
+  "end_to_end_accuracy": null,
+  "pipeline_median_seconds": 9.071372250000422,
+  "pipeline_p95_seconds": 11.43393882499877
+}

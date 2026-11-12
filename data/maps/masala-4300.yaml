@@ -1,0 +1,41 @@
+names:
+- resistor
+- voltage_source
+- capacitor
+- switch
+- rheostat
+- potentiometer
+- inductor
+- battery
+- ac_source
+- current_source
+- ground
+- diode
+- lamp
+- fuse
+- ammeter
+- voltmeter
+- galvanometer
+- junction
+- text_label
+- terminal_marker
+- plus_minus_mark
+- arrow
+license_verified_by_owner: false
+source: https://universe.roboflow.com/project-gtqqq/v3qwe
+license: CC-BY-4.0
+license_verified: true
+map:
+  AC_Source: ac_source
+  Battery: battery
+  Capacitor: capacitor
+  Current_Source: current_source
+  DC_Source: voltage_source
+  Diode: diode
+  Ground: ground
+  Inductor: inductor
+  Resistor: resistor
+  Voltage_Source: voltage_source
+  BJT: null
+  MOSFET: null
+license_url: https://universe.roboflow.com/project-gtqqq/v3qwe

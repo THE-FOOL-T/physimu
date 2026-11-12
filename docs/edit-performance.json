@@ -1,0 +1,7 @@
+{
+  "samples": 30,
+  "median_ms": 12.099999994039536,
+  "p95_ms": 21.599999994039536,
+  "max_ms": 22.200000002980232,
+  "scope": "Seven-part example: synchronous Run event through topology, checks, constraint resolution, solve and readout DOM; excludes paint"
+}

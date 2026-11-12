@@ -1,0 +1,7 @@
+{
+  "eligible": false,
+  "selected": "v2",
+  "full_finetune_metrics": null,
+  "full_control_metrics": null,
+  "reason": "Smoke-only candidates; full training and independent real data still required"
+}

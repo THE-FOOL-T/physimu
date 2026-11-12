@@ -1,0 +1,13 @@
+{
+  "first_http_seconds": 5.171549700011383,
+  "models_ready_seconds": 22.5716081999999,
+  "health": {
+    "status": "ok",
+    "detector": "ready",
+    "ocr": "ready",
+    "warmup_seconds": 17.935,
+    "detector_available": true,
+    "storage": "memory_only_unless_corrections_opt_in",
+    "version": 1
+  }
+}

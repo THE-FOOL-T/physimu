@@ -1,0 +1,43 @@
+detector:
+  original: null
+  weights: models/v2_original.pt
+  confidence: 0.25
+  input_size: 640
+  device: cpu
+  tiled: false
+  orientation_model: null
+  orientation_report: null
+images: data/raw/seen/images
+additional_images: data/raw/reference99/images
+ocr_languages: [en, bn]
+# Portable defaults match the working hybrid pipeline. Private/env overrides still win.
+ocr:
+  backend: hybrid
+  rapidocr:
+    detector: models/ocr/rapidocr/PP-OCRv6_det_small.onnx
+    recognizer: models/ocr/rapidocr/PP-OCRv6_rec_small.onnx
+    classifier: models/ocr/rapidocr/ch_ppocr_mobile_v2.0_cls_mobile.onnx
+    rec_keys_path: null # optional local dictionary; CIRCUIT_RAPIDOCR_KEYS
+    max_regions: 64
+    max_retry_regions: 4
+  bangla:
+    model_directory: models/ocr/easyocr # local Bengali recognizer; no user-cache dependency
+    tile_side: 640 # bounded native-resolution component-adjacent tiles
+inference:
+  threads: 2 # match the verified CPU setup; CIRCUIT_THREADS overrides
+analysis:
+  budget_seconds: 25
+  stage_seconds: {detect: 8, text: 16, wires: 8, recovery: 3}
+  hybrid_reserve_seconds: 10 # OCR must leave time for tracing and solving
+  component_ocr_seconds: 1.5
+vlm:
+  enabled_for_handwriting: false
+  client: null
+storage:
+  ttl_seconds: 900
+  max_jobs: 2
+  max_upload_bytes: 20971520
+  job_requests_per_minute: 600
+solver:
+  source_short_resistance: 0.05
+  closed_switch_resistance: 0.001

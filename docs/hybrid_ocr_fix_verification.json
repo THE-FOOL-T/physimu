@@ -1,0 +1,282 @@
+{
+  "date": "2026-11-10",
+  "backend": "hybrid",
+  "legacy_fallback": false,
+  "input_sha256": "45abd29f4b906a24be36a402c823371417e708cb18c814dc71fba66425e11f71",
+  "scope": "One human-readable reference diagram repeated through the real HTTP pipeline; not general OCR/electrical accuracy.",
+  "page_budget_seconds": 25,
+  "hybrid_downstream_reserve_seconds": 10,
+  "wire_stage_seconds": 8,
+  "inference_threads": 2,
+  "verified_reference_runs": [
+    {
+      "case": "cold-immediate",
+      "elapsed_seconds": 48.25,
+      "pipeline_seconds": 20.15202529999806,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 3.062999999994645
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "limited",
+          "readings": 7,
+          "seconds": 9.734000000004016
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    },
+    {
+      "case": "warm-1",
+      "elapsed_seconds": 20.329,
+      "pipeline_seconds": 20.299435000000813,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 2.4060000000026776
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "limited",
+          "readings": 7,
+          "seconds": 9.75
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    },
+    {
+      "case": "warm-2",
+      "elapsed_seconds": 19.625,
+      "pipeline_seconds": 19.597304700000677,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 2.3589999999967404
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "limited",
+          "readings": 7,
+          "seconds": 9.64100000000326
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    },
+    {
+      "case": "cpu-load-2-processes",
+      "elapsed_seconds": 21.703,
+      "pipeline_seconds": 21.651471199998923,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 2.4219999999986612
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "ready",
+          "readings": 8,
+          "seconds": 10.39100000000326
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    },
+    {
+      "case": "concurrent-1",
+      "elapsed_seconds": 39.844,
+      "pipeline_seconds": 19.531237000002875,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 2.5309999999954016
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "limited",
+          "readings": 7,
+          "seconds": 9.5
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    },
+    {
+      "case": "concurrent-2",
+      "elapsed_seconds": 20.281,
+      "pipeline_seconds": 20.23569409999618,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 2.2339999999967404
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "limited",
+          "readings": 7,
+          "seconds": 9.5
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    },
+    {
+      "case": "browser",
+      "elapsed_seconds": 20.875,
+      "pipeline_seconds": 20.806596000002173,
+      "nodes": 2,
+      "equivalent_resistance_ohm": 6,
+      "source_voltage_v": 6,
+      "source_current_a": 1,
+      "left_printed_R1_ohm": 10,
+      "left_current_a": 0.6,
+      "right_printed_R2_ohm": 15,
+      "right_current_a": 0.4,
+      "total_load_power_w": 6,
+      "assumed_values": 0,
+      "ocr_engines": [
+        {
+          "stage": "rapidocr",
+          "status": "ready",
+          "readings": 14,
+          "seconds": 4.125
+        },
+        {
+          "stage": "easyocr-bn",
+          "status": "limited",
+          "readings": 6,
+          "seconds": 6.984000000004016
+        }
+      ],
+      "physical_and_electrical_assertions": "passed"
+    }
+  ],
+  "backend_tests": {
+    "passed": 395,
+    "skipped": 1,
+    "selection": "current local hybrid configuration; legacy-reader fixtures explicitly select legacy"
+  },
+  "frontend_unit_tests": {
+    "passed": 82
+  },
+  "production_typecheck_build": "passed",
+  "browser": {
+    "full_initial_run": {
+      "passed": 68,
+      "failed": 1,
+      "failure": "Keyboard filechooser event timed out under combined load"
+    },
+    "isolated_keyboard_rerun": "passed",
+    "final_EN_BN_limit_cases": 4,
+    "OCR_correction_cases": 2
+  },
+  "other_real_image_smoke": [
+    {
+      "name": "other-image-1",
+      "elapsed_seconds": 18.531,
+      "provenance": "partial",
+      "node_count": 6,
+      "ocr_values": 0,
+      "gold_electrical_accuracy": "unavailable; partial results require review"
+    },
+    {
+      "name": "other-image-2",
+      "elapsed_seconds": 16.14,
+      "provenance": "partial",
+      "node_count": 6,
+      "ocr_values": 0,
+      "gold_electrical_accuracy": "unavailable; partial results require review"
+    }
+  ],
+  "limitations": [
+    "Bengali work can report limited while completed readings and simulation remain available.",
+    "Two other sampled images remained partial and used assumed values; broad recognition and topology accuracy are not established.",
+    "Printed/handwritten style heuristics and decorative-stroke warnings were not changed."
+  ],
+  "health": {
+    "status": "ok",
+    "detector": "ready",
+    "ocr": "ready",
+    "ocr_backend": "hybrid",
+    "warmup_seconds": 33.402,
+    "ocr_engines": {
+      "rapidocr": "ready",
+      "easyocr-bn": "ready"
+    },
+    "detector_available": true,
+    "storage": "memory_only_unless_corrections_opt_in",
+    "version": 1
+  },
+  "raw_local_evidence": ".cache/hybrid-fix/verified",
+  "model_files_modified": false,
+  "merged_to_main": true
+}
