@@ -501,3 +501,191 @@ The mismatch's cause is now explained and three circuit-result comparisons are
 complete. Inherited OCR diagnostic variability and the unconfirmed native
 reverse selection remain disclosed limitations. This follow-up stops here;
 M2 has not started and awaits the next explicit continue.
+
+## M2 — contract, authored fixtures and simulation foundation (2026-11-12)
+
+M2 is complete. The simulator is available in the standalone fixture lab;
+the main app retains the M1 Mechanics placeholder until M3. No mechanics
+perception, detector, OCR, real/gold annotation, training or automatic routing
+was implemented. No circuit implementation, original test, fixture or snapshot
+changed or moved.
+
+### Implemented
+
+- Strict finite Pydantic scenes, explicit SI Value metadata/defaults, generated
+  canonical serialization schema, matching TS types/schema interpreter, units,
+  ids/references and binding validation. Unknown types remain in the document
+  with warnings and the original image; unresolved inputs are not replaced.
+- Deterministic printed painter and ten authored JSON/PNG pairs covering all
+  eight archetypes, including ground/cliff and horizontal/vertical variants.
+  Masks and static repairs are authored and serialized with the PNG. Every image
+  explicitly says synthetic/authored. These are not real accuracy or gold data.
+- Eight pure TS solve/layout/forces/regime/defaultBindings modules: closed forms,
+  RK4 pendulum, three spring damping regimes, static/kinetic friction and reversal,
+  massive pulley, collision restitution/after-panel checking, conservation and
+  endpoint/floor/pulley/slack/compression/contact events.
+- Shared accumulator/interpolation clock at 1/240 s, 0.1 s frame-delta cap,
+  0.25–4× transport, exact-event scrubber, step, graphs, energy bars, parameter
+  badges/locks and native/CSS mapping. No circuit renderer was changed.
+- Source-pixel background lifting/repairs, clipped bodies and attached labels,
+  original spring lead/coil/lead stretching, tangent ropes, rods, rotating pulley
+  pixels, labelled vectors/components, dashed paths, native-size padding/panning,
+  user zoom, DPR ≤2 and reduced-motion still previews. Failed checks retain the
+  untouched source with overlays and reduce render confidence.
+- Physics/initial/locked-geometry binding rules, source-constrained ranges,
+  explicit user Values, Modified/Back to original, play-preserving restart and
+  four initial-condition drag handles. RK4 edits render a short preview before
+  completion; drag updates coalesce per frame. Blank-paper dragging pans the
+  native image; narrow views initially centre the first body.
+- A separate Vite entry/config at `/mechanics-dev.html`, with no backend/API
+  dependency. English dev lab only; M3 owns the bilingual workspace/editor.
+
+Contracts, assumptions, equations/events, resource bounds and reproduction are
+documented in [schema.md](schema.md), [decisions.md](decisions.md) and
+[plan-M2.md](plan-M2.md). Precomputation over 120 s is explicitly unsupported;
+canvas backing dimensions over 16,000 px or 32 million pixels use the source/
+overlay fallback. Those limits do not invent shortened physical trajectories.
+
+### Commands and measured gates
+
+Used the existing Windows/Python 3.12.10/Node 26.4.0/Edge environment and local
+models. Dependency pins and circuit configuration did not change. No model or
+dependency download was needed. The editable mapping was reinstalled for the
+new local tools package.
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e . --no-deps --no-build-isolation
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.build_fixtures
+.\.venv\Scripts\python.exe -m pytest backend/tests/mechanics/test_scene.py -q
+.\.venv\Scripts\python.exe manage.py doctor
+.\.venv\Scripts\python.exe manage.py test
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py browser
+# From frontend; final mechanics suite and standalone lab:
+npx.cmd playwright test browser-tests/mechanics.spec.ts
+npm.cmd run dev -- --config mechanics-dev.config.mjs --configLoader native --port 5173
+```
+
+| Gate | Actual result |
+| --- | --- |
+| New backend contract/painter/fixture tests | **33 passed** in 9.90 s; both installed namespaces checked in isolated interpreters. |
+| New TS physics/binding/clock tests | **14 passed**; textbook equations, energy/momentum, friction directions/reversal/static cases, massive pulley, event times, force balance/damping, bounds, immutable deterministic layout and RK4 preview completion. |
+| Corrected first full `manage.py test` | **460 Python passed, 1 skipped** in 47.24 s; **97 TS passed**; type check/build passed. Later added one malformed-input and one force-vector test. |
+| Full `manage.py check` | Lint/format/Prettier passed; **461 Python passed, 1 skipped** in 54.89 s; **97 TS passed**; type check/build passed. |
+| Completion `manage.py check` | **461 Python passed, 1 skipped** in 53.37 s; **98 TS passed**; lint/format/type check/build passed. |
+| Final pre-commit `manage.py test` | **461 Python passed, 1 skipped** in **42.62 s**; **98 TS passed**; type check/build passed. Final separate Ruff/Prettier checks also passed. |
+| Post-commit tracked-tree `manage.py test` | **461 Python passed, 1 skipped** in **46.41 s**; **98 TS passed**; type check/build passed, including independence checks with all M2 files now tracked. |
+| Full browser suite | **94 collected: 92 passed, 2 skipped**, 4.3 min. All 20 M2 scenarios passed. The unchanged keyboard chooser case passed in this run. |
+| Final M2 browser suite after calibration/panning refinements | **20/20 passed**, 39.0 s; same documented native config loader, no teardown assertion. |
+| Original circuit layout comparisons | **12/12 passed, zero pixel tolerance**; no baselines regenerated. Main production bundle remained `index-BPt3-liY.js` through completion. |
+| Accessibility | 12 generated circuit default reports have **zero violations**; the lab's automated WCAG 2 A/AA check also has zero violations. This does not constitute full human/device accessibility review. |
+| Model doctor | Exit **0**, all five existing local model files match. Models remain ignored. |
+| Standalone lab | CLI started successfully on port 5173; HTML HTTP **200**. Ten browser fixture tests each assert **zero `/api` requests**. |
+
+Totals: **397 imported + 8 M0 + 23 M1 + 33 M2 = 461 Python**;
+**82 imported + 2 M1 + 14 M2 = 98 TS**;
+**71 imported + 3 M1 + 20 M2 = 94 browser**. The optional real-model OCR benchmark
+and two private owner-asset browser cases retain their original skips. Original
+test source, assertions, timeouts and snapshot thresholds were not weakened.
+The M0/M1 chooser flake remains historical; one passing full run does not prove
+it can never recur.
+
+The first full attempt had 455 Python passes and five failures: the new package
+path test imported both compatibility trees into pytest's process and polluted
+legacy monkeypatch paths. Its checks now run in separate interpreters; no
+packaging bootstrap, circuit implementation or original test was changed.
+Intermediate lab checks also exposed readout keyboard focus, terminal scrubber
+rounding, live-slider replacement and canvas text-baseline leakage; these were
+fixed. The initial launch-drag assertion incorrectly expected the ball's origin
+to move; the corrected assertion checks its launch handle/vector. One bundled
+config-loader run printed a Windows libuv shutdown assertion despite parent exit
+0; the explicit native `.mjs` loader completed subsequent suites cleanly, and
+test port 5175 closed. No retries/skips were added to hide those failures.
+
+### Solver and frame-0 evidence
+
+Measured idealized fixture outputs: projectile **T=2.8832080782 s**,
+**R=40.7747196738 m**, **H=10.1936799185 m**; incline **4.905 m/s²** without
+friction and **3.2058581578 m/s²** for 5 kg/mu_k=0.2; Atwood **a=3.27 m/s²**,
+**T=13.08 N**; table pulley **a=2.616 m/s²**. Small-amplitude pendulum period:
+closed form **2.0060666807 s**, RK4 measured **2.0061048768 s**. Spring:
+**omega=10 rad/s**, **period=0.6283185307 s**. Equal-mass elastic collision:
+outgoing velocities **-1 and 2 m/s**, contact **0.5 s**. Closed-form assertions
+use relative 1e-6 and RK4 assertions 1e-3.
+
+Maximum undamped energy drift: small-amplitude pendulum **1.98e-13 J**, spring
+**8.88e-16 J**; that collision's momentum/energy drift was zero in the sampled
+run. Tests also cover unequal masses and inelastic cases. Maximum initial body
+anchor error over all ten fixtures was **5.68e-14 px** (gate ≤1 px). These are
+synthetic mathematical checks, not extracted-image correctness measurements.
+
+Actual layers 1+2 were composed and read back at native resolution. Mean is
+absolute RGB channel difference on 0–255; fraction counts pixels with any channel
+difference >16. Limits remain **mean ≤2.0**, **fraction ≤0.005**, plus the
+additional **anchor error ≤1 px** check. No threshold was relaxed.
+
+| Fixture | Mean absolute channel difference | Fraction over 16 |
+| --- | ---: | ---: |
+| projectile_ground | 0.063659 | 0.00040625 |
+| projectile_cliff | 0.063587 | 0.00040385 |
+| incline | 0.004127 | 0.00003125 |
+| pendulum | 0.126590 | 0.00111538 |
+| spring_horizontal | 0.035582 | 0.00018510 |
+| spring_vertical | 0.030386 | 0.00015865 |
+| atwood | 0.131913 | 0.00064183 |
+| table_pulley | 0.320216 | 0.00157933 |
+| incline_pulley | 0.132967 | 0.00156010 |
+| collision | 0.005625 | 0.00003846 |
+
+All ten pass the configured tolerance; this is **not zero changed pixels**.
+An intentional 80 px pivot error yielded mean **0.806114** and fraction
+**0.00462740**: sparse ink passed the RGB limits alone. The added calibration
+check correctly failed at **80 px**, emitted `render_mismatch`, reduced render
+confidence to 0.5 and preserved the source with overlays. Passing these checks
+still does not establish real-image physical correctness. Back to original
+reproduced the initial composed canvas's **exact RGBA hash**, including overlays.
+
+Final ten-fixture render-handler samples: **213**, median **2.1 ms**, p95
+**8.8 ms**, maximum **23.5 ms**. Playing rAF intervals: **133**, median
+**16.7 ms**, p95 **16.8 ms**, maximum **16.9 ms**. These are short headless Edge
+measurements; handler scope includes sampling, draw submission, graphs and DOM,
+and excludes presentation/paint completion. They are not a device-wide 60 fps,
+model latency, or recognition-accuracy claim.
+
+### Review, shared audit and stop point
+
+Opened actual desktop incline/spring/cliff, degradation, before/after reset and
+phone captures for visual inspection. The final phone view keeps native image
+size, initially pans the body into view and supports blank-paper panning. This
+is screenshot/emulation QA, not a physical-device or human Bangla approval.
+
+Only two previously tracked shared files changed relative to `d61acdb`:
+
+| File | Added | Removed | Purpose |
+| --- | ---: | ---: | --- |
+| `frontend/src/shell/index.ts` | 1 | 0 | Export the new shared sim facade. |
+| `pyproject.toml` | 1 | 1 | List the new local tools package in both namespaces. |
+
+All other product/test/fixture additions are new M2 files. No guard allowances,
+dependency pins, model files, circuit implementation, existing test or snapshot
+changed. Shared foundation commit: **1169642**; contract/fixtures: **db9a724**;
+client solvers/renderer/lab: **6c3768c**. The full test command passed before the
+shared commit. This status is a separate documentation commit.
+
+Raw gates and solver/browser summaries are under ignored `.cache/m2-final/`;
+captures and full per-fixture samples are under `.cache/m2-browser/`. Fresh
+circuit timing JSON was copied there before restoring the historical tracked
+performance documents. The original checkout remains clean. These M2 gates ran
+with the source present and do not claim a fresh source-absent/kernel-network
+proof; existing independence/hash/transport checks passed unchanged.
+
+The intentional standalone preview remains at
+`http://127.0.0.1:5173/mechanics-dev.html`; the prior circuit server remains on
+port 8000. Test Vite instances closed. No training was run. Real mechanics
+accuracy, real-model mechanics latency, frozen real/gold data, GPU duration,
+human Bangla review, real-device QA and Linux/macOS execution are
+**null/unverified**. HUMAN: start collecting the source-separated printed and
+handwritten R0 diagrams and resolve their licences. Gold authoring tools come
+in M3; Codex did not create gold scenes.
+
+M2 stops here. M3 requires the next explicit continue.
