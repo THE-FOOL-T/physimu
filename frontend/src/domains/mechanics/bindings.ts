@@ -69,6 +69,9 @@ export class BindingEngine {
           radius) /
           S,
       );
+      // A manually authored portrait diagram can contain a long, small-angle rod.
+      // Preserve its validated source length when an unrelated physics Value changes.
+      max = Math.max(max, valueAt(s, binding.path).number ?? min);
     }
     if (binding.path === "params.initial_stretch")
       min = Math.max(
