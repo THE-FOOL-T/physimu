@@ -25,12 +25,12 @@ for (const lang of ["en", "bn"]) {
       "data-domain",
       "mechanics",
     );
-    await expect(page.getByTestId("mechanics-placeholder")).toBeVisible();
+    await expect(page.getByTestId("mechanics-workspace")).toBeVisible();
     await expect(
-      page.getByTestId("mechanics-placeholder").locator("h1"),
+      page.getByTestId("mechanics-workspace").locator("h1"),
     ).toHaveText(lang === "en" ? "Mechanics" : "বলবিদ্যা");
-    await expect(page.getByTestId("mechanics-placeholder")).toContainText(
-      lang === "en" ? "not implemented yet" : "এখনো বাস্তবায়িত হয়নি",
+    await expect(page.getByTestId("mechanics-workspace")).toContainText(
+      lang === "en" ? "Choose an image" : "শুরু করতে ছবি",
     );
     await expect(page.locator("#overlay")).toBeHidden();
     await page.locator("body").click({ position: { x: 1, y: 1 } });
@@ -43,10 +43,10 @@ for (const lang of ["en", "bn"]) {
     ).toEqual([]);
     await page.locator("#language").click();
     await expect(
-      page.getByTestId("mechanics-placeholder").locator("h1"),
+      page.getByTestId("mechanics-workspace").locator("h1"),
     ).toHaveText(lang === "en" ? "বলবিদ্যা" : "Mechanics");
     await selector.selectOption("circuit");
-    await expect(page.getByTestId("mechanics-placeholder")).toHaveCount(0);
+    await expect(page.getByTestId("mechanics-workspace")).toHaveCount(0);
     await expect(page.locator("#overlay")).toBeVisible();
     await expect(value).toHaveValue("42");
     await expect(page.locator("#readout tr")).toHaveCount(7);
@@ -107,7 +107,7 @@ test("circuit upload sends its domain, uses job stages, and cancels on unmount",
   );
   await page.getByTestId("domain-switch").selectOption("mechanics");
   await expect.poll(() => cancelled).toBe(true);
-  await expect(page.getByTestId("mechanics-placeholder")).toBeVisible();
+  await expect(page.getByTestId("mechanics-workspace")).toBeVisible();
   await page.evaluate(() => {
     const transfer = new DataTransfer();
     transfer.items.add(

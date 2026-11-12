@@ -30,6 +30,8 @@ export interface RenderOptions {
   original: boolean;
   marker: boolean;
   handles: boolean;
+  text?: (key: string) => string;
+  number?: (value: number, places: number) => string;
 }
 interface Sprite {
   canvas: HTMLCanvasElement;
@@ -104,7 +106,7 @@ function arrow(
   ctx.closePath();
   ctx.fill();
   if (label) {
-    ctx.font = "bold 14px sans-serif";
+    ctx.font = 'bold 14px "Noto Sans Bengali", sans-serif';
     ctx.lineWidth = 4;
     ctx.strokeStyle = "#fffef7";
     ctx.strokeText(label, b[0] + 4, b[1] - 4);
@@ -343,6 +345,7 @@ export class MechanicsRenderer {
     ctx: CanvasRenderingContext2D,
     draw: Drawables,
     params: Params,
+    numeric?: (value: number, places: number) => string,
   ) {
     ctx.save(); // Live label typography must not leak into overlays or later frames.
     const s = this.scene;
@@ -446,10 +449,12 @@ export class MechanicsRenderer {
             box[3] - box[1] + 2,
           );
           ctx.fillStyle = s.frame.ink_color;
-          ctx.font = "16px sans-serif";
+          ctx.font = numeric
+            ? '16px "Noto Sans Bengali", sans-serif'
+            : "16px sans-serif";
           ctx.textBaseline = "top";
           ctx.fillText(
-            `${params[binding.path].toFixed(1)} ${binding.control.unit}`,
+            `${numeric?.(params[binding.path], 1) ?? params[binding.path].toFixed(1)} ${binding.control.unit}`,
             box[0] - source.anchor[0],
             box[1] - source.anchor[1],
           );
@@ -476,10 +481,12 @@ export class MechanicsRenderer {
           ] as [number, number, number, number]),
         );
         ctx.fillStyle = s.frame.ink_color;
-        ctx.font = "16px sans-serif";
+        ctx.font = numeric
+          ? '16px "Noto Sans Bengali", sans-serif'
+          : "16px sans-serif";
         ctx.textBaseline = "top";
         ctx.fillText(
-          `${params[binding.path]} ${binding.control.unit}`,
+          `${numeric?.(params[binding.path], 2) ?? params[binding.path]} ${binding.control.unit}`,
           box[0],
           box[1],
         );
@@ -613,6 +620,10 @@ export class MechanicsRenderer {
     run: Trajectory,
     options: RenderOptions,
   ) {
+    const text = options.text ?? ((key: string) => key);
+    const numeric =
+      options.number ??
+      ((value: number, places: number) => value.toFixed(places));
     const s = this.scene,
       pad = this.padding,
       w = s.image.width + pad.left + pad.right,
@@ -658,7 +669,7 @@ export class MechanicsRenderer {
     if (options.original || this.degraded) ctx.drawImage(this.source, 0, 0);
     else {
       this.staticBackground(ctx, params, draw);
-      this.moving(ctx, draw, params);
+      this.moving(ctx, draw, params, options.number);
     }
     if (options.original) return;
     if (options.trail) {
@@ -666,9 +677,9 @@ export class MechanicsRenderer {
       for (const points of this.predictedPaths.values())
         line(ctx, points, "#165f9e", 2);
       ctx.setLineDash([]);
-      ctx.font = "14px sans-serif";
+      ctx.font = '14px "Noto Sans Bengali", sans-serif';
       ctx.fillStyle = "#165f9e";
-      ctx.fillText("- - predicted path", 20, 60);
+      ctx.fillText(`- - ${text("predicted path")}`, 20, 60);
     }
     if (options.forces)
       for (const force of archetypes[s.archetype].forces(s, params, st)) {
@@ -687,7 +698,7 @@ export class MechanicsRenderer {
           body.anchor,
           end,
           force.component ? "#6b318c" : "#a82e18",
-          `${force.label} ${mag.toFixed(1)} N`,
+          `${text(force.label)} ${numeric(mag, 1)} N`,
           !!force.component,
         );
       }
@@ -700,7 +711,7 @@ export class MechanicsRenderer {
           b.anchor,
           [b.anchor[0] + v.x * 15, b.anchor[1] + v.y * 15],
           "#005b42",
-          `v ${mag.toFixed(2)} m/s`,
+          `v ${numeric(mag, 2)} m/s`,
           true,
         );
       if (options.components) {
@@ -710,7 +721,7 @@ export class MechanicsRenderer {
             b.anchor,
             [b.anchor[0] + v.x * 15, b.anchor[1]],
             "#005b42",
-            `vx ${v.x.toFixed(2)}`,
+            `vx ${numeric(v.x, 2)}`,
             true,
           );
         if (Math.abs(v.y) > 1e-6)
@@ -719,10 +730,22 @@ export class MechanicsRenderer {
             b.anchor,
             [b.anchor[0], b.anchor[1] + v.y * 15],
             "#005b42",
-            `vy ${v.y.toFixed(2)}`,
+            `vy ${numeric(v.y, 2)}`,
             true,
           );
       }
+    }
+    if (this.degraded && options.marker) {
+      ctx.save();
+      ctx.strokeStyle = "#003d70";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 3]);
+      for (const b of draw.bodies) {
+        ctx.beginPath();
+        ctx.arc(...b.anchor, 16, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+      ctx.restore();
     }
     if (options.marker)
       for (const p of draw.pulleys) {

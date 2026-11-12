@@ -1,0 +1,186 @@
+.mechanics-workspace {
+  max-width: 1600px;
+  margin: 16px auto;
+  padding: 18px;
+  color: var(--text, #172c42);
+  background: var(--panel, #fff);
+  border-radius: 14px;
+  font-family: "Noto Sans Bengali", sans-serif;
+}
+.mechanics-workspace * {
+  box-sizing: border-box;
+}
+.mechanics-workspace h1 {
+  font-size: 1.6rem;
+  margin: 0 0 12px;
+}
+.mechanics-workspace h2 {
+  font-size: 1.15rem;
+}
+.mechanics-workspace h3 {
+  font-size: 1rem;
+}
+.mechanics-workspace button,
+.mechanics-workspace select,
+.mechanics-workspace input:not([type="checkbox"]) {
+  min-height: 44px;
+  max-width: 100%;
+  font: inherit;
+  border: 1px solid #73869a;
+  border-radius: 6px;
+  padding: 8px;
+  color: #172c42;
+  background: #fff;
+}
+.mechanics-workspace button {
+  cursor: pointer;
+}
+.mechanics-workspace button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.mechanics-workspace :is(button, canvas, input, select):focus-visible {
+  outline: 3px solid #0072bc;
+  outline-offset: 3px;
+}
+.mechanics-workspace label {
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+  min-width: 0;
+}
+.mechanics-workspace input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+}
+.mechanics-workspace input[type="range"] {
+  width: 100%;
+}
+.mechanics-workspace .mech-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+}
+.mechanics-workspace .mech-toolbar label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  min-height: 44px;
+}
+.mechanics-workspace .mech-toolbar input[type="file"] {
+  width: 215px;
+}
+.mechanics-workspace .mech-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+  gap: 18px;
+  margin-top: 14px;
+}
+.mechanics-workspace .mech-layout > *,
+.mechanics-workspace aside {
+  min-width: 0;
+}
+.mechanics-workspace .mech-viewport {
+  width: 100%;
+  overflow: auto;
+  max-height: 75vh;
+  background: #e5eaf0;
+  border: 1px solid #8293a5;
+  margin-top: 12px;
+}
+.mechanics-workspace .mech-viewport canvas {
+  display: block;
+  touch-action: none;
+}
+.mechanics-workspace .mech-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mechanics-workspace [role="tab"][aria-selected="true"] {
+  background: #164d72;
+  color: #fff;
+}
+.mechanics-workspace [hidden] {
+  display: none !important;
+}
+.mechanics-workspace [role="tabpanel"] {
+  max-height: 70vh;
+  overflow: auto;
+  padding: 4px;
+}
+.mechanics-workspace fieldset {
+  min-width: 0;
+  margin: 10px 0;
+  border: 1px solid #8c9caf;
+  border-radius: 8px;
+  padding: 10px;
+}
+.mechanics-workspace legend {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.mechanics-workspace fieldset input[type="number"] {
+  width: 100%;
+}
+.mechanics-workspace small {
+  display: block;
+  margin: 6px 0;
+}
+.mechanics-workspace .mech-editor {
+  margin-top: 20px;
+  border-top: 1px solid #8c9caf;
+}
+.mechanics-workspace .mech-editor label {
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+.mechanics-workspace .mech-editor :is(input, select) {
+  width: 100%;
+}
+.mechanics-workspace .sim-badge {
+  display: inline-block;
+  padding: 2px 5px;
+  color: #18394f;
+  background: #e9f1f5;
+  border: 1px solid #8297a6;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+.mechanics-workspace [data-testid="mechanics-notice"] {
+  color: #9a3600;
+  overflow-wrap: anywhere;
+}
+.mechanics-workspace [data-testid="mechanics-provenance"] {
+  padding: 10px;
+  background: #e9f1f5;
+  color: #18394f;
+  border-left: 4px solid #164d72;
+}
+.mechanics-workspace [data-testid="mechanics-graphs"] {
+  width: 100%;
+  background: #fff;
+}
+@media (max-width: 900px) {
+  .mechanics-workspace .mech-layout {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .mechanics-workspace {
+    margin: 8px;
+    padding: 12px;
+  }
+  .mechanics-workspace .mech-viewport {
+    max-height: 65vh;
+  }
+  .mechanics-workspace [role="tabpanel"] {
+    max-height: 55vh;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mechanics-workspace * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
