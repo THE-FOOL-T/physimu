@@ -7,8 +7,10 @@ results and use Edit. See [status](docs/status.md) for measured limitations.
 ## Multi-domain plan
 
 Physimu contains the preserved circuit workspace as local source. The top-bar
-domain selector defaults to Circuit; Mechanics currently shows an explicit
-not-implemented panel. Its API returns `unsupported`, without a simulation.
+domain selector defaults to Circuit. Mechanics now supports local image authoring,
+scene editing, simulation and scene/image JSON or overlay PNG export. See the
+[authoring guide](docs/mechanics/authoring.md). Mechanics image recognition is
+unimplemented; its analysis API still returns `unsupported`.
 The domain registry and shared facades are in place; circuit files stay at
 their existing locations until M7. See [milestone status](docs/mechanics/status.md).
 The Python distribution/public package is `augphys`; `circuit_sim` is a local
@@ -18,7 +20,8 @@ historical setup references are in [the import record](docs/IMPORT.md).
 `GET /api/domains` lists domains and job stages. Both analysis routes accept a
 `domain` form field (default `circuit`); unknown names, including `auto`, return
 HTTP 400 with `unknown_domain`. Switching domains retains the loaded circuit and
-cancels its pending analysis. Mechanics analysis controls arrive in later milestones.
+cancels its pending analysis. Mechanics retains its authored document and pauses
+on switching. Automatic mechanics analysis arrives in later milestones.
 
 ## Cross-platform setup
 

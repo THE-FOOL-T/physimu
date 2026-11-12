@@ -115,3 +115,47 @@ HUMAN: begin the frozen real diagram collection (printed/handwritten, source
 separation and licence decisions). No gold scene is generated here. Real
 mechanics accuracy, model latency, training/GPU duration, human Bangla review,
 physical-device testing and Linux/macOS execution remain null/unverified.
+
+## M3: retained authoring workspace and portable projects
+
+The owner's continue authorizes M3 only. The Mechanics module now mounts a
+retained image workspace in the actual app. It owns one cancellable animation
+loop, pauses/removes its listeners on unmount, cancels pending file work and
+retains its document for return. The circuit adapter and original circuit code
+are unchanged. The standalone M2 lab remains available.
+
+Manual templates are transformed authored fixtures with all physical Values
+reset to assumed/prior/zero confidence. They perform no perception. Source
+coordinate corrections recalibrate the source model; simulation sliders retain
+source calibration and store overrides separately. A portable project therefore
+contains the canonical source scene, current typed scene, embedded image,
+bounded overrides and current geometry locks. Import validates/replays before
+installation, including dependent controls and modified-but-relocked geometry.
+The scene schema itself is unchanged. Unsupported graphs retain image and edits.
+
+Circuit History and geometry are netlist-specific. Mechanics follows the same
+bounded before/after transaction pattern without importing or modifying those
+implementations; a drag commits once on pointer-up, previews do not enter history,
+and image bytes stay outside its 80-action history. Native source editing is an
+explicit mode, separate from locked simulation geometry controls.
+
+Names are label annotations (`name_<object id>`), leaving canonical v1 object
+shapes unchanged. Unplaced Values use `params.unplaced_*`, have explicit units,
+and can be assigned only to matching typed fields. Deleted attachment objects
+leave fixed axis anchors, while dangling references/bindings are removed. No
+unsupported physical regime is silently converted to a different archetype.
+
+The owner explicitly asked Codex to find public diagrams for real-image QA.
+Sources/stated rights and unsuccessful rate-limited downloads are recorded in
+[real-qa-sources.md](real-qa-sources.md). The successful pendulum download and all
+Codex-authored QA projects stay ignored. They are not gold or a training pool;
+licensing decisions and independent human gold review remain HUMAN tasks.
+Frame-zero thresholds are unchanged; mismatches visibly degrade until actual
+manual mask/style/repair corrections improve the composition.
+
+All new app text uses matching `mech.*` keys; shared graphs gain optional numeric
+format/font arguments with their old defaults. Existing image pixels, technical
+ids/units and native numeric input fields retain their source/machine spelling.
+Translations remain pending human Bengali review. No browser storage of scene
+or uploaded image, backend mechanics analysis, detector/OCR, data generation,
+training, HTTP model benchmark or automatic routing is added in M3. Stop before M4.

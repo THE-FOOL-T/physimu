@@ -689,3 +689,178 @@ handwritten R0 diagrams and resolve their licences. Gold authoring tools come
 in M3; Codex did not create gold scenes.
 
 M2 stops here. M3 requires the next explicit continue.
+
+## M3 — mounted image authoring and editing workspace (2026-11-12)
+
+M3 is implemented and the full browser suite passes. M4 has not started.
+The main-app Mechanics selector now opens the image workspace; the mechanics
+analysis API remains the explicit M1 unsupported placeholder. There is no
+mechanics perception, OCR, detector, training, gold data or automatic routing.
+
+### Implemented
+
+- Retained Mechanics workspace with local image upload/preview, diagram,
+  Parameters/Warnings/Readouts/Graphs tabs, provenance/regime/validation notices,
+  playback/speed/step/reset/scrub, geometry locks/Modified/reset and overlay PNG.
+  Parameters are right of the diagram on desktop and above it on phones, with
+  scrollable panels. Domain switching pauses animation, cancels pending file
+  work and retains both circuit and mechanics documents. No scene/image is
+  persisted to browser storage or sent to a server.
+- Explicit blank-image authoring: choose an archetype and place an assumed
+  template, then position native-pixel body/pivot/pulley/surface/link handles and
+  enter physical Values. Templates use the existing synthetic geometry and
+  label every physical prior assumed/prior/confidence zero before user edits.
+  They do not inspect uploaded pixels. The synthetic fixture menu is explicit.
+- Source editor covers object names/types/Values/boxes, mask polygons,
+  incline base/tip/angle, pivot and pulley centres, rope/spring end positions
+  and attachment targets, drawing missing rope/spring/incline/floor segments,
+  repair-line segments, unplaced typed Value assignment and archetype/unsupported
+  selection. Added deletion removes absent template objects while preserving
+  explicit fixed anchors for retained link endpoints. Paper/ink/stroke are
+  editable for real source composition. Unsupported and invalid physical inputs
+  retain the original and editor; they never invoke circuit demonstration data.
+- Read the circuit editor, geometry and history patterns. Mechanics uses a
+  separate bounded 80-action before/after history because the original class
+  is netlist-specific. A drag previews then commits once on pointer-up. Undo/redo
+  restores scene, parameter overrides and locks; image bytes remain outside
+  history. No original editor or geometry module changed.
+- Versioned portable JSON embeds the image, canonical source scene, current
+  typed scene, bounded parameter overrides and lock state. Import uses M2's
+  generated-schema/semantic validator for both scenes, replays overrides,
+  verifies consistency and decodes/checks the actual image before replacement.
+  Invalid imports preserve the current document. Source calibration remains
+  distinct from simulation overrides, including modified-but-relocked geometry.
+- Matching `mech.*` EN/BN strings, Bengali font, optional graph digit/font
+  formatting, localized overlays/statuses/readouts, native numeric fields,
+  keyboard object selection/movement, 44px controls and no autoplay. Reduced
+  motion retains explicit Play/Step and predicted paths. Source-image text and
+  technical ids/units retain their original spelling. Human Bangla review is
+  still pending. Authoring and human QA instructions are in
+  [authoring.md](authoring.md) and [manual-qa.md](manual-qa.md).
+
+### Commands and gates
+
+Same local Windows/Python/Node/Edge environment as M2; no dependency or model pin
+changed. The original source was present. Python and Node runners used the
+existing process-level external-network guards (`AUGPHYS_OFFLINE=1`,
+`PYTHONPATH=tools/offline` plus this root, `NODE_OPTIONS` requiring
+`tools/offline/network.cjs`, and npm offline mode). Loopback remained allowed;
+this is not a new source-absent or host/browser kernel-firewall proof. The
+existing port-8000 app was retained, rather than replaced by a guarded server.
+
+Executed from the root, except the frontend commands:
+
+```powershell
+# From frontend during implementation:
+npm.cmd test
+npm.cmd run build
+npx.cmd playwright test browser-tests/mechanics-workspace.spec.ts browser-tests/domains.spec.ts
+npx.cmd playwright test browser-tests/mechanics-workspace.spec.ts
+npx.cmd playwright test browser-tests/mechanics-workspace.spec.ts --grep 'optional downloaded|visual/accessibility'
+# From root with the local environment:
+.\.venv\Scripts\python.exe manage.py doctor
+.\.venv\Scripts\python.exe manage.py test
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py browser
+.\.venv\Scripts\python.exe manage.py test # final tracked-code completion run
+```
+
+| Gate | Actual result |
+| --- | --- |
+| New mechanics unit cases | **11 passed** through the final full runner. Native templates/calibration, edits/references/units, history, unsupported switching, portable validation/tampering, dependent override order and relocked geometry. |
+| Pre-commit guarded `manage.py test` | **461 Python passed, 1 skipped** in **68.57 s**; **109 TS passed**, type check/build passed. |
+| Guarded `manage.py check` | Ruff lint/format, full Prettier, **461 Python passed, 1 skipped** in **49.06 s**; **109 TS passed**, type check/build passed. |
+| New Mechanics browser file, focused | **24 passed**, **52.9 s**; subsequent real-image/visual focused check **3 passed**, **13.8 s**. Final formatter/lock changes are also covered by the full run below. |
+| Full guarded browser runner | **118 collected: 116 passed, 2 skipped**, **5.4 min**. All 24 M3 cases, 20 M2 cases, three M1 cases and 71 imported scenarios retained. |
+| Circuit layout regressions | **12/12 passed at zero pixel tolerance**, no snapshot updates. Unchanged keyboard file chooser passed in **2.1 s**; the historical flake did not recur in this run. |
+| Accessibility | Both M1 EN/BN switch checks, M3 empty/loaded defaults, EN/BN authored unsupported states and desktop/phone BN checks passed their zero-violation assertions. All 12 generated circuit accessibility reports have zero recorded violations. |
+| `manage.py doctor` | **Exit 0**, all five local model files match. Weights remain ignored; no model download, recopy or Git weight change was needed in M3. |
+| Runtime network guards | No blocked external attempts recorded by the guarded test/check/browser/completion runners. Public-diagram search/download happened separately at the owner's explicit request. |
+| Final tracked-code `manage.py test` | **461 Python passed, 1 skipped** in **45.66 s**; **109 TS passed**, type check/build passed. |
+
+Python remains **461 passed** because M3 changes only frontend product code.
+TS is **98 M2 + 11 M3 = 109**. Browser is **94 M2 + 24 M3 = 118**. The existing
+opt-in real-model OCR Python benchmark and two private owner-analysis browser
+assets remain skipped. The public mechanics image was present, so its optional
+browser case ran and passed. No imported test was disabled or changed.
+
+The first expanded browser execution had **22 passes and two failures** when
+switching a pendulum to Unsupported: the damping unit changed but its control
+unit did not. Both now change together; a new unit regression and both EN/BN
+browser cases pass. That unsuccessful execution is not counted as a gate pass.
+Later review added replay coverage for dependent friction controls and geometry
+that has been changed then relocked. No threshold, timeout or test skip was
+introduced to hide failures.
+
+### Public real-image authoring evidence and visual review
+
+The owner asked Codex to find internet diagrams rather than supply a local path.
+Found five source candidates, with author/stated rights/download outcomes in
+[real-qa-sources.md](real-qa-sources.md). One original pendulum SVG downloaded
+successfully; four other downloads returned HTTP 429. The successful source was
+rasterized unchanged onto white at **744×700** for the PNG upload control.
+All downloaded image/project artifacts stay ignored under `.cache/m3-real/`.
+No image, scene or licence decision was added to a training/gold pool.
+
+The actual main-app test uploaded that image, placed a pendulum template, deleted
+the absent template ceiling, manually positioned pivot **(354,94)** and bob
+**(507,545)**, set its box/mask, entered mass and matched paper/ink/stroke. It
+validated, ran, played/paused and wrote a portable scene/image QA project. Scale
+and physical mass/length remain authored assumptions/entries, not extracted
+measurements or independently reviewed truth.
+
+Initial template-style composition failed visibly; the renderer retained the
+original with motion overlays. After explicit manual style corrections, the
+actual composed source report is **mean absolute channel difference
+0.35296594982078855**, **fraction over 16/255 0.003085637480798771**, and **maximum
+initial anchor error 0 px**, passing the unchanged **2.0 / 0.005 / 1 px** limits.
+This proves a manually authored example can compose and simulate. It is not
+image recognition, recognition accuracy, or pixel-perfect reconstruction.
+
+Opened actual desktop BN, phone BN and real-image playback captures. No
+horizontal overflow was detected on the phone, the diagram stays available
+below the scrollable parameter panel, and Bengali controls/focus/geometry locks
+are visible. This is screenshot/automated QA, not human Bengali approval,
+novice testing or physical-device QA.
+
+Fresh browser timing documents were copied to `.cache/m3-final/` and the tracked
+historical JSON restored. Thirty circuit edited-Run samples: median **27.3 ms**,
+p95 **46.6 ms**, maximum **46.9 ms**. One hundred parameter-event samples: median
+**5.7 ms**, p95 **8.0 ms**, maximum **10.0 ms**. Both exclude paint. The Run samples
+are slower than the earlier M2 session despite unchanged circuit code; these
+are session measurements, not a controlled causal performance comparison.
+No frame-rate, HTTP model latency or recognition score is claimed.
+
+### Shared audit, artifacts and stop point
+
+Against M2 `9e32839`, shared changes are limited to README's current capability
+notice (**6 added / 3 removed**), **202 added / 1 removed** lines in each EN/BN JSON (201 new matching keys),
+and **7 added / 4 removed** lines in the new M2 shared graph kit for optional
+format/font arguments with existing defaults. M1's `domains.spec.ts` changes
+**7/7** lines to assert the mounted workspace instead of the retired placeholder;
+its circuit retention/inactive-shortcut/upload-cancellation assertions remain.
+All circuit product files, imported tests/assets/snapshots, backend code, model
+pins and scene schema are unchanged. There are no renames.
+
+Shared text/graph/plan commit: **589176a**; authoring/project/history/unit cases:
+**431408d**; mounted workspace/renderer/browser integration: **54bbd70**. The
+full test command passed before the shared commit. Guides/decision/status and
+README updates are a separate documentation commit.
+
+Final logs, guard logs, timing JSON, copied M2 reports and circuit accessibility
+reports are under ignored `.cache/m3-final/`; M3 desktop/phone captures are in
+`.cache/m3-visual/`; the downloaded source, authored QA project, source hash,
+composition/handle report and real playback capture are in `.cache/m3-real/`.
+The app remains at `http://127.0.0.1:8000`; the prior M2 dev preview remains on
+5173. Browser test Vite instances close after use. No training ran.
+The original source checkout remains clean. The final tracked-code test includes
+the unchanged source-independence/hash/transport checks; its network log and the
+check/browser logs contain zero blocked external attempts.
+
+Real mechanics recognition accuracy, independent real/gold correctness, model
+latency, training/GPU duration, licence approval for a dataset, human Bangla
+review, physical-device/novice QA and Linux/macOS execution remain
+**null/unverified**. HUMAN: approve sources/licences, independently author and
+review frozen gold, review Bangla and test physical devices. Codex's local
+manual QA project is never designated gold. M3 stops here; M4 requires the next
+explicit continue.
