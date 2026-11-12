@@ -1,0 +1,25 @@
+# Version 1. Fixed order from master brief A5.5; never reuse circuit class ids.
+version: 1
+domain: mechanics
+names:
+  - block
+  - ball
+  - bob
+  - cart
+  - incline
+  - floor
+  - wall
+  - ceiling
+  - pivot
+  - ground_hatch
+  - pulley
+  - rope
+  - rod
+  - spring
+  - arrow_force
+  - arrow_velocity
+  - angle_mark
+  - axis
+  - trajectory_arc
+  - dimension_line
+  - text_label
