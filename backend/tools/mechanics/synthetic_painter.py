@@ -102,14 +102,6 @@ def render(
         x, y = pulley.center
         r = pulley.radius_px
 
-        def circle(d, c, x=x, y=y, r=r):
-            d.ellipse(
-                (x - r, y - r, x + r, y + r),
-                fill=scene.frame.paper_color,
-                outline=c,
-                width=max(1, round(stroke)),
-            )
-
         # Separate white fill from the instance region so rope behind the pulley is occluded.
         ImageDraw.Draw(image).ellipse((x - r, y - r, x + r, y + r), fill=scene.frame.paper_color)
         object_mask(
@@ -119,6 +111,9 @@ def render(
                 (x - r, y - r, x + r, y + r), outline=c, width=max(1, round(stroke))
             ),
         )
+        # White pulley interiors occlude links too. Fill instance ownership after
+        # drawing the outline, without turning the actual pulley into solid ink.
+        ImageDraw.Draw(objects[-1]["mask"]).ellipse((x - r, y - r, x + r, y + r), fill=255)
         ImageDraw.Draw(image).ellipse((x - 2, y - 2, x + 2, y + 2), fill=ink)
     for body in scene.bodies:
         x0, y0, x1, y1 = body.bbox

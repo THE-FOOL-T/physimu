@@ -132,6 +132,31 @@ def test_rotation_and_perspective_preserve_transformed_native_geometry():
         assert scene.meta.language == "bn"
 
 
+def test_pulley_interior_owns_pixels_erased_over_a_rope():
+    raw = fixtures()["atwood"].model_dump(mode="json", by_alias=True)
+    pulley = raw["pulleys"][0]
+    x, y = pulley["center"]
+    raw["links"][0]["polyline"] = [[x - 40, y], [x + 40, y]]
+    scene = Scene.model_validate(raw)
+    image, objects = render(
+        scene,
+        random.Random(1),
+        style="printed",
+        font_size=18,
+        font_variant=0,
+        arrow_style="filled",
+        hatch_spacing=15,
+    )
+    owner = np.zeros((image.height, image.width), dtype=np.uint16)
+    for index, obj in enumerate(objects, 1):
+        owner[np.array(obj["mask"]) > 0] = index
+    probe = (round(x + 7), round(y))
+    index = int(owner[probe[1], probe[0]])
+    assert objects[index - 1]["id"] == pulley["id"]
+    paper = tuple(int(scene.frame.paper_color[i : i + 2], 16) for i in (1, 3, 5))
+    assert image.getpixel(probe) == paper
+
+
 def test_production_count_requires_400_to_800_and_never_overwrites(corpus):
     root, _ = corpus
     with pytest.raises(ValueError, match="400"):
