@@ -1,0 +1,207 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #edf2f7;
+  color: #102b44;
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+}
+#mechanics-dev {
+  max-width: 1600px;
+  margin: auto;
+  padding: 24px;
+}
+h1 {
+  margin: 0 0 12px;
+  font-size: 30px;
+}
+h1 small {
+  font-size: 16px;
+}
+h2 {
+  margin: 0 0 12px;
+}
+p {
+  margin: 10px 0;
+}
+.notice {
+  padding: 14px 18px;
+  border-left: 5px solid #165f9e;
+  background: white;
+}
+.fixture-bar,
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.transport label {
+  min-height: 44px;
+}
+button,
+select,
+input[type="number"] {
+  font: inherit;
+  min-height: 44px;
+  border: 1px solid #718096;
+  border-radius: 6px;
+  background: white;
+  color: #102b44;
+  padding: 8px 12px;
+}
+button {
+  cursor: pointer;
+}
+button:disabled,
+input:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+button:hover:not(:disabled) {
+  background: #dbeafe;
+}
+:focus-visible {
+  outline: 3px solid #165f9e;
+  outline-offset: 3px;
+}
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+input[type="range"] {
+  min-height: 44px;
+  max-width: 100%;
+}
+.lab-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 24px;
+}
+.canvas-scroll {
+  overflow: auto;
+  max-height: 640px;
+  border: 1px solid #718096;
+  background: #d5dee8;
+  touch-action: pan-x pan-y;
+}
+#diagram {
+  display: block;
+  touch-action: none;
+  max-width: none;
+}
+aside,
+details,
+#graph-section {
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+}
+#graph-section {
+  margin-top: 16px;
+  overflow: auto;
+}
+#graphs {
+  max-width: 100%;
+  height: auto;
+}
+.energy-bars {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.energy-bars label {
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+.energy-bars meter {
+  width: 100px;
+}
+fieldset {
+  border: 1px solid #bac9d6;
+  border-radius: 6px;
+  margin: 0 0 16px;
+  padding: 12px;
+  min-width: 0;
+}
+fieldset input[type="range"] {
+  width: 100%;
+}
+fieldset input[type="number"] {
+  width: 100%;
+}
+fieldset small {
+  display: block;
+  margin: 8px 0;
+}
+legend {
+  font-size: 14px;
+}
+.sim-badge {
+  display: inline-block;
+  border-radius: 4px;
+  background: #e4edf4;
+  padding: 2px 5px;
+  font-size: 12px;
+}
+.sim-badge.assumed {
+  background: #fff0c2;
+  color: #694600;
+}
+#modified {
+  background: #fff0c2;
+  color: #694600;
+  padding: 8px;
+}
+#warnings:empty {
+  display: none;
+}
+#warnings {
+  padding: 12px;
+  background: #fff0c2;
+  color: #694600;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font:
+    13px/1.5 ui-monospace,
+    monospace;
+  max-height: 300px;
+  overflow: auto;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 850px) {
+  #mechanics-dev {
+    padding: 12px;
+  }
+  .lab-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .canvas-scroll {
+    max-height: 520px;
+  }
+  .transport {
+    gap: 8px;
+  }
+  .transport label {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
