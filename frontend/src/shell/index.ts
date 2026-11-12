@@ -15,6 +15,7 @@ export {
 export { $, esc, options } from "../ui/dom";
 export { mountDomainSwitch } from "./domain-switch";
 export type { DomainModule, DomainHandle, DomainId } from "../domains";
+export * from "../shared/sim";
 
 export interface ShellContext {
   t(key: string): string;
