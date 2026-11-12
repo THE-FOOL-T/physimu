@@ -10,6 +10,9 @@ export function drawGraphs(
   times: readonly number[],
   series: GraphSeries[],
   time: number,
+  numeric: (value: number, places: number) => string = (value, places) =>
+    value.toFixed(places),
+  font = "sans-serif",
 ) {
   const ctx = canvas.getContext("2d")!;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -21,7 +24,7 @@ export function drawGraphs(
       max = Math.max(0, ...line.values, min + 1e-8),
       span = max - min || 1;
     ctx.fillStyle = "#102b44";
-    ctx.font = "14px sans-serif";
+    ctx.font = `14px ${font}`;
     ctx.fillText(`${line.label} (${line.unit})`, 8, top + 17);
     ctx.strokeStyle = "#718096";
     ctx.setLineDash([]);
@@ -30,8 +33,8 @@ export function drawGraphs(
     ctx.lineTo(48, top + h - 20);
     ctx.lineTo(w - 12, top + h - 20);
     ctx.stroke();
-    ctx.fillText(max.toFixed(2), 2, top + 34);
-    ctx.fillText(min.toFixed(2), 2, top + h - 22);
+    ctx.fillText(numeric(max, 2), 2, top + 34);
+    ctx.fillText(numeric(min, 2), 2, top + h - 22);
     const duration = times.at(-1) || 1;
     ctx.strokeStyle = line.color;
     ctx.setLineDash(line.dash);
@@ -52,6 +55,6 @@ export function drawGraphs(
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = "#102b44";
-    ctx.fillText(`${duration.toFixed(2)} s`, w - 70, top + h - 3);
+    ctx.fillText(`${numeric(duration, 2)} s`, w - 70, top + h - 3);
   });
 }
