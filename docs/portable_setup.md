@@ -1,16 +1,14 @@
-# Share the working pipeline in one folder
+# Source-only setup and historical sharing record
 
-Use `circuit-sim-portable-2026-11-11.zip` from the
-[portable release](https://github.com/THE-FOOL-T/circuit-sim/releases/tag/portable-2026-11-11).
-It contains application source, configuration, frontend source, and five models
-(about 253 MB of model files). Extract it and share the folder by pendrive.
-It excludes private configuration, datasets, uploads, credentials, `.venv`, and
-`node_modules`. The models are unchanged copies of the working installation.
+This checkout contains source, fixtures, and generated demo/test assets. Weights,
+datasets, uploads, credentials, `.venv`, and `node_modules` are excluded from Git.
+The earlier model-bundled distribution is recorded in [IMPORT.md](IMPORT.md).
+Its release and clone instructions are historical and do not apply here.
 
 ## First run on a friend's Windows laptop
 
 1. Install Python 3.12 with the Windows `py` launcher, and Node.js 22 or newer.
-2. Extract the release ZIP to a writable folder. Open PowerShell there.
+2. Open PowerShell in this writable source checkout.
 3. Run `powershell -ExecutionPolicy Bypass -File .\setup.ps1`. Internet is needed
    to install Python and npm packages. Wait for **Setup complete**.
 4. Run `powershell -ExecutionPolicy Bypass -File .\run.ps1`.
@@ -18,26 +16,28 @@ It excludes private configuration, datasets, uploads, credentials, `.venv`, and
    Check <http://127.0.0.1:8000/api/health>: expect `ocr_backend: hybrid`, detector
    and OCR ready, and both OCR workers ready before comparing uploads.
 
-The model check runs before setup/start. Five `OK` lines mean the bundled files
-match the owner's copies. Model loading is local; there is no runtime download.
+Missing models do not block setup/start. Examples and editing remain available;
+automatic extraction explicitly reports missing detection/OCR models. The owner
+supplies local models manually after licence review. The optional strict
+`python manage.py doctor` checks the five files against `models/manifest.json`.
+Model loading is local; there is no runtime download.
 Dependencies still need installation on each laptop. This bundle does not
 include the Python interpreter or an offline package installer.
 
 For Linux/macOS, follow the manual commands in [README](../README.md).
 Windows is the tested host; other platforms remain unverified.
 
-## If you clone from GitHub
+## If you copy this source folder
 
-Install Git LFS, run `git lfs install`, clone the repository, and run `git lfs pull`
-inside it. Normal Git stores a small pointer for large model files; Git LFS fetches
-the actual bytes. The ordinary GitHub source ZIP may contain those pointers. Use
-the complete release asset for a pendrive copy; no Git installation is needed there.
+Install dependencies per machine using README. Never copy virtual environments
+or private configuration. There is no upstream source/model remote, and no LFS
+download is required. Model and data paths are local configuration choices.
 
 ## If it starts but diagrams do not simulate correctly
 
 | Check | Meaning / action |
 | --- | --- |
-| `python manage.py doctor` reports missing/pointer/wrong hash | Re-extract the complete release or run `git lfs pull`. |
+| `python manage.py doctor` reports missing/pointer/wrong hash | Supply the correct local files manually; see IMPORT.md for provenance. |
 | `/api/health` says warming | Wait for startup; loading is outside the image-analysis time budget. |
 | Health says missing_weights/unavailable/error | Inspect the server error; verify the five files and dependencies. |
 | Health selects legacy | An old `config.local.yaml` or `CIRCUIT_OCR_BACKEND` overrides hybrid. |
@@ -67,7 +67,10 @@ The Bengali hybrid path uses recognition only (`detector=False`); CRAFT and
 English-only EasyOCR models are unnecessary for this default pipeline.
 See the [manifest](../models/manifest.json) for hashes and [notices](../models/NOTICE.md).
 
-## Verification on 2026-11-11
+## Historical baseline verification on 2026-11-11
+
+The following record belongs to the model-bundled baseline. It is not a new
+measurement or a claim that this source-only checkout contains model bytes.
 
 A separate folder with an arbitrary name, no private configuration, no copied
 virtual environment, and no `CIRCUIT_*` overrides loaded all five models from its

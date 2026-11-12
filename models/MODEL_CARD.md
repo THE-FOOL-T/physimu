@@ -4,8 +4,8 @@ Source: `D:/AugmentedPhysics/runs/augmented_physics/circuits_real_v2_20261031/we
 
 SHA-256: `95bc8a1f76aaed83ad907e87bdee0255da1837fdb8f9c8405a723779e8ed0c46`
 
-`v2_original.pt` is an unchanged copy, now versioned with Git LFS for the owner's
-requested portable distribution. Architecture is an
+`v2_original.pt` is supplied manually by the owner and stays ignored here.
+The historical source distributed it through LFS; see `docs/IMPORT.md`. Architecture is an
 Ultralytics DetectionModel, YOLO26 family; detection task, four classes recorded
 in `docs/recon.json`, original training input 960. CPU inference here uses 640.
 

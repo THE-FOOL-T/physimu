@@ -1,6 +1,6 @@
 # Decisions and boundaries
 
-- Build is isolated in `D:/Circuit Simu/circuit_sim`. Original weights and images
+- The historical build location is recorded in `IMPORT.md`. Original weights and images
   remain unchanged; see the training-output incident below for newly created
   folders in the older project. No production integration.
 - Existing source README and handoff were read. Its review-gated production
@@ -98,3 +98,24 @@ Ultralytics and `opencv-python-headless` through EasyOCR. Pin both to 4.10.0.84
 so their shared cv2 namespace uses one ABI. A clean-checkout install initially
 selected full OpenCV 5 and broke nine Hough-array consumers; compatible pins
 and explicit line-array normalization fixed this, with regression coverage.
+
+## Repository import
+
+M0 imports the clean current main recorded in [IMPORT.md](IMPORT.md) into this
+independent Physimu repository. No source links, upstream remote, model weights,
+private configuration, environments, or datasets are imported. Tracked generated
+demos, fixtures, visual baselines, fonts, and historical documents are retained.
+
+The Python distribution/public package is `augphys`. Setuptools maps it to the
+repository root, independent of the checkout directory name. The existing
+`circuit_sim` import is retained as a compatibility name for local copied code,
+so original tests/tools remain unchanged. It is not an external dependency.
+Both package trees resolve to this checkout. The existing direct `backend.*`
+runner entry points continue to work.
+
+Hybrid OCR, relative example model paths, two inference threads, and dependency
+pins remain unchanged. The owner supplies detector/OCR weights manually after
+licence review. Setup/start permit absent models; doctor is a strict optional
+inventory. Circuit API, algorithms, editor, renderer, and original tests are
+preserved. Historical upstream checkout references are consolidated in IMPORT.md;
+earlier measurements remain explicitly historical. No mechanics code is in M0.

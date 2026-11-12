@@ -4,16 +4,20 @@ An experimental local Python/FastAPI and TypeScript circuit workspace with
 editable English/Bangla simulation overlays. Recognition can be wrong: inspect
 results and use Edit. See [status](docs/status.md) for measured limitations.
 
+## Multi-domain plan
+
+Physimu contains the preserved circuit workspace as local source. Mechanics will
+be added in later gated milestones; M0 introduces no mechanics implementation.
+The Python distribution/public package is `augphys`; `circuit_sim` is a local
+compatibility name for unchanged circuit tests and tools. Source provenance and
+historical setup references are in [the import record](docs/IMPORT.md).
+
 ## Cross-platform setup
 
-The detector and all four hybrid OCR model files now live inside `models/`.
-Defaults use hybrid OCR and two CPU threads, matching the working local setup.
-No paths into AugmentedPhysics or a user's EasyOCR cache are needed.
-
-**For sharing one folder:** download the complete
-[portable ZIP](https://github.com/THE-FOOL-T/circuit-sim/releases/download/portable-2026-11-11/circuit-sim-portable-2026-11-11.zip),
-extract it, and share that folder or ZIP by pendrive. It includes real model bytes.
-Each laptop needs Python **3.12**, Node **22+**, and internet for first setup.
+This is a source-only checkout. Model weights, datasets, private configuration,
+virtual environments, and npm dependencies are excluded from Git. Defaults remain
+hybrid OCR and two CPU threads, with model paths relative to `models/`.
+Each laptop needs Python **3.12**, Node **22+**, and package availability for setup.
 
 On Windows, open PowerShell in the extracted folder and run:
 
@@ -26,13 +30,9 @@ Setup creates this laptop's environment, installs dependencies, and builds the
 frontend. Do not copy `.venv` or `node_modules` between laptops.
 See [sharing and troubleshooting](docs/portable_setup.md).
 
-For Git users, install [Git LFS](https://git-lfs.com/) before cloning:
+For manual setup, run from this checkout:
 
 ```sh
-git lfs install
-git clone https://github.com/THE-FOOL-T/circuit-sim.git any-folder-name
-cd any-folder-name
-git lfs pull
 python -m venv .venv
 ```
 
@@ -41,7 +41,6 @@ Activate in Windows PowerShell: `.\.venv\Scripts\Activate.ps1`.
 
 ```sh
 python -m pip install -e .
-python manage.py doctor
 cd frontend
 npm ci
 npm run build
@@ -58,11 +57,18 @@ that share the same `cv2` namespace.
 
 ### Model files and configuration
 
-The five required files are versioned with Git LFS. Their sizes and SHA-256
-checksums are in [models/manifest.json](models/manifest.json).
-`python manage.py doctor` detects missing, damaged, or unresolved LFS files.
-For a ZIP download, use the complete release above: GitHub's ordinary
-**Code > Download ZIP** may contain LFS pointers instead of models.
+The owner supplies the detector and four OCR files manually after licence review.
+Expected paths, sizes, and hashes are in [models/manifest.json](models/manifest.json).
+All weight formats stay ignored. Analysis never downloads models.
+`python manage.py doctor` remains an optional strict inventory and exits with a
+failure until the five files are supplied. Its inherited LFS restoration advice
+is historical; there is no model remote in this repository.
+
+Without weights, examples, editing, solving, and export still work. Health reports
+missing weights/OCR unavailability; automatic analysis explicitly warns about
+missing detection and shows the existing separate circuit demonstration fallback.
+A demonstration does not represent recognition of the uploaded diagram.
+Setup/start do not require the strict model inventory to pass.
 
 Defaults are in `config.example.yaml`. Copy to `config.local.yaml` for private,
 gitignored overrides. Relative paths resolve from the repository root.
@@ -77,13 +83,13 @@ export CIRCUIT_EXTRA_IMAGES=/path/to/reference99/images
 
 In PowerShell use `$env:CIRCUIT_MODEL='C:\path\last.pt'` (likewise for images).
 Datasets and detector weights are optional for unit tests. Private overrides from
-an older installation can select different models or OCR; start with the bundled
+an older installation can select different models or OCR; start with the example
 defaults when comparing two laptops.
 
 ### Optional legacy OCR
 
 The default hybrid OCR dependencies are installed by `pip install -e .`.
-The included ONNX models and `bengali.pth` are sufficient for this path;
+The manually supplied ONNX models and `bengali.pth` are sufficient for this path;
 Tesseract, CRAFT, and the English EasyOCR model are not required.
 Analysis never downloads models automatically.
 
@@ -125,7 +131,7 @@ The health endpoint reports `ocr_backend`, and startup warms the selected models
 
 ```sh
 python manage.py test       # backend/frontend tests, type check, build
-python manage.py doctor     # verify all five bundled models
+python manage.py doctor     # optional strict check of manually supplied models
 python manage.py check      # additionally focused Python lint
 python manage.py browser    # server must already be running
 python manage.py smoke      # needs CIRCUIT_IMAGES; regression, not accuracy
@@ -141,8 +147,7 @@ optional assets are absent; unit tests use synthetic diagrams/analytical netlist
 Uploads stay in memory. Correction storage requires opt-in. Optional external
 label reading is off by default and needs separate consent. The server-side
 setup and crop limits are in [label reader](docs/label_reader.md). Never commit uploads,
-datasets or credentials. The five manifest-listed inference models are the explicit
-distribution exception; keep other training artifacts and local paths private.
+datasets, weights, or credentials. Keep training artifacts and local paths private.
 Model notices and license texts are in [models/NOTICE.md](models/NOTICE.md).
 Ultralytics licensing and data restrictions are also recorded in [decisions](docs/decisions.md).
 No project-wide license grant is implied. Independent end-to-end accuracy stays

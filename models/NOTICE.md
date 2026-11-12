@@ -1,9 +1,10 @@
-# Bundled inference models
+# Historical inference-model notices
 
-These are unmodified copies of the five inference files used by the working
+These notices describe the five inference files used by the historical working
 hybrid setup. `manifest.json` records their SHA-256 hashes, sizes, roles, and
-source projects. They are stored through Git LFS; the complete portable release
-ZIP includes their materialized bytes. No training datasets are bundled.
+source projects. No model bytes are tracked here; the owner supplies local files.
+The former portable distribution is recorded in `docs/IMPORT.md`.
+No training datasets are bundled. These notices do not approve redistribution.
 
 ## Circuit detector
 

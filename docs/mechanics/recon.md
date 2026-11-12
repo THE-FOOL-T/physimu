@@ -12,7 +12,7 @@ inference, training, or server were run.
 
 The destination, `D:/Physimu-Interactive Augmented simulation`, was empty and
 was not a Git repository at the start. A local baseline was discovered at
-`D:/Circuit Simu/circuit_sim` and inspected read-only. No source path was
+the source path now recorded in `docs/IMPORT.md` and inspected read-only. No source path was
 explicitly supplied in the request; discovering this checkout does not select
 it over the prescribed GitHub source for M0.
 
@@ -22,7 +22,7 @@ it over the prescribed GitHub source for M0.
 | `git rev-parse HEAD` | `97702f2bbfd42f15f434b0acffdc1fc4bc678400` |
 | Latest subject | `Bundle working inference models and portable hybrid setup` |
 | `git status --short --branch` | `## main...origin/main`, with no working-tree entries |
-| Configured origin | `https://github.com/THE-FOOL-T/circuit-sim.git` |
+| Configured origin | Recorded in `docs/IMPORT.md` |
 | `git log --oneline 516e232..HEAD` | One commit: `97702f2` |
 | `git diff --stat 516e232 HEAD` | **30 files changed, 1767 insertions(+), 60 deletions(-)** |
 | `git check-ignore config.local.yaml` | `config.local.yaml` is ignored |

@@ -1,6 +1,6 @@
 {
   "weights": "D:\\AugmentedPhysics\\runs\\augmented_physics\\circuits_real_v2_20261031\\weights\\last.pt",
-  "copy": "D:\\Circuit Simu\\circuit_sim\\models\\v2_original.pt",
+  "copy": "models/v2_original.pt",
   "sha256": "95bc8a1f76aaed83ad907e87bdee0255da1837fdb8f9c8405a723779e8ed0c46",
   "task": "detect",
   "architecture": "DetectionModel",

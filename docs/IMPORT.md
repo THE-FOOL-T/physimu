@@ -35,8 +35,9 @@ fixtures, and historical JSON reports are retained to preserve baseline checks.
 No model bytes or LFS pointer files are included in this repository.
 
 The source hash inventory is in [import-manifest.json](import-manifest.json).
-It records original hashes, not a claim that adapted documentation/packaging is
-unchanged. Final changed-file and verification records are appended below.
+It records original raw hashes plus LF-normalized hashes for unchanged UTF-8
+text, so Git's line-ending policy works on fresh checkouts. Binary hashes remain
+byte-exact. This is not a claim that adapted documentation/packaging is unchanged.
 
 ## Reconnaissance conflicts and M0 interpretations
 
@@ -91,8 +92,62 @@ solver, and frontend logic are not changed by that comparison. The old
 286-Python count predates the hybrid integration; the latest source documentation
 records 397 Python passed plus one skipped and 82 frontend passed.
 
+## Changes made to run independently
+
+- `pyproject.toml`: install the `augphys` distribution/public package and retain
+  a local compatibility package mapping. `bootstrap.py` and root `__init__.py`:
+  expose both names from this checkout, independent of its directory name.
+- `.gitignore` / `.gitattributes`: remove the tracked-weight exception and LFS
+  filters; ignore weight formats globally and Ruff's local cache.
+- `setup.ps1` / `run.ps1`: allow setup/start without the strict five-model
+  preflight; the doctor implementation itself is unchanged.
+- README, portable setup, model notices/card, and decisions: describe this
+  source-only checkout, manual model placement, unchanged hybrid defaults,
+  package mapping, and preserved historical evidence.
+- Historical `docs/recon.md`, `docs/recon.json`, `docs/decisions.md`, and mechanics
+  reconnaissance: consolidate actual source-checkout paths/URLs here. The
+  historical copied-model path is now repository-relative in the recon records.
+- Add `backend/tests/test_independence.py`, `tools/verify_independence.py`,
+  `tools/offline/`, the import hash inventory, and mechanics milestone records.
+
+No imported backend implementation, original test, frontend implementation,
+fixture, demo, visual baseline, example config, or dependency pin changed. No
+file moves or circuit pipeline edits occurred. Internal package/ZIP labels that
+name the circuit are identifiers, not imports of a different checkout.
+
 ## Verification record
 
-In progress. Final exact commands, counts, isolation scope, changes, and limits
-will be recorded here and in [mechanics/status.md](mechanics/status.md) before
-M0 is declared complete. No recognition accuracy follows from passing tests.
+The copied untouched baseline passed 397 Python tests (one optional skipped),
+82 frontend tests, type checking, and build. Final source-absent guarded test
+and check runs each passed 405 Python tests (397 originals + eight independence
+checks, one optional skipped), 82 frontend tests, type checking/build, and
+applicable formatting checks.
+
+The full source-absent browser run collected 71: 68 passed, one known keyboard
+chooser timeout, two private-asset skips. The unchanged chooser case passed
+five isolated repeats. All 69 available unique scenarios were verified across
+runs; this is not a clean single-run 69/69 assertion. All 12 zero-tolerance
+layouts passed; baselines were not regenerated. Full details and measured
+limits are in [mechanics/status.md](mechanics/status.md).
+
+The app served at `http://127.0.0.1:8000` with the origin absent. Health and an
+actual upload explicitly reported missing models; the preserved circuit fallback
+kept its existing response keys and separate source raster. Python/Node process
+guards blocked external probe connections, allowed local app/browser traffic,
+and recorded zero external runtime attempts in completed final/focused runs.
+Host network adapters were not disabled. Each run restored the original source.
+Verification servers were stopped after their checks.
+
+Exact isolation commands, run from the destination root with its local Python:
+
+```powershell
+.\.venv\Scripts\python.exe tools/verify_independence.py --source 'D:\Circuit Simu\circuit_sim' --browser
+.\.venv\Scripts\python.exe tools/verify_independence.py --source 'D:\Circuit Simu\circuit_sim' --browser --browser-only --browser-filter 'keyboard operation' --browser-repeat 5 --out .cache/m0-keyboard
+.\.venv\Scripts\python.exe tools/verify_independence.py --source 'D:\Circuit Simu\circuit_sim' --out .cache/m0-final
+```
+
+The first command's nonzero exit is retained with its chooser timeout; the
+second and third exited successfully. The initial import commit is `cff4cca`.
+Subsequent package/setup and verification/documentation commits separate the
+adaptations from that unchanged source import. No recognition accuracy, real
+model performance, human review, or licence approval follows from these checks.
