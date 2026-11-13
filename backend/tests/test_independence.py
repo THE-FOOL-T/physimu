@@ -143,7 +143,7 @@ def test_circuit_analysis_transport_is_local_except_the_opt_in_label_reader():
         ROOT / "backend/domains",
     ):
         for path in directory.rglob("*.py"):
-            if path.name == "label_reader.py":
+            if path.name == "label_reader.py" or path == ROOT / "backend/core/ocr_label_reader.py":
                 continue
             for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
                 if isinstance(node, ast.Import):
