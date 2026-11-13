@@ -1356,3 +1356,186 @@ optional model benchmark remains skipped. Logs: `regression-now.log` and exit
 record `regression-now-exit.txt` in the run's cache folder. No blocked external
 network attempts were recorded in training, focused tests or this regression
 run. Source data and original circuit implementation/tests remain unchanged.
+
+## M6 — real-data rounds and handwriting (2026-11-13)
+
+M6 is implemented. The owner authorized this milestone while the previously
+requested 600-image synthetic detector experiment continued. Its two memory
+interruptions and recovery are disclosed below. M7 has not started.
+
+### Implemented
+
+- Added `backend.tools.mechanics.round` with init/prelabel/merge/evaluate phases,
+  declared target classes, one recorded protocol and stage/report ownership.
+  Proposals remain unreviewed. Reviewed imports reuse hash/source/class/leakage
+  validation; frozen images and near-duplicates cannot be a pre-label pool.
+- The mixed manifest records explicit per-image synthetic flags, original hashes,
+  source groups, human review and input-manifest/path provenance. Whole synthetic
+  groups are selected deterministically under a configurable per-image exposure
+  cap in **each** train/validation split. Validation rechecks this cap. Real
+  examples are required in both splits. No sampling, approval or gold creation.
+- Rounds print an absolute contained fine-tune/control command; they never run
+  training or install weights. The existing full-training frozen-gold gate stays.
+  Old/new models share frozen images, size/confidence and matching/AP protocol.
+  Printed/handwritten partitions must each satisfy target recall improvements
+  and the no-common-class-regression-over-0.02 rule. Missing/synthetic/mixed
+  metrics cannot qualify. The actual round 1 report has null real metrics and
+  promotion refused; no real training round was invented.
+- Added an explicit `--handwriting strong` synthetic profile: stronger wobble,
+  variable pen widths, drawn Latin digits/symbols, local unit/Bangla glyph styling,
+  elastic deformation, notebook ruling/shadows and phone perspective. Identical
+  transforms apply to pixels, masks and densified native coordinates; boxes come
+  from transformed object masks. Baseline generation/printed-fit defaults remain.
+- Handwriting has separate line/circle fit tolerances and spring smoothing.
+  Body masks close size-bounded small gaps before contour fill, with lower policy
+  confidence. Large open outlines remain unmeasured. Shared photo preprocessing
+  and style estimation are reused unchanged through the facade.
+- Added generic crop transport behind the core facade and a mechanics grammar/
+  consent gate. Only ambiguous bounded crops can leave the server after explicit
+  request consent and separate mechanics environment configuration. At most eight
+  crops, each at most 640×160/20% of the raster, with an extra eight-second
+  cooperative budget and remaining per-phase transport timeouts (not a strict
+  total wall-time guarantee). Clear local readings skip it. Provider coordinates/confidence
+  are ignored; accepted text has source vlm and a 0.65 policy ceiling. Failures
+  keep local evidence editable. No real provider call or credential was used.
+- Added mechanics EN/BN style override, next-upload Google Gemini crop disclosure,
+  one-upload consent reset and persistent handwriting editing notice. Domain
+  unmount clears consent. Circuit controllers, analysis algorithms, solver,
+  original test assertions, fixtures and layout baselines are unchanged.
+- Reduced Node test-file concurrency to one after actual host memory exhaustion.
+  Every original test/assertion remains active. No retry, timeout or snapshot
+  threshold was changed. Core/translation/runner integration is a separate commit.
+
+### Commands and measured gates
+
+Commands used the existing Windows Python 3.12.10/Torch CPU/Node 26.4.0/Edge
+environment and pinned dependencies. No packages, weights or real datasets were
+downloaded. Heavy gates ran sequentially after the initial memory failure.
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend/tests/mechanics/test_rounds.py backend/tests/mechanics/test_handwritten_labels.py backend/tests/mechanics/test_mechanics_handwriting.py -q
+.\.venv\Scripts\python.exe -m backend.tests.mechanics.handwriting_probe
+.\.venv\Scripts\python.exe -m backend.tests.mechanics.perception_probe
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.make_synthetic --out "$PWD\data\generated_mechanics\m6-handwriting-20261113-v1" --count 64 --seed 73 --small --handwriting strong
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.round init --out "$PWD\.cache\m6-round-1" --number 1 --targets spring rope --imgsz 512
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.round evaluate --run "$PWD\.cache\m6-round-1"
+.\.venv\Scripts\python.exe manage.py test
+# Source-absent offline check and full browser: .cache/m6/verify.py, using source in IMPORT.md
+# From frontend: npx.cmd playwright test browser-tests/mechanics-analysis.spec.ts
+.\.venv\Scripts\python.exe -m pytest backend/tests/test_independence.py -q
+.\.venv\Scripts\python.exe manage.py doctor
+```
+
+| Gate | Actual result |
+| --- | --- |
+| New backend cases | **46 passed**, **29.99 s**. Provenance/caps/source groups/leakage, refused promotion regression, crop consent/vocabulary/transport, warp alignment/determinism, bounded masks, measured wobble fits, ten handwritten stub cases. |
+| Full `manage.py test` | **598 Python passed, 1 skipped**, **149.99 s**; **117 TypeScript passed**; type check/build passed (**1.85 s** build). |
+| Guarded/source-absent `manage.py check` | Ruff lint/format, full Prettier, **598 Python passed, 1 skipped** in **155.22 s**; **117 TS passed**, type check/build passed (**2.48 s**). Full command **201.984 s**. |
+| Full guarded/source-absent browser | **124 collected: 120 passed, 2 failed, 2 skipped**, **7.2 min**. Both failures were the new tests' unavailable multipart `postData()` instrumentation, corrected below. |
+| Corrected mechanics analysis browser file | **6 passed**, **52.0 s**, real loopback HTTP, including EN/BN style/consent/notice/axe checks. No production change was needed for the instrumentation failures. |
+| Available browser scenarios across runs | All **122 unique available** cases passed across full/focused runs; this is **not** a clean single-run 122/122 claim. The two private-asset owner cases remain skipped. |
+| Imported keyboard chooser case | Passed in the full run and **five focused repeats** (**30.2 s**). The helper selected repeats after seeing its name in the failed full log; M6 did not reproduce the historical chooser failure. |
+| Strict circuit layout | **12/12 passed at zero pixel tolerance**, no regenerated baseline. |
+| Accessibility | Twelve fresh default-layout report lists contain **zero violations**. New EN/BN handwritten checks and existing phone BN check assert zero WCAG 2 A/AA violations and no horizontal overflow. |
+| Final independence/static review | **8 passed**, **8.10 s**; final full Ruff lint/format, full Prettier and Git whitespace checks passed. Source restored and its tracked tree clean. |
+| Network | Intentional Python/Node probes blocked. **Zero** guarded runtime external attempts during isolated check/browser and zero in focused verification. Process guards are not a host/browser kernel firewall. |
+| Doctor | Exit **0**; all five circuit/OCR bundled model files match. This does not validate a mechanics candidate. |
+
+Python count is the preceding 552 plus **46 M6**; TS count is 116 plus **one M6**.
+All 397 imported Python tests remain. The existing optional real-model benchmark
+is still skipped. No imported test was disabled or rewritten.
+
+The source-absent browser server deliberately used missing detector/OCR paths to
+limit memory and exercise degradation: health reported missing_weights/unavailable,
+backend hybrid, memory-only storage unless opted in. The test-owned mechanics
+server injects boxes/raw text, not finished scenes. This is not real-model OCR/
+mechanics accuracy or a default-model latency measurement.
+
+### Synthetic measurements and visual review
+
+The actual 64-image strong-profile QA corpus has **51 train/13 validation**,
+eight images/archetype, **19 printed/13 scan/19 simulated handwritten/13 simulated
+photo**, 32 mirrored, 16 without numeric values and six Bengali-digit variants.
+Minimum class count is eight; `--small` is explicit. No second training job was
+started on this corpus. The existing 600-image v4 dataset and its copied train/
+validation data retain their verified hashes and split identities.
+
+The ten pen-rendered handwritten fixtures use oracle detector boxes and raw text
+only. Measured archetypes **10/10**, attachments **20/20**, required parameters
+**20/157 (12.74%)**, trajectories **2/10**, simulation produced **10/10**. The
+unchanged printed probe remains **10/10**, **20/20**, **21/157 (13.38%)**, **2/10**
+and **10/10**, respectively. These QA fixtures are not held out. Missing/unplaced
+values and assumed scale/initial inputs still limit physics correctness. Producing
+a trajectory and adding handwriting support do not establish correct physics.
+
+For six controlled wobbled lines, maximum angle error **0.0787943°**, length
+error **2.0544505 px**. Wobbled circle centre error **0.0571709 px**, radius error
+**0.1137558 px**. The spring has ten true/measured coils, endpoints **6.082763 px**
+from truth. These are native synthetic geometry errors, not real-image errors.
+
+Handwritten oracle pipeline CPU total median/p95 **302.99/387.57 ms**; printed
+**227.11/263.19 ms**, measured with background training contention. Detector/OCR
+are stubs, not real model/HTTP timings. Solver comparison reuses the existing
+TypeScript implementation and unchanged strict M5 protocol.
+
+Opened the generated strong-profile contact sheet and actual phone BN handwritten
+workspace screenshot. The latter shows native source diagram, editable assumptions,
+the handwriting notice and unchecked crop consent without horizontal overflow.
+This is limited automated/screenshot QA, not native Bangla, physical-device or
+novice approval. EN/BN language review remains HUMAN.
+
+Browser timing outputs were copied into `.cache/m6/` and the historical docs JSON
+restored. Synchronous edited Run: 30 samples, median **28.1 ms**, p95 **38.9 ms**,
+maximum **40.7 ms**. Parameter events: 100 samples, median **7.7 ms**, p95 **12.3 ms**,
+maximum **13.5 ms**. Both exclude paint; no frame-rate/recognition claim follows.
+
+### Actual failures, training recovery and operating limits
+
+An initial parallel TS run exhausted memory (**94 passed, 7 file failures**).
+The first full Python gate also exposed a newly added mechanics test filename
+colliding with an imported test module; the new file was renamed, preserving the
+original test. A new browser assertion tried to read multipart data unavailable
+from the request event; it now checks the actual job result's style and consent.
+The corrected gates above retain every assertion's behavioral intent.
+
+Training initially failed during epoch 5 at **16:33:19** Bangladesh time. Its
+epoch-4 weights/optimizer and all source/copied image/label hashes were verified
+before resuming at **16:43:59**. That segment saved epochs 5 and 6 but failed
+during epoch 7 at **16:57:38** when browser verification also exhausted memory.
+This was not uninterrupted or completed training. Original errors/statuses,
+checkpoint hashes and resume records are retained under
+`.cache/synthetic-training-20261113-v1/`.
+
+Browser/model verification was then completed separately. The final recovery
+resumed at **17:07:49** from the intact **epoch-6** checkpoint with restored optimizer, verified
+unchanged v4 inputs and two training threads. No heavy checks continue alongside
+it. The live report and actual status files disclose the current job; final
+training duration/metrics are pending. The normal app server remains paused for
+memory and `.cache/m6/restore_app.py` is queued to restore its normal configuration
+after training and final evaluation/checks. Its state is `app-restore-status.json`.
+
+The app's mechanics default checkpoint is unchanged. The finalizer will preserve
+an experimental synthetic candidate separately; it cannot satisfy real promotion.
+No real provider request, real gold/labels, licence approval, GPU run or human
+Bangla/device review was produced. Real printed/handwritten detector/end-to-end
+metrics and real HTTP model latency remain **null/unverified**.
+
+### Shared audit, commits and stop point
+
+Against `3a85da8`, shared files (insertions/deletions): README **3/0**, core facade
+**2/0**, new core crop transport **58/0**, frontend package **1/1**, EN **11/1**,
+BN **11/1**. Decision/status/guides are documentation. No circuit file was moved,
+and no imported implementation hash allowance, fixture, original test, dependency
+pin, config/default/API key or layout baseline changed. Runtime domain/solver
+behavior outside the explicit M6 handwriting/consent work is preserved.
+
+Domain/tooling/plan commit: **56c826a**. Shared facade/transport/runner/i18n:
+**aba6abb**, committed after the passing full test. Browser instrumentation:
+**1fb4774**; final documentation is separate. Raw gates, probes, images, temporary
+source-isolation helper and summaries are in `.cache/m6/`; round state is in
+`.cache/m6-round-1/`. Tracked test/probe/tool commands reproduce the behavior.
+
+HUMAN: supply/review disjoint real labels and frozen printed/handwritten scenes,
+decide licences, run adequate retraining/evaluation, review Bangla and devices.
+Handwriting heuristics and synthetic-only training do not establish stability.
+M6 stops here. M7 requires a later explicit continue and both domains stable.

@@ -175,3 +175,7 @@ interrupted epoch 5; the saved epoch-4 weights/optimizer and exact dataset hashe
 were verified before resuming. Heavy gates now run sequentially, and Node tests
 use one test-file process. Assertions, counts, retry/timeouts and circuit behavior
 are unchanged. This scheduling change reduces peak memory on the 7.31-GiB host.
+Browser verification also exhausted memory after the first recovery saved epoch
+6. It was completed separately before resuming from that intact checkpoint.
+Training and heavy model/browser verification are now separated completely; the
+normal app server is restored automatically after the job and its final checks.

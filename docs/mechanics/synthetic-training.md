@@ -2,7 +2,8 @@
 
 The owner requested multi-epoch detector training on the existing 600 annotated
 synthetic images before continuing M6. This explicitly authorizes a local CPU
-experiment beyond M4's one-epoch subset smoke. M6 has not started. No independently
+experiment beyond M4's one-epoch subset smoke. M6 now proceeds separately while
+this run keeps its original M4 dataset. No independently
 reviewed real frozen set exists, so this experiment cannot establish real-image
 accuracy or qualify a model for production promotion.
 
@@ -94,3 +95,43 @@ format checks passed. Raw output is in the run's `focused-tests.log` and
 Python guards recorded no external connection attempts during these commands
 or training so far. Training is still in progress; these gates do not claim a
 completed detector run or a final accuracy result.
+
+## Memory interruption and recovery during M6
+
+While M6 checks ran alongside training, the host exhausted memory. The initial
+training process failed during epoch 5 at 16:33:19 Bangladesh time; the last
+complete checkpoint was epoch 4. The original segment's status and error are
+preserved in `failed-segment-1-status.json` and `stderr.log`. This was an actual
+failed segment, not uninterrupted training or a completed 50-epoch result.
+
+At 16:43:59 the local `resume.py` helper resumed that checkpoint using the pinned
+SDK's `model.train(resume=True, device="cpu", workers=0, batch=2)`. Source and
+copied image/label hashes and split identities were revalidated. The checkpoint
+retained optimizer state and zero-based epoch 3, so training continued at epoch 5
+in its original output folder. Checkpoint hash at recovery:
+`ee5fb41ecc6bd7ec0c6102d181b92ab7df9053174236de5e898a66e16c3d46be`.
+The verification is recorded in `resume-record.json`. Two training threads are
+used after recovery. Best/last checkpoints, curve, stdout and the live report
+continue in the original run folder. The finalizer was restarted and now reports
+failures explicitly rather than leaving a stale running message.
+
+The TypeScript runner now uses one test-file process at a time, with all existing
+assertions/tests retained. Remaining heavy gates run sequentially. The workspace
+app server was temporarily stopped to leave memory for training and verification.
+No further training run, cloud compute or model download was started. The
+recovered run subsequently saved epoch 5; final metrics remain pending.
+
+The later browser workload also exhausted host memory. That recovery segment
+failed during epoch 7 at 16:57:38, after epochs 5 and 6 were saved. Browser
+verification was then completed separately. The final recovery resumes the
+latest intact epoch-6 checkpoint at **17:07:49** with optimizer/data verification and two threads;
+`resume-record-2.json` identifies its actual checkpoint hash. Earlier failure
+statuses and both tracebacks remain preserved. No further heavy model/browser
+checks run alongside training.
+
+The normal app server stays paused to reserve memory. The local
+`.cache/m6/restore_app.py` watcher starts it with its normal configuration after
+training/final evaluation/checks finish (or restores it after a failed job).
+Its state is `.cache/m6/app-restore-status.json`. The training report and
+`finalizer-status.json` remain the source of current job state; a running epoch
+does not imply completed training or real accuracy.
