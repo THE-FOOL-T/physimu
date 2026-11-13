@@ -64,13 +64,20 @@ for (const lang of ["en", "bn"]) {
     await page
       .getByTestId("mechanics-analysis-style")
       .selectOption("handwritten");
-    const sent = page.waitForRequest(
-      (r) => r.url().endsWith("/api/analyze/start") && r.method() === "POST",
-    );
+    const completed = () =>
+      page.waitForResponse(async (response) => {
+        if (
+          response.request().method() !== "GET" ||
+          !response.url().includes("/api/analyze/")
+        )
+          return false;
+        return (await response.json()).result?.domain === "mechanics";
+      });
+    const sent = completed();
     await upload(page, "pendulum");
-    const body = (await sent).postData()!;
-    expect(body).toMatch(/name="style"\r\n\r\nhandwritten/);
-    expect(body).toMatch(/name="use_label_reader"\r\n\r\nfalse/);
+    const first = (await (await sent).json()).result;
+    expect(first.scene.meta.style).toBe("handwritten");
+    expect(first.diagnostics.label_reader.consent).toBe(false);
     await expect
       .poll(async () => (await state(page)).project?.scene.meta.style)
       .toBe("handwritten");
@@ -95,13 +102,11 @@ for (const lang of ["en", "bn"]) {
       fullPage: true,
     });
     await consent.check();
-    const optedIn = page.waitForRequest(
-      (r) => r.url().endsWith("/api/analyze/start") && r.method() === "POST",
-    );
+    const optedIn = completed();
     await upload(page, "pendulum");
-    expect((await optedIn).postData()).toMatch(
-      /name="use_label_reader"\r\n\r\ntrue/,
-    );
+    expect(
+      (await (await optedIn).json()).result.diagnostics.label_reader.consent,
+    ).toBe(true);
     await expect(consent).not.toBeChecked();
     await expect.poll(async () => (await state(page)).analyzing).toBe(false);
     await consent.check();
