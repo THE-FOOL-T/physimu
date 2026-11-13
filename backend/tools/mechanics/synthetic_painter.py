@@ -8,6 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from .common import ROOT
 from .paint_scene import spring_points
 from .handwriting import label_mask
+from .textbook import FILLS, spring_path
 
 
 def font_for(size, variant):
@@ -27,8 +28,12 @@ def render(
     hatch_spacing,
     mirror_text=False,
     handwriting="baseline",
+    appearance="baseline",
 ):
     """Return RGB, amodal native mask per object, and their explicit detector classes."""
+    if appearance not in {"baseline", "textbook"}:
+        raise ValueError("Unknown appearance profile")
+    varied = appearance == "textbook"
     image = Image.new("RGB", (scene.image.width, scene.image.height), scene.frame.paper_color)
     objects = []
     ink, stroke = scene.frame.ink_color, scene.frame.stroke_px
@@ -111,13 +116,22 @@ def render(
             if link.type == "spring"
             else link.polyline
         )
+        if varied and link.type == "spring":
+            points = spring_path(
+                link.a.point,
+                link.b.point,
+                link.coils or 10,
+                rng.uniform(9, 20),
+                rng.choice([False, True]),
+            )
         object_mask(link.type, link.id, lambda d, c, p=points: line(d, p, c))
     for pulley in scene.pulleys:
         x, y = pulley.center
         r = pulley.radius_px
 
         # Separate white fill from the instance region so rope behind the pulley is occluded.
-        ImageDraw.Draw(image).ellipse((x - r, y - r, x + r, y + r), fill=scene.frame.paper_color)
+        fill = rng.choice([scene.frame.paper_color, *FILLS]) if varied else scene.frame.paper_color
+        ImageDraw.Draw(image).ellipse((x - r, y - r, x + r, y + r), fill=fill)
         object_mask(
             "pulley",
             pulley.id,
@@ -125,6 +139,20 @@ def render(
                 (x - r, y - r, x + r, y + r), outline=c, width=max(1, round(stroke))
             ),
         )
+        if varied:
+            rim = r * rng.uniform(0.65, 0.85)
+            draw = ImageDraw.Draw(image)
+            draw.ellipse(
+                (x - rim, y - rim, x + rim, y + rim), outline=ink, width=max(1, round(stroke))
+            )
+            spokes = rng.choice([0, 3, 4, 6])
+            for i in range(spokes):
+                angle = 2 * math.pi * i / spokes
+                draw.line(
+                    [(x, y), (x + rim * math.cos(angle), y + rim * math.sin(angle))],
+                    fill=ink,
+                    width=max(1, round(stroke)),
+                )
         # White pulley interiors occlude links too. Fill instance ownership after
         # drawing the outline, without turning the actual pulley into solid ink.
         ImageDraw.Draw(objects[-1]["mask"]).ellipse((x - r, y - r, x + r, y + r), fill=255)
@@ -148,7 +176,8 @@ def render(
             polygon = list(body.mask)
         if body.type == "cart":
             polygon = [(x0, y0), (x1, y0), (x1, y1 - 10), (x0, y1 - 10)]
-        ImageDraw.Draw(image).polygon(polygon, fill=scene.frame.paper_color)
+        fill = rng.choice([scene.frame.paper_color, *FILLS]) if varied else scene.frame.paper_color
+        ImageDraw.Draw(image).polygon(polygon, fill=fill)
 
         def outline(d, c, p=polygon, cart=body.type == "cart", box=body.bbox):
             line(d, p + [p[0]], c, closed=True)
@@ -201,10 +230,13 @@ def render(
             )
             if len(g.points) == 1:
                 x, y = g.points[0]
+                radius = rng.randint(6, 11) if varied else 4
                 object_mask(
                     name,
                     a.id,
-                    lambda d, c, x=x, y=y: d.ellipse((x - 4, y - 4, x + 4, y + 4), fill=c),
+                    lambda d, c, x=x, y=y, r=radius: d.ellipse(
+                        (x - r, y - r, x + r, y + r), fill=c
+                    ),
                 )
             else:
                 object_mask(

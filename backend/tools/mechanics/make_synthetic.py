@@ -18,6 +18,7 @@ from .build_fixtures import fixtures, value
 from .common import ARCHETYPES, NAMES, fresh, sha256, write_json, yolo_line
 from .synthetic_painter import render, texture
 from .handwriting import elastic_parameters, deform, inverse_maps, warp, notebook
+from .textbook import prepare as textbook_scene
 
 STYLES = ("printed", "scan", "handwritten", "photo")
 
@@ -259,11 +260,15 @@ def transform_scene(scene, H, width, height, name, elastic=None):
     return Scene.model_validate(d)
 
 
-def sample(source, spec, rng, name, *, handwriting="baseline"):
+def sample(source, spec, rng, name, *, handwriting="baseline", appearance="baseline"):
     if handwriting not in {"baseline", "strong"}:
         raise ValueError("Unknown handwriting profile")
+    if appearance not in {"baseline", "textbook"}:
+        raise ValueError("Unknown appearance profile")
     archetype, style, mirror, no_values, bengali = spec
     scene = variant(source, rng, no_values, bengali)
+    if appearance == "textbook":
+        scene = textbook_scene(scene, rng)
     raw = scene.model_dump(mode="json", by_alias=True)
     raw["frame"].update(
         paper_color=rng.choice(["#fffef7", "#f4f1e7", "#ffffff"]),
@@ -278,17 +283,25 @@ def sample(source, spec, rng, name, *, handwriting="baseline"):
         else "printed",
         language="bn" if bengali else "en",
     )
+    if appearance == "textbook":
+        raw["frame"].update(stroke_px=rng.uniform(3.5, 7), ink_color="#202020")
+        for link in raw["links"]:
+            if link["type"] == "spring":
+                length = math.dist(link["a"]["point"], link["b"]["point"])
+                maximum = max(4, int((length - 24) / (raw["frame"]["stroke_px"] * 3.5)))
+                link["coils"] = min(link["coils"], maximum)
     scene = Scene.model_validate(raw)
     image, objects = render(
         scene,
         rng,
         style=style,
-        font_size=rng.randint(14, 21),
+        font_size=rng.randint(24, 36) if appearance == "textbook" else rng.randint(14, 21),
         font_variant=int(bengali or rng.random() < 0.5),
         arrow_style=rng.choice(["filled", "open"]),
         hatch_spacing=rng.randint(11, 23),
         mirror_text=mirror,
         handwriting=handwriting,
+        appearance=appearance,
     )
     # Record actual authored mask/text extents, not estimated text widths. The
     # masks come from our drawing commands; this is not automatic real annotation.
@@ -315,6 +328,12 @@ def sample(source, spec, rng, name, *, handwriting="baseline"):
     margin = rng.randint(55, 80)
     requested = rng.uniform(0.5, 1.6)
     scale = min(requested, (width - 2 * margin) / (x1 - x0), (height - 2 * margin) / (y1 - y0))
+    if appearance == "textbook":
+        width, height = rng.randint(700, 1200), rng.randint(700, 1200)
+        margin = rng.randint(30, 50)
+        scale = min(1.6, (width - 2 * margin) / (x1 - x0), (height - 2 * margin) / (y1 - y0))
+        scale *= rng.uniform(0.85, 1.0)
+        requested = scale
     if scale < 0.5:
         raise ValueError("Layout below required minimum scale")
     tx = rng.uniform(margin, width - margin - (x1 - x0) * scale) - x0 * scale
@@ -405,13 +424,18 @@ def sample(source, spec, rng, name, *, handwriting="baseline"):
             "elastic": elastic,
             "notebook_ruling": ruling,
             "phone_photo": phone_photo,
+            **({"appearance_profile": appearance} if appearance != "baseline" else {}),
         },
     )
 
 
-def generate(output, count=600, seed=42, *, small=False, handwriting="baseline"):
+def generate(
+    output, count=600, seed=42, *, small=False, handwriting="baseline", appearance="baseline"
+):
     if not small and not 400 <= count <= 800:
         raise ValueError("R1 needs 400–800 images; --small is for tests/smoke only")
+    if appearance not in {"baseline", "textbook"}:
+        raise ValueError("Unknown appearance profile")
     out = fresh(output)
     for folder in ("images", "labels", "scenes", "masks", "objects"):
         (out / folder).mkdir()
@@ -425,7 +449,12 @@ def generate(output, count=600, seed=42, *, small=False, handwriting="baseline")
         name = f"synthetic_{i:04d}"
         extension = ".jpg" if style in {"scan", "photo"} else ".png"
         image, masks, objects, scene, settings = sample(
-            rng.choice(by_type[archetype]), spec, rng, name + extension, handwriting=handwriting
+            rng.choice(by_type[archetype]),
+            spec,
+            rng,
+            name + extension,
+            handwriting=handwriting,
+            appearance=appearance,
         )
         image_path = out / "images" / (name + extension)
         image.save(
@@ -497,6 +526,7 @@ def generate(output, count=600, seed=42, *, small=False, handwriting="baseline")
         "bengali_digits": sum(r["augmentation"]["bengali_digits"] for r in rows),
         "minimum_per_class": 40,
         "small_test_only": small,
+        **({"appearance_profile": appearance} if appearance != "baseline" else {}),
     }
     if not small and min(class_counts[n] for n in NAMES) < 40:
         raise ValueError("Synthetic class minimum not met")
@@ -511,6 +541,12 @@ def generate(output, count=600, seed=42, *, small=False, handwriting="baseline")
         "Local bundled Pillow/Noto fonts; no font or model downloads.\n",
         encoding="utf-8",
     )
+    if appearance != "baseline":
+        with (out / "SOURCE.md").open("a", encoding="utf-8") as notice:
+            notice.write(
+                f"\nAppearance profile: {appearance}; handwriting profile: {handwriting}. "
+                "New appearance/size challenge, not an independent real-data benchmark.\n"
+            )
     contact_sheet(out, rows)
     return counts
 
@@ -540,11 +576,17 @@ def main():
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--small", action="store_true")
     p.add_argument("--handwriting", choices=["baseline", "strong"], default="baseline")
+    p.add_argument("--appearance", choices=["baseline", "textbook"], default="baseline")
     args = p.parse_args()
     print(
         json.dumps(
             generate(
-                args.out, args.count, args.seed, small=args.small, handwriting=args.handwriting
+                args.out,
+                args.count,
+                args.seed,
+                small=args.small,
+                handwriting=args.handwriting,
+                appearance=args.appearance,
             ),
             indent=2,
         )
