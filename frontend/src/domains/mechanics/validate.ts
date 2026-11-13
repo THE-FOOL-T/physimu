@@ -178,6 +178,7 @@ export function parseScene(input: unknown): Scene {
     launch_height: "m",
     start_position: "m",
     initial_speed: "m/s",
+    initial_displacement: "m",
     applied_force: "N",
     release_angle: "deg",
     angular_speed: "rad/s",

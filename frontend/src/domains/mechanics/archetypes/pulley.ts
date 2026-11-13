@@ -116,6 +116,11 @@ function setup(s: Scene, p: Params) {
     high,
   };
 }
+/** The interaction controller and solver share exactly the same travel limits. */
+export function pulleyBounds(s: Scene, p: Params) {
+  const { low, high } = setup(s, p);
+  return { low, high };
+}
 export function pulleyModule(
   id: "atwood" | "table_pulley" | "incline_pulley",
 ): ArchetypeModule {
@@ -143,7 +148,7 @@ export function pulleyModule(
             isAtwood,
           } = f;
         const run = motion(
-          0,
+          read(s, p, "params.initial_displacement", 0),
           read(s, p, "params.initial_speed", 0),
           drive,
           muk * N,

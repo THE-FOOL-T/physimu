@@ -25,8 +25,8 @@ export const collision1d: ArchetypeModule = {
         S = scale(s, p);
       const e = read(s, p, "params.restitution");
       if (e < 0 || e > 1) throw new Error("invalid_restitution");
-      const x1 = initial(s, b1.id, "position").x,
-        x2 = initial(s, b2.id, "position").x;
+      const x1 = read(s, p, `bodies.${b1.id}.initial.position.x`),
+        x2 = read(s, p, `bodies.${b2.id}.initial.position.x`);
       const v1 = read(s, p, `bodies.${b1.id}.initial.velocity.x`),
         v2 = read(s, p, `bodies.${b2.id}.initial.velocity.x`);
       const half =

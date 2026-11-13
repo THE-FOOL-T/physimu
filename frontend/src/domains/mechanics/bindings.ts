@@ -4,18 +4,23 @@ import { read, scale, RAD } from "./archetypes/common";
 import { valueAt } from "./validate";
 import { pendulumPreview } from "./archetypes/pendulum";
 import type { ParameterRow } from "../../shell";
+import { interactionBindings } from "./interaction-bindings";
+import { pulleyBounds } from "./archetypes/pulley";
+import { topologyIssue } from "./readiness";
 
 /** Original pixels/geometry stay immutable; user overrides are a separate document. */
 export class BindingEngine {
   readonly original: Scene;
+  readonly recognition: Scene;
   document: Scene;
   params: Params = {};
   unlocked = new Set<string>();
   trajectory: Trajectory;
   preview = false;
-  constructor(scene: Scene) {
-    this.original = structuredClone(scene);
-    this.document = structuredClone(scene);
+  constructor(scene: Scene, recognition = scene) {
+    this.recognition = structuredClone(recognition);
+    this.original = interactionBindings(scene);
+    this.document = structuredClone(this.original);
     this.trajectory = this.solve();
   }
   get modified() {
@@ -27,18 +32,73 @@ export class BindingEngine {
     );
   }
   solve() {
+    const issue = topologyIssue(this.original);
+    if (issue)
+      return {
+        ...archetypes.unsupported.solve(this.original, {}),
+        reason: issue,
+        warnings: [issue],
+      };
     if (this.original.forces.some((f) => f.magnitude?.number !== 0))
       return {
         ...archetypes.unsupported.solve(this.original, {}),
         reason: "unsupported_applied_force",
         warnings: ["unsupported_applied_force"],
       };
-    if (this.original.meta.provenance === "unsupported")
+    if (
+      this.original.meta.provenance === "unsupported" &&
+      !Object.keys(this.params).length
+    )
       return archetypes.unsupported.solve(this.original, {});
-    return archetypes[this.original.archetype].solve(
+    const run = archetypes[this.original.archetype].solve(
       this.original,
-      this.params,
+      this.solverParameters(),
     );
+    if (run.supported) {
+      if (this.original.meta.provenance === "unsupported")
+        this.document.meta.provenance = "authored";
+      this.document.warnings = this.document.warnings.filter(
+        (w) =>
+          ![
+            "invalid_mass",
+            "invalid_gravity",
+            "invalid_friction",
+            "invalid_link_value",
+            "invalid_restitution",
+            "invalid_launch",
+            "unresolved_parameter",
+          ].includes(w.code),
+      );
+    }
+    return run;
+  }
+  /** A recognized tangential speed is converted through the calibrated length.
+   * Editing omega explicitly takes ownership; otherwise changing length retains
+   * the observed linear speed. Derived Values are reproducible, not saved overrides. */
+  solverParameters(): Params {
+    const s = this.original,
+      p = { ...this.params };
+    if (
+      s.archetype === "pendulum" &&
+      s.params.angular_speed?.source === "constraint" &&
+      s.warnings.some((w) => w.code === "pendulum_speed_converted") &&
+      !("params.angular_speed" in p)
+    ) {
+      const link = s.links[0],
+        sourceL = link?.length_m?.number;
+      if (sourceL && sourceL > 0 && s.params.angular_speed.number !== null) {
+        const length = p[`links.${link.id}.length_m`] ?? sourceL;
+        if (length > 0) {
+          p["params.angular_speed"] =
+            (s.params.angular_speed.number * sourceL) / length;
+          Object.assign(this.document.params.angular_speed, {
+            ...s.params.angular_speed,
+            number: p["params.angular_speed"],
+          });
+        }
+      }
+    }
+    return p;
   }
   binding(id: string) {
     const b = this.original.bindings.find((b) => b.id === id);
@@ -51,6 +111,39 @@ export class BindingEngine {
       c = binding.control;
     let min = c.min,
       max = c.max;
+    if (
+      s.archetype === "pendulum" &&
+      binding.path === "params.angular_speed" &&
+      s.params.angular_speed.source === "constraint"
+    ) {
+      const current = this.document.params.angular_speed.number;
+      if (current !== null) {
+        min = Math.min(min, current);
+        max = Math.max(max, current);
+      }
+    }
+    if (binding.path === "params.initial_displacement") {
+      const bounds = pulleyBounds(s, this.params);
+      min = Math.max(min, bounds.low);
+      max = Math.min(max, bounds.high);
+    }
+    if (
+      s.archetype === "collision_1d" &&
+      binding.path.endsWith(".initial.position.x")
+    ) {
+      const index = s.bodies.findIndex(
+        (b) => binding.path === `bodies.${b.id}.initial.position.x`,
+      );
+      const body = s.bodies[index],
+        other = s.bodies[1 - index];
+      const half = (body.bbox[2] - body.bbox[0]) / (2 * S);
+      const gap = half + (other.bbox[2] - other.bbox[0]) / (2 * S);
+      const x = read(s, this.params, `bodies.${other.id}.initial.position.x`);
+      min = Math.max(min, half);
+      max = Math.min(max, s.image.width / S - half);
+      if (index === 0) max = Math.min(max, x - gap - 1e-8);
+      else min = Math.max(min, x + gap + 1e-8);
+    }
     const sf = s.surfaces.find((v) => v.type === "incline");
     if (binding.path === "params.start_position" && sf) {
       const L = read(s, this.params, `surfaces.${sf.id}.length_m`);
@@ -86,6 +179,18 @@ export class BindingEngine {
         min,
         0.08 - read(s, this.params, `links.${s.links[0].id}.rest_length_m`),
       );
+    if (binding.path === "params.initial_stretch") {
+      const l = s.links[0],
+        b = s.bodies[0],
+        vertical = read(s, this.params, "params.vertical", 0) !== 0;
+      const available = vertical
+        ? s.image.height - l.a.point[1] - (b.bbox[3] - b.bbox[1])
+        : s.image.width - l.a.point[0] - (b.bbox[2] - b.bbox[0]);
+      max = Math.min(
+        max,
+        available / S - read(s, this.params, `links.${l.id}.rest_length_m`),
+      );
+    }
     if (binding.path.endsWith(".mu_k"))
       max = Math.min(
         max,
@@ -127,6 +232,16 @@ export class BindingEngine {
     return this.setMany({ [id]: number }, preview);
   }
   setMany(values: Record<string, number>, preview = false) {
+    // Validate before mutation, then resolve dependent limits against the whole
+    // proposed transaction. Friction pairs and restored projects are order independent.
+    for (const [id, number] of Object.entries(values)) {
+      const b = this.binding(id);
+      if (!Number.isFinite(number)) throw new Error("Nonfinite parameter");
+      if (b.class === "geometry" && !this.unlocked.has(id))
+        throw new Error("Geometry is locked");
+    }
+    for (const [id, number] of Object.entries(values))
+      this.params[this.binding(id).path] = number;
     for (const [id, number] of Object.entries(values)) {
       const b = this.binding(id);
       if (!Number.isFinite(number)) throw new Error("Nonfinite parameter");
@@ -161,7 +276,7 @@ export class BindingEngine {
     }
     this.preview = preview && this.original.archetype === "pendulum";
     this.trajectory = this.preview
-      ? pendulumPreview(this.original, this.params)
+      ? pendulumPreview(this.original, this.solverParameters())
       : this.solve();
     return this.trajectory;
   }
@@ -199,8 +314,39 @@ export class BindingEngine {
   drag(handle: string, point: Point, preview = false) {
     const s = this.original,
       S = scale(s),
-      binding = s.bindings.find((b) => b.handle === handle);
+      binding = s.bindings.find(
+        (b) =>
+          b.handle === handle ||
+          (handle.startsWith("pulley_") &&
+            b.path === "params.initial_displacement"),
+      );
     if (!binding) throw new Error("Unknown handle");
+    if (handle.startsWith("pulley_")) {
+      const i = Number(handle.slice(7)),
+        b = s.bodies[i];
+      const sf = s.surfaces.find((v) => v.type === "incline");
+      const a = sf
+        ? read(s, this.params, `surfaces.${sf.id}.angle_deg`) * RAD
+        : 0;
+      let q = (point[1] - b.anchor[1]) / S;
+      if (i === 0)
+        q =
+          s.archetype === "atwood"
+            ? -q
+            : ((point[0] - b.anchor[0]) * Math.cos(a) -
+                (point[1] - b.anchor[1]) * Math.sin(a)) /
+              S;
+      return this.set(binding.id, q, preview);
+    }
+    if (handle.startsWith("collision_")) {
+      const b = s.bodies.find((b) => handle === `collision_${b.id}`)!;
+      return this.set(
+        binding.id,
+        read(s, {}, `bodies.${b.id}.initial.position.x`) +
+          (point[0] - b.anchor[0]) / S,
+        preview,
+      );
+    }
     if (handle === "block" || handle === "incline_tip") {
       const sf = s.surfaces.find((v) => v.type === "incline")!,
         foot = sf.polyline[0];

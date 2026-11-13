@@ -8,6 +8,58 @@ export const userValue = (number: number | null, unit: string): Value => ({
   source: "user",
   confidence: 1,
 });
+const assumedValue = (number: number, unit: string): Value => ({
+  number,
+  unit,
+  status: "assumed",
+  source: "prior",
+  confidence: 0,
+});
+
+/** An explicit authoring action, never an automatic detector substitute. */
+export function addBody(s: Scene) {
+  const ids = new Set(objects(s).map((o) => o.id));
+  let n = 1;
+  while (ids.has(`manual_body_${n}`)) n++;
+  const id = `manual_body_${n}`,
+    size = Math.min(40, s.image.width / 4, s.image.height / 4);
+  const x = size,
+    y = size,
+    S = s.frame.px_per_m.number ?? 100;
+  s.bodies.push({
+    id,
+    type: "block",
+    bbox: [x, y, x + size, y + size],
+    mask: [
+      [x, y],
+      [x + size, y],
+      [x + size, y + size],
+      [x, y + size],
+    ],
+    anchor: [x + size / 2, y + size / 2],
+    label_ids: [],
+    mass: assumedValue(1, "kg"),
+    radius_m: null,
+    on_surface: null,
+    initial: {
+      position: {
+        x: assumedValue((x + size / 2) / S, "m"),
+        y: assumedValue((y + size / 2) / S, "m"),
+      },
+      velocity: { x: assumedValue(0, "m/s"), y: assumedValue(0, "m/s") },
+    },
+  });
+  s.bindings.push({
+    id: `mass_${id}`,
+    path: `bodies.${id}.mass`,
+    class: "physics",
+    control: { min: 0.01, max: 100, step: 0.01, unit: "kg", locked: false },
+    labels: [],
+    handle: null,
+    drives: ["layout", "solver", "label"],
+  });
+  return id;
+}
 const set = (v: Value, n: number) => Object.assign(v, userValue(n, v.unit));
 const move = (p: Point, d: Point): Point => [p[0] + d[0], p[1] + d[1]];
 export function objects(s: Scene) {
@@ -355,8 +407,8 @@ export function addLine(
         Math.hypot(b[0] - a[0], b[1] - a[1]) / (s.frame.px_per_m.number ?? 100),
         "m",
       ),
-      mu_s: userValue(0, "1"),
-      mu_k: userValue(0, "1"),
+      mu_s: assumedValue(0, "1"),
+      mu_k: assumedValue(0, "1"),
     });
   else {
     const refs = ([a, b] as Point[]).map((p, i) => {
@@ -391,12 +443,12 @@ export function addLine(
         Math.hypot(b[0] - a[0], b[1] - a[1]) / (s.frame.px_per_m.number ?? 100),
         "m",
       ),
-      k: type === "spring" ? userValue(20, "N/m") : null,
-      rest_length_m: type === "spring" ? userValue(0.5, "m") : null,
+      k: type === "spring" ? assumedValue(20, "N/m") : null,
+      rest_length_m: type === "spring" ? assumedValue(0.5, "m") : null,
       coils: type === "spring" ? 8 : null,
       damping:
         type === "spring"
-          ? userValue(0, s.archetype === "pendulum" ? "1/s" : "kg/s")
+          ? assumedValue(0, s.archetype === "pendulum" ? "1/s" : "kg/s")
           : null,
     });
   }
@@ -442,6 +494,7 @@ export function valuePaths(s: Scene): string[] {
 }
 export interface EditState {
   scene: Scene;
+  recognition?: Scene;
   overrides: Record<string, number>;
   unlocked: string[];
 }
