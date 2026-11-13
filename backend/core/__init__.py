@@ -7,6 +7,11 @@ from ..pipeline.text import read_text
 from ..pipeline.engine import image_url
 from ..app.jobs import Cancelled, JobStore, STAGES
 from ..tools.leakage import check_frozen, duplicate_groups, signature, near
+from ..inference import configure_threads
+from ..pipeline.value_tokens import DIGITS as OCR_DIGITS
+from ..pipeline.ocr_tiles import windows as ocr_windows
+from ..pipeline.ocr_regions import anchored_regions, crop_variants
+from .models import model_lease, register_model_release
 
 __all__ = [
     "load_config",
@@ -24,4 +29,11 @@ __all__ = [
     "duplicate_groups",
     "signature",
     "near",
+    "configure_threads",
+    "OCR_DIGITS",
+    "ocr_windows",
+    "anchored_regions",
+    "crop_variants",
+    "model_lease",
+    "register_model_release",
 ]
