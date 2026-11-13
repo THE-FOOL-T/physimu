@@ -1,4 +1,4 @@
-import type { ShellContext } from "../shell";
+import type { ShellContext } from "../shell/index";
 
 export type DomainId = "circuit" | "mechanics";
 export interface DomainHandle {

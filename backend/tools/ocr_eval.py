@@ -4,9 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from ..config import load_config
-from ..pipeline.engine import analyze_page
-from ..pipeline.preprocess import decode
+from ..core.config import load_config
+from ..domains.circuit.engine import analyze_page
+from ..core.preprocess import decode
 from .ocr_debug import ROOT, annotate, debug_report
 
 
@@ -29,10 +29,10 @@ def gold_score(reports, gold_files):
             "text_accuracy": None,
             "assignment_accuracy": None,
         }
-    from ..pipeline.values import normalize
+    from ..domains.circuit.values import normalize
     from scipy.optimize import linear_sum_assignment
     import numpy as np
-    from ..pipeline.ocr_regions import intersection, area
+    from ..core.ocr_regions import intersection, area
 
     found = correct = assigned = matched_images = 0
     for entry in gold:

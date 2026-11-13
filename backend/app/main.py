@@ -17,16 +17,16 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.exceptions import RequestValidationError
 from .limits import RequestLimits, RateLimiter
 from .analysis import run_analysis
-from ..pipeline.warnings import ordered
+from ..domains.circuit.warnings import ordered
 from pydantic import BaseModel, Field
-from ..pipeline.netlist import Netlist
-from ..pipeline.preprocess import decode, MAX_BYTES
-from ..pipeline.engine import analyze_page
-from ..pipeline.resolve import resolve
-from ..pipeline.validate import safe_solve, fallback, validate
-from ..solver.mna import transient
-from ..config import load_config
-from .jobs import JobStore
+from ..domains.circuit.netlist import Netlist
+from ..core.preprocess import decode, MAX_BYTES
+from ..domains.circuit.engine import analyze_page
+from ..domains.circuit.resolve import resolve
+from ..domains.circuit.validate import safe_solve, fallback, validate
+from ..domains.circuit.solver.mna import transient
+from ..core.config import load_config
+from ..core.jobs import JobStore
 from .warmup import state as model_state, start_warmup
 from ..domains import get as get_domain, names as domain_names
 from ..core.models import model_lease
@@ -63,7 +63,7 @@ async def lifespan(app):
             for id_, job in list(jobs.jobs.items()):
                 if not job["finished"]:
                     jobs.cancel(id_)
-        from ..pipeline.ocr_hybrid.worker import close_workers
+        from ..core.ocr_hybrid.worker import close_workers
 
         close_workers()
 
@@ -117,7 +117,7 @@ def domains():
 def health():
     readiness = dict(model_state)
     if readiness.get("ocr_backend") == "hybrid":
-        from ..pipeline.ocr_hybrid.worker import worker_states
+        from ..core.ocr_hybrid.worker import worker_states
 
         engines = worker_states()
         readiness["ocr_engines"] = engines
@@ -424,15 +424,15 @@ async def ocr_crop(
             413,
             detail={"code": "crop_too_large", "message_key": "error.crop_too_large"},
         )
-    from ..pipeline.text import read_text
-    from ..pipeline.label_assignment import parse_item
+    from ..core.text import read_text
+    from ..domains.circuit.label_assignment import parse_item
 
     diagnostics = {}
     items, warnings = await run_in_threadpool(
         read_text, decoded, components=None, diagnostics=diagnostics
     )
     if use_label_reader:
-        from ..pipeline.label_reader import configured_reader, valid_label
+        from ..core.ocr_label_reader import configured_reader, valid_label
 
         reader = configured_reader()
         if reader is None:

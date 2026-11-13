@@ -9,9 +9,9 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from ..pipeline.netlist import Netlist, Component
-from ..pipeline.wires import prepare_trace, trace
-from ..pipeline.validate import validate, score, safe_solve
+from ..domains.circuit.netlist import Netlist, Component
+from ..domains.circuit.wires import prepare_trace, trace
+from ..domains.circuit.validate import validate, score, safe_solve
 
 ROOT = Path(__file__).resolve().parents[2]
 

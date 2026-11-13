@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from ..pipeline.values import parse_value
+from ..domains.circuit.values import parse_value
 
 ROOT = Path(__file__).resolve().parents[2]
 FINDINGS = [

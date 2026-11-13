@@ -1,0 +1,739 @@
+{
+  "baseline_commit": "22fc49b",
+  "moves": [
+    {
+      "from": "backend/pipeline/annotations.py",
+      "to": "backend/domains/circuit/annotations.py",
+      "source_sha256": "b7af3b0ac97658238c9d2ec1ad6be052a768b92c1d377ca4ccb02f488bac382e",
+      "structure_sha256": "54818309f512515c4c3ad3eff894a3a9dbf74f5e65735ca593a532c41dd111f8"
+    },
+    {
+      "from": "backend/pipeline/associate.py",
+      "to": "backend/domains/circuit/associate.py",
+      "source_sha256": "8c181c2d2ce51bf1ae355fb2cb97ba79e82befe3b5866de341b5aefeaf1a0903",
+      "structure_sha256": "948e1418e4ea1c3828db510427efeea01a3f26adcabc51073c9eccd4b510693e"
+    },
+    {
+      "from": "backend/pipeline/budget.py",
+      "to": "backend/core/budget.py",
+      "source_sha256": "83540e8dd71636b5c3b136ecf38755d545bf3060e15f36107f5d5c131dcc4884",
+      "structure_sha256": "15cf6858752a992c30f428d97a5f3be387db4ff7e4f30653400b5bdca882f01b"
+    },
+    {
+      "from": "backend/pipeline/detect.py",
+      "to": "backend/domains/circuit/detect.py",
+      "source_sha256": "c5bad205008981fe97a29a3899912333e881af078e2c1f5aa02bff106268978c",
+      "structure_sha256": "4975d1670fc5e7b1c9913784e58fdf75a0df19d91017f88d079f1d4a310a73e5",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[3]": "."
+      }
+    },
+    {
+      "from": "backend/pipeline/engine.py",
+      "to": "backend/domains/circuit/engine.py",
+      "source_sha256": "605062cde50dfb71e58f7a8358e6655e9f92039087568e4c68640d328bf53f6a",
+      "structure_sha256": "3918369f9e4a9db1ee85b711b18769fa9740564eeb501af7f3fb5e81336be995",
+      "extracted": [
+        "image_url"
+      ]
+    },
+    {
+      "from": "backend/pipeline/image_edges.py",
+      "to": "backend/domains/circuit/image_edges.py",
+      "source_sha256": "c86c513cb837d4e4c3a69d19c405ffd12a40662237b0e1537faaa2a9c82c2303",
+      "structure_sha256": "65a2021d634710ff920716c6a27aaa32118b31c1fa0a6178f11ba4bb42a0dc16"
+    },
+    {
+      "from": "backend/pipeline/label_assignment.py",
+      "to": "backend/domains/circuit/label_assignment.py",
+      "source_sha256": "473cdea3be434be1cf866e82d7d86c825307b05786093158edef1aee28af2472",
+      "structure_sha256": "85ae1564c64a2358896c56d569bc18df03f3365d900d5ce218cd145a91f8b134",
+      "extracted": [
+        "center",
+        "search_windows"
+      ]
+    },
+    {
+      "from": "backend/pipeline/label_reader.py",
+      "to": "backend/core/ocr_label_reader.py",
+      "source_sha256": "d00da15e70db1e138d5e7c9277440b7b231fcbdfa811b24d9a262e119e1b9663",
+      "structure_sha256": "a930fb2dde89e5f28005c6a228063a37a0101b83e2bad3c6d5a1558cd1abed92"
+    },
+    {
+      "from": "backend/pipeline/netlist.py",
+      "to": "backend/domains/circuit/netlist.py",
+      "source_sha256": "1b15b60cf19e30b7e376222706060a736fbf9a574692c1687b216f6681f29a97",
+      "structure_sha256": "565752e7f2348e27aa9659a987aee57c9f8a35668f07b0d078231f6d4f7bd8ca"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/__init__.py",
+      "to": "backend/core/ocr_hybrid/__init__.py",
+      "source_sha256": "42f298d472f31168b72f31270dae3b9fca64025d613be223d20d48f2222b5990",
+      "structure_sha256": "64562716da48f491e5f636bc78385587c895208b62b401c4238448d4bdff4009",
+      "compatibility": "namespace with module aliases"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/bangla_adapter.py",
+      "to": "backend/core/ocr_hybrid/bangla_adapter.py",
+      "source_sha256": "17ddec31dc50a6a1589a4570d3482b6554ec2d5a02189aaa8600ac683d20f68d",
+      "structure_sha256": "f17215738b7caaa5f0133dee6be44534590288494d43ffb0ab83cb47e43b8c7c"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/normalize.py",
+      "to": "backend/core/ocr_hybrid/normalize.py",
+      "source_sha256": "cc3a5071b53ba7fbf07797b8759bf365a55642f182e0f213e02fbf01dd40246d",
+      "structure_sha256": "b50c2889624681dd9bd1b7b8ddb68cf89c5f3487ede713e4789792347b3d8d47"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/rapidocr_adapter.py",
+      "to": "backend/core/ocr_hybrid/rapidocr_adapter.py",
+      "source_sha256": "2f0efe4897264edc794d7171326085035cf29dd92054e5203a7734cc42bf5807",
+      "structure_sha256": "053a12c73c8d0bd64f2a71f1d5c75da19cfaf483f0907c68906d29708595e2f1"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/router.py",
+      "to": "backend/core/ocr_hybrid/router.py",
+      "source_sha256": "7d8413d3301384ac83c2c33591cadf1b489d941b18e0df28fb3e8e52d5d73050",
+      "structure_sha256": "d046ad190f4a3dba38fa2000a416305c5973de83c91408343c0b477ed8aa4f46"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/symbols.py",
+      "to": "backend/core/ocr_hybrid/symbols.py",
+      "source_sha256": "70b88dcb5ae797c1c6429fc88eb2e242e41d82d1d3607c1ea8d1dc2f6bb57f47",
+      "structure_sha256": "b718039b0da80917b6256019da5e2174169a1d7901a0f0a40a17a8f46fd310ba"
+    },
+    {
+      "from": "backend/pipeline/ocr_hybrid/worker.py",
+      "to": "backend/core/ocr_hybrid/worker.py",
+      "source_sha256": "f8cae251b76abbb2c94cdd8546c981bc3e92a9601b21e270148f5df2067fdf88",
+      "structure_sha256": "0e968354bc9cf29af55288048f0a24f052426c747ae8c3aed1ad1fe86151d804"
+    },
+    {
+      "from": "backend/pipeline/ocr_regions.py",
+      "to": "backend/core/ocr_regions.py",
+      "source_sha256": "322966ccce1a2d2dbeb32c0e61555e631a05bf630532be89c1d1f19b7d5fcfee",
+      "structure_sha256": "a93670d17a2b6308476c228687c54001874aa151582b4aadaaeadfbc0ea3c63f"
+    },
+    {
+      "from": "backend/pipeline/ocr_tiles.py",
+      "to": "backend/core/ocr_tiles.py",
+      "source_sha256": "91eb459d5597d8a79de7e7f442a56283e555d562bcb8d4580a6f187e93bc6d81",
+      "structure_sha256": "50b3e7bbe46928b34b9b2902d43cccfce6be21b47d5d943147697dc1761e089a"
+    },
+    {
+      "from": "backend/pipeline/orientation.py",
+      "to": "backend/domains/circuit/orientation.py",
+      "source_sha256": "1e7098a7cce78bf7d9f3b5f52eb961af6619d8707118f3cfb6702815c33cfa4a",
+      "structure_sha256": "16761048fe8d635cd75a16f75bc86ae15911195d2c90bc6f9a037b7349caf223"
+    },
+    {
+      "from": "backend/pipeline/preprocess.py",
+      "to": "backend/core/preprocess.py",
+      "source_sha256": "300bb8bf570d2ad5e74a90d31eef6d38e8a419ee83ed8a298a6cf6472e0529f6",
+      "structure_sha256": "83becf402e38e9a79a7bb8b9cac0d465ace5636e6c73eedb078d61c6c0aabd8f"
+    },
+    {
+      "from": "backend/pipeline/resolve.py",
+      "to": "backend/domains/circuit/resolve.py",
+      "source_sha256": "0f2921e7948a10c44c9bb8d66a8b05b0a141aed14968d448ebd1ac23902dabd1",
+      "structure_sha256": "8867d49ae31888e6a65aaf4a85167f56534c09285eaea9e7c452a160de551352"
+    },
+    {
+      "from": "backend/pipeline/retry.py",
+      "to": "backend/domains/circuit/retry.py",
+      "source_sha256": "7aeaf9d7ad12fd118b4d773bfa6d732c0af432b424f3e31c4948e63134f8418d",
+      "structure_sha256": "34be15f777a3d5e85a04b8c3b030de94d1549a4e7c54a6955ed7799bcf6f05db"
+    },
+    {
+      "from": "backend/pipeline/style.py",
+      "to": "backend/core/style.py",
+      "source_sha256": "4512adb4fe115f881d855fbb086e280a6f417eec9de66a92ed28a1a9be0169cc",
+      "structure_sha256": "531c250a267015ca28c332d5f80a82791ee123b8876b94b5879d3e81258d031c"
+    },
+    {
+      "from": "backend/pipeline/tesseract_regions.py",
+      "to": "backend/core/tesseract_regions.py",
+      "source_sha256": "6e6921b3aa170ac0bf45c9a2d36f93a8f8312b36f1a38c863634d6c425f49f3c",
+      "structure_sha256": "67dae9550a1efeacd501c90bf68bece478744f9c1e82de1882eca87253147842"
+    },
+    {
+      "from": "backend/pipeline/text.py",
+      "to": "backend/core/text.py",
+      "source_sha256": "712323fead8163c661488ffeac439eba96eac248382bab6ec322644042cecb38",
+      "structure_sha256": "f5bdd86d48b41f4e63df0500820fdb76bb52cb54116671194c157c091c37617b"
+    },
+    {
+      "from": "backend/pipeline/validate.py",
+      "to": "backend/domains/circuit/validate.py",
+      "source_sha256": "790d1509afce1fb9fda527399622dca329d6c6152aff561b1ba828d8cbd0bc24",
+      "structure_sha256": "51d645c06f66b0e4c6121c3f65866565116309e0d6d7f54727c0c2692b242691",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[3]": "."
+      }
+    },
+    {
+      "from": "backend/pipeline/value_tokens.py",
+      "to": "backend/core/value_tokens.py",
+      "source_sha256": "3c069ed4f30dc847bfa16b8bda4cace478d1352997c4347eb2d65e10865c93f1",
+      "structure_sha256": "a8956bede27504fb91d04829dcaf26c1fb062ca4acc0b1f2374dbfd88c8b5f53"
+    },
+    {
+      "from": "backend/pipeline/values.py",
+      "to": "backend/domains/circuit/values.py",
+      "source_sha256": "a2807762c59f0b8f2782a507e600b2ca17e5eef6aadf9a8ce8c3a076f99a051b",
+      "structure_sha256": "ed1dd63325b9805e05c044aa7ceb5606566eb4d1f48ebebcad76e317eea2f649"
+    },
+    {
+      "from": "backend/pipeline/warnings.py",
+      "to": "backend/domains/circuit/warnings.py",
+      "source_sha256": "b5934097bdcf2acc9fdd9a72d3df3d5f8e4659f2b4167256817302b8f29df782",
+      "structure_sha256": "ade0c4c9f8021b691e0cbcc17e94813d01b43325ce9991512b1172e03b2b78c1"
+    },
+    {
+      "from": "backend/pipeline/wire_geometry.py",
+      "to": "backend/domains/circuit/wire_geometry.py",
+      "source_sha256": "04a15103f12062b4923e62379a4445e311efa08ac27273fb69e7e4b69cddd66f",
+      "structure_sha256": "3cc02bc2ad371866473309c82037b4dd62e9f574b5bef958f3858b76dfe7f692"
+    },
+    {
+      "from": "backend/pipeline/wire_repair.py",
+      "to": "backend/domains/circuit/wire_repair.py",
+      "source_sha256": "f0cf159a6d7120dc761b06264f087cf381254d3ec86bdb1f17044554b5f5aa9b",
+      "structure_sha256": "ec7e211c126121868e64499cb06668ea98d07591698478331e7bac7654f1c3a8"
+    },
+    {
+      "from": "backend/pipeline/wires.py",
+      "to": "backend/domains/circuit/wires.py",
+      "source_sha256": "dcfeec55e4fde4e52983852dd4f1ff87f02a67032cccdce0b2659f019b7f6976",
+      "structure_sha256": "b07563540d90e6d3ec96463bc6e2e4519c76a04dd1f09ec4bd67caf32ab28ca9"
+    },
+    {
+      "from": "backend/config.py",
+      "to": "backend/core/config.py",
+      "source_sha256": "718346ba7615bbfd27aaf4985d7cc8381f67bcb91035b69d6dfe6f16257f83ef",
+      "structure_sha256": "9c287f1b7fa48c48f59e119227a6478db6d7be80d7be8fd263dfc1c618c4e4e9",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/inference.py",
+      "to": "backend/core/inference.py",
+      "source_sha256": "c65064366d8cc896deb41eb458a7b51ba0f03432a4c4931883c5ed556e854b8f",
+      "structure_sha256": "71848b10a0ecbd390bd81b03c911b3a8fdab3f16769dba4ca1c93f8d79025a01"
+    },
+    {
+      "from": "backend/app/jobs.py",
+      "to": "backend/core/jobs.py",
+      "source_sha256": "f878e2453bb6bf0ed225e41ec14ebdd33af078ba98b9e08fac9ab16ddbc8b20a",
+      "structure_sha256": "e670d35fd73f6dd67540a70da49427347e920e3302660b30b5fab4d1775d7cc0"
+    },
+    {
+      "from": "backend/tools/leakage.py",
+      "to": "backend/core/leakage.py",
+      "source_sha256": "3cf9838c6966ab2076770f4fbac801eb4cd021d6fefc2963d8fcd57cb2040156",
+      "structure_sha256": "0c67af8ade06db54ab88bf794efd5bb964dd12249c85c37ab38bfe2dd64610a3"
+    },
+    {
+      "from": "backend/solver/__init__.py",
+      "to": "backend/domains/circuit/solver/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "structure_sha256": "3543b4693a36a1098850b8bc928887694ed59a6deb7d3dfd0339de01f55a77b6",
+      "compatibility": "namespace with module aliases"
+    },
+    {
+      "from": "backend/solver/flow.py",
+      "to": "backend/domains/circuit/solver/flow.py",
+      "source_sha256": "ccbf131a9326a7bfdafda9364d191665594c8ecf196790a303b68327f83713eb",
+      "structure_sha256": "b658960826d67831a791c64718c8805fbcb9fbd6b4036693206c76ccd9cb1861"
+    },
+    {
+      "from": "backend/solver/mna.py",
+      "to": "backend/domains/circuit/solver/mna.py",
+      "source_sha256": "aaebacc2c0ba721f58389ef16f2e41ccb2860ac1441bbd56eb33ebc744b9b2b8",
+      "structure_sha256": "01346e663ad47246db2d796f85a6c95e53a613e33d4aa22148235b7c394d02ce"
+    },
+    {
+      "from": "frontend/src/ui/canvas-editor.ts",
+      "to": "frontend/src/domains/circuit/ui/canvas-editor.ts",
+      "source_sha256": "0ef975c8988cd898a823717cc5f39ecda80584ed4cce9b5ba1bcc7b9f867bcad",
+      "structure_sha256": "5dcbaeaf6e05d9a4430619d7efb71dd02852f06dc8accefbf6cfdda1bec08e3d"
+    },
+    {
+      "from": "frontend/src/ui/dom.ts",
+      "to": "frontend/src/shell/dom.ts",
+      "source_sha256": "981f09b94fb382a0e18d6c19772d546cbf8e1caaeb080b4fdffbb8fca561a85f",
+      "structure_sha256": "0d9fa13385f9dec8d89487e01e0df732116015fbb7ce0daee0c4b41a0425a3e8"
+    },
+    {
+      "from": "frontend/src/ui/edit-geometry.ts",
+      "to": "frontend/src/domains/circuit/ui/edit-geometry.ts",
+      "source_sha256": "3bcc09a4cb1c070bc33ad230e84f60eff2988eae1e2a60ab651955406368a5e0",
+      "structure_sha256": "93856b96043f7205c5b95a744a9edb0c959dc7f74dd6a13bc0dc6007d3af70e0"
+    },
+    {
+      "from": "frontend/src/ui/edit-history.ts",
+      "to": "frontend/src/domains/circuit/ui/edit-history.ts",
+      "source_sha256": "df7371286349f8cd5f694b61ae5b9c2936c98423f241c38028ded76b7b34e0be",
+      "structure_sha256": "3ca430ad6f07c7981631aa09732db9ea93eb5a18a6feba9ea430aa2bf8756032"
+    },
+    {
+      "from": "frontend/src/ui/editor.ts",
+      "to": "frontend/src/domains/circuit/ui/editor.ts",
+      "source_sha256": "9eea209e84669cfa3d2de873710143cfd1ed524f6a9dd74cdefe054b1a79867d",
+      "structure_sha256": "d6c91804b08af09a83156415917f73f2d1ba33f70981feef989b7dccd2fdc5ef"
+    },
+    {
+      "from": "frontend/src/ui/explain.ts",
+      "to": "frontend/src/domains/circuit/ui/explain.ts",
+      "source_sha256": "43bd25d27bd78e065b5a259c807b75be9607b59acc7407b3fb02b4a336afad97",
+      "structure_sha256": "6b7a071a5769496f38c68c6b7a31bcae9f84be6df168ed417c96239b67ae0e3a"
+    },
+    {
+      "from": "frontend/src/ui/filenames.ts",
+      "to": "frontend/src/shell/filenames.ts",
+      "source_sha256": "9943ceeefdebd9a63669b466139c1812a15d9c4450a35cf005b79a5e5640a682",
+      "structure_sha256": "8946d30b43e1f956181dd5303ba5e1cffcab33861f2b66105ff2687fad222fdb"
+    },
+    {
+      "from": "frontend/src/ui/flow-controls.ts",
+      "to": "frontend/src/domains/circuit/ui/flow-controls.ts",
+      "source_sha256": "275d2388382d269f897e5d617f4bab19e3771aa2fb0eb936613de06994e093e5",
+      "structure_sha256": "8a5e737fdd987380243c148c3c5aac527b916b89e7af085de45e4df983774bf7"
+    },
+    {
+      "from": "frontend/src/ui/icons.ts",
+      "to": "frontend/src/domains/circuit/ui/icons.ts",
+      "source_sha256": "65bcddc9ab64c6f1382208e940337d2b7fe4c7b1165e0ff3b5522a2b1f04a4f3",
+      "structure_sha256": "72aa323021be22a972ef59494f1b952654eabd6bc2649f4fb86f1eab2717c13d"
+    },
+    {
+      "from": "frontend/src/ui/image-store.ts",
+      "to": "frontend/src/shell/image-store.ts",
+      "source_sha256": "24cf85536899e41fea0af3b01e92980f050eec6ba017d8c88c7bd56ca1bf7ee6",
+      "structure_sha256": "647a1b279c7c8069679819b5b80e20668be39af6ffd8fce311f32e5a6e1272bd"
+    },
+    {
+      "from": "frontend/src/ui/parameters.ts",
+      "to": "frontend/src/domains/circuit/ui/parameters.ts",
+      "source_sha256": "c74f18d7adb58eb999eedf31a1ce8c36ffacfbcee93069e3e6e69aa31f883cd6",
+      "structure_sha256": "0eea62f5e3963b52f70c90ffce4437b6294a1d23e033b52156c2a108f93560b3"
+    },
+    {
+      "from": "frontend/src/ui/part-popover.ts",
+      "to": "frontend/src/domains/circuit/ui/part-popover.ts",
+      "source_sha256": "a08f0cdc9f13b163835c6d3ae4a18e9b59d34c94d975956198d3877b5e560a02",
+      "structure_sha256": "0891d050b78eb6df7368db86775475438004918d0797cd54838bf9ec58dbf4a2"
+    },
+    {
+      "from": "frontend/src/ui/precheck.ts",
+      "to": "frontend/src/domains/circuit/ui/precheck.ts",
+      "source_sha256": "7160911e1f0e8a1f73c2777a836ac6e725ef1b12d38211e9aeabff5442cfe7c6",
+      "structure_sha256": "6fe1d9a72f987f1fe9a24f50aa7ef2408340c29628af821588c25ea790681d2f"
+    },
+    {
+      "from": "frontend/src/ui/readiness.ts",
+      "to": "frontend/src/shell/readiness.ts",
+      "source_sha256": "a2f78178ce8977bb76cca614bb16879ce8156b13065caca5c2f8266fe387c099",
+      "structure_sha256": "f55d4672f821e0bb364ddce264b8b53ead7cf9d9203033b89887123dbe2d5693"
+    },
+    {
+      "from": "frontend/src/ui/readouts.ts",
+      "to": "frontend/src/domains/circuit/ui/readouts.ts",
+      "source_sha256": "2ed96401284f0595d397b2349031bac32673f0d254ebf083b8f6705f1757d338",
+      "structure_sha256": "96009033f05ab5a6271c473318632c3a7cd858df2793234f45782aef27c0b2e0"
+    },
+    {
+      "from": "frontend/src/ui/shell.html",
+      "to": "frontend/src/shell/shell.html",
+      "source_sha256": "9491883f4878ea6efd695ca1da1f56337acfceb53cc60374dbaa63884ed681fe",
+      "structure_sha256": "9491883f4878ea6efd695ca1da1f56337acfceb53cc60374dbaa63884ed681fe"
+    },
+    {
+      "from": "frontend/src/ui/state.ts",
+      "to": "frontend/src/domains/circuit/ui/state.ts",
+      "source_sha256": "7d0cba007b78c5bda5927406a009c6a73dc0d665cd98722340a62b7d0b0f8f92",
+      "structure_sha256": "2e4bafd9b0bd35cb3c0d52c4e7202383e40002484d5f7c67db4b2d46fd500222"
+    },
+    {
+      "from": "frontend/src/ui/storage.ts",
+      "to": "frontend/src/shell/storage.ts",
+      "source_sha256": "a2f95209bf730afedd2d2a3027d492d0c46df1bc186bee628c365825466b81e4",
+      "structure_sha256": "be176dd74619c69b53c6e9904d5b1f81041419a056ce2b16ca44ea074c297fbc"
+    },
+    {
+      "from": "frontend/src/ui/text-inspector.ts",
+      "to": "frontend/src/domains/circuit/ui/text-inspector.ts",
+      "source_sha256": "1e58ccae6252d956c30b3c53bce4c23531d67254feb91fdced440ccb909c0a61",
+      "structure_sha256": "42be0ac8dea1ef8e95be926e9f1597a6dce40a5de4d482ba05af1b8a0a6ac147"
+    },
+    {
+      "from": "frontend/src/ui/topology.ts",
+      "to": "frontend/src/domains/circuit/ui/topology.ts",
+      "source_sha256": "f08741f0e7877da35400484b51e8bb8cda6406d9fb05d7d746dab070c81b8937",
+      "structure_sha256": "1ee798ca197434e66ff3bccd9862e40d8543973364ffdf15a026d8ce2b60b463"
+    },
+    {
+      "from": "frontend/src/ui/trace-issues.ts",
+      "to": "frontend/src/domains/circuit/ui/trace-issues.ts",
+      "source_sha256": "24d08a0b77c11ecb68ac0b951f5d87565a4af889dec884d0703a378235533a5e",
+      "structure_sha256": "a5a3166401f23bf775d59aec19a5beed5b498a012b5c810086e874f1c077a518"
+    },
+    {
+      "from": "frontend/src/ui/translation.ts",
+      "to": "frontend/src/shell/translation.ts",
+      "source_sha256": "76cc1060cd5c6ca06bdb41aab2a746f15e5047e72ccf8c368db01d5339f7831f",
+      "structure_sha256": "d3ddf2ef628ba3956d0ec2307f96e9e5974109ee569640b31ea4cea8246ecfe2"
+    },
+    {
+      "from": "frontend/src/ui/upload.ts",
+      "to": "frontend/src/shell/upload.ts",
+      "source_sha256": "0519515cbfd53bfc93a132fd2bb1e007f957bb8a171ca4495941ec67c9f6c08d",
+      "structure_sha256": "26f18167dd5dba513342d4a5e41a41953ede4ee2d618a154e4455caed448ee0e"
+    },
+    {
+      "from": "frontend/src/ui/warnings.ts",
+      "to": "frontend/src/domains/circuit/ui/warnings.ts",
+      "source_sha256": "dfed956e10bb6fcbdde87c56c0b2fe91d17e47993f3cc3e95a6c1bcf7183d252",
+      "structure_sha256": "424fc722d128e7630e85014c39b55b13aafe1c85c82acaf4f83cac9990cbd909"
+    },
+    {
+      "from": "frontend/src/ui/workspace.ts",
+      "to": "frontend/src/shell/workspace.ts",
+      "source_sha256": "11688027db39df24fe060f5b7321bf31739293c8ab4f0b8ea873b215fcc381cf",
+      "structure_sha256": "18a0df72dbfd8c81367dd7c0c74e9f4f64f0de84b9fc10dd43f0e799848bc808"
+    },
+    {
+      "from": "frontend/src/overlay/flow.ts",
+      "to": "frontend/src/domains/circuit/overlay/flow.ts",
+      "source_sha256": "660cb18f18673b076a21435d26837da55a04dcf86a33331f6926adae40da129e",
+      "structure_sha256": "83c82c3fc54a13591b1b41e9ef995667a59b7b9988448bf00829eace11a0363d"
+    },
+    {
+      "from": "frontend/src/overlay/labels.ts",
+      "to": "frontend/src/domains/circuit/overlay/labels.ts",
+      "source_sha256": "5d1cb06b1107a50db6c6315535f4faea6f99a5819a250f5c91662e44ee54a42d",
+      "structure_sha256": "42858696d99b71c712187a1e41af9c55ed88f2fa3506bc656ebb418debe7d4e6"
+    },
+    {
+      "from": "frontend/src/overlay/renderer.ts",
+      "to": "frontend/src/domains/circuit/overlay/renderer.ts",
+      "source_sha256": "50fad5f45fa19c0b8ba1a72b26d3587faffd3f82d623b3f15b4662b1b7cd25eb",
+      "structure_sha256": "b624b7dcebca312a025f22978a6b866c638189df2569edcd06ee4a28244c4711"
+    },
+    {
+      "from": "frontend/src/overlay/text-evidence.ts",
+      "to": "frontend/src/domains/circuit/overlay/text-evidence.ts",
+      "source_sha256": "1f2709dd7024e040de5617d334708e0e2cdea10c695b38e2ff72f523a983d100",
+      "structure_sha256": "0c5040c50b361fafa1035f6354248a6c8ac7d4bce31afebdbd86c51b45fb3e4d"
+    },
+    {
+      "from": "frontend/src/overlay/view.ts",
+      "to": "frontend/src/domains/circuit/overlay/view.ts",
+      "source_sha256": "3a36e482fda5b44dce1f7c2889bb23a61eb2158ea7361e6769c7757e60376b20",
+      "structure_sha256": "9f757e362c52ed92de248aea0bc8be5915a18e2cd36210c8f72fb613b844dacc"
+    },
+    {
+      "from": "frontend/src/solver/explain.ts",
+      "to": "frontend/src/domains/circuit/solver/explain.ts",
+      "source_sha256": "04ddfe95d3dbe7c6059e8c6e6f075f5f58b5abbcebb1e2310ee1f9e798ee3a2c",
+      "structure_sha256": "9dc435ac4b78c27416f846b7ea6fb8999345de8620ae752ec4fcd0c1831a4ca1"
+    },
+    {
+      "from": "frontend/src/solver/flow.ts",
+      "to": "frontend/src/domains/circuit/solver/flow.ts",
+      "source_sha256": "cca4d270e428f30893e068e33cbcb7cb868d466f54235c0236f7d5cce89de868",
+      "structure_sha256": "204acc964b2af9b6473c499d251b586c94c67f714073cfdf84b68e5199ae7234"
+    },
+    {
+      "from": "frontend/src/solver/mna.ts",
+      "to": "frontend/src/domains/circuit/solver/mna.ts",
+      "source_sha256": "d683dbe07f8ccc0f2b59170675fcf978aab50cd72355a7ad4b4a0255d3cc2852",
+      "structure_sha256": "f16c4452d4eb372415baf10960a53e4057bb2dd7f2253ebd1e0320aed53e1e7e"
+    },
+    {
+      "from": "frontend/src/solver/resolve.ts",
+      "to": "frontend/src/domains/circuit/solver/resolve.ts",
+      "source_sha256": "e1cdab4314dd9631bcc036c14d3a4815a538dd6fad4d3d0339ea463c857eb699",
+      "structure_sha256": "0f45e2932e5231791bbcc05b5cf248a0e879c6debd05820fdd210394a6afff5f"
+    },
+    {
+      "from": "frontend/src/types.ts",
+      "to": "frontend/src/domains/circuit/types.ts",
+      "source_sha256": "ad6564f16ef8e1d8542584be803e60e0d017c81625fce9d92b7afb11e26a9b89",
+      "structure_sha256": "bf9010a08dbab4c13523445346d244002a7d264440e25f996742031d0eb9c60e"
+    },
+    {
+      "from": "frontend/src/i18n/index.ts",
+      "to": "frontend/src/shell/language.ts",
+      "source_sha256": "7b8157e73de91e97a599d61932b88630e62964ab94e2d89df55574ee071ed360",
+      "structure_sha256": "9a50a4a8374bed80225e348b3eb35a8502f1094c56a5cd5d89d854732793bbbe"
+    },
+    {
+      "from": "frontend/src/style.css",
+      "to": "frontend/src/shell/style.css",
+      "source_sha256": "9600e1413060c9deaf4bbf233d51e4ad517017767484560077d9bc5c5d802f82",
+      "structure_sha256": "9600e1413060c9deaf4bbf233d51e4ad517017767484560077d9bc5c5d802f82"
+    },
+    {
+      "from": "frontend/src/workspace.css",
+      "to": "frontend/src/shell/workspace.css",
+      "source_sha256": "e351c23d51bf7e86d7c678d421f796b5c8423f6bfae7a26f9580a2eac2e05e53",
+      "structure_sha256": "e351c23d51bf7e86d7c678d421f796b5c8423f6bfae7a26f9580a2eac2e05e53"
+    }
+  ],
+  "extractions": [
+    {
+      "origin": "backend/pipeline/engine.py",
+      "name": "image_url",
+      "to": "backend/core/images.py",
+      "structure_sha256": "c655f1f0531a3d891da59dbcc942787bf1100a93b6e7e1dc404329ae0a0cf553"
+    },
+    {
+      "origin": "backend/pipeline/label_assignment.py",
+      "name": "center",
+      "to": "backend/core/matching.py",
+      "structure_sha256": "067f876e90a70d5cae51340fd6f877094c5bb49f905f3f7a691d47173df8407e"
+    },
+    {
+      "origin": "backend/pipeline/label_assignment.py",
+      "name": "search_windows",
+      "to": "backend/core/matching.py",
+      "structure_sha256": "b4024616db78afc11b781ed488cd7359a77b86e7421bd270685e99603e2246de"
+    }
+  ],
+  "note": "Old Python/TS paths remain aliases/re-exports; algorithm bodies are single-source.",
+  "rewrites": [
+    {
+      "from": "backend/app/analysis.py",
+      "to": "backend/app/analysis.py",
+      "source_sha256": "3538fee94503710da77e10dcb8771a16aec24252423384ea9835edf621ee53d4",
+      "structure_sha256": "56ac6e9c7c98a0608f6939459c57b73a4141ac6edf0e9c665c4ebf674c89c434"
+    },
+    {
+      "from": "backend/app/main.py",
+      "to": "backend/app/main.py",
+      "source_sha256": "8b4c3335a2b670343a1e97bd3f6f0df0696c180719c07db3df8ced2b2d9bc694",
+      "structure_sha256": "ec12505dd9bb5179ae348968bea68e5089dcbfc395d9e1d72430e0e2192a34e2",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/app/warmup.py",
+      "to": "backend/app/warmup.py",
+      "source_sha256": "2a15d11abb70b8ccec003cef20efea8edca1277d27d73f2798ccb77d2fe6809b",
+      "structure_sha256": "b6bfd527405ae903c8388a22ab936d9e1f52773bb41a6f58fe8af9aae69bef90"
+    },
+    {
+      "from": "backend/core/models.py",
+      "to": "backend/core/models.py",
+      "source_sha256": "cdf054dfcdfd7db774bb4950c39ca35bac7e4147d01129da3f0e0374983796e3",
+      "structure_sha256": "28571244ed927ecf36631d2b1e7adabe79ab1c2c525bea0e479c2a5610bf240c"
+    },
+    {
+      "from": "backend/domains/circuit/adapter.py",
+      "to": "backend/domains/circuit/adapter.py",
+      "source_sha256": "4af69e2924e25637652c02fb27510626703de3102f2746e6ec18ce4d3ab61c05",
+      "structure_sha256": "937fae7373b1b1586b6894141c7097508f6ba30dbfd0ce3c6a79d969737a880c"
+    },
+    {
+      "from": "backend/tools/case_report.py",
+      "to": "backend/tools/case_report.py",
+      "source_sha256": "323199e97b235fba9bf2c03c5a35ea923f070691c1b08d2198159ae1c9842b4e",
+      "structure_sha256": "1bfe7d3006e7104ba284074dcfce888b5be6fe2191f430179b6e178dbe99ea48",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/compare_detectors.py",
+      "to": "backend/tools/compare_detectors.py",
+      "source_sha256": "c107c270e0c1a1f6cd172626010afb1110a08cc05250a8a010ce72c2304bfdd3",
+      "structure_sha256": "65446342b124d89b7d05a573276305bcf9a89e0a17d046fb6a2336d555ef8ee7"
+    },
+    {
+      "from": "backend/tools/data_inventory.py",
+      "to": "backend/tools/data_inventory.py",
+      "source_sha256": "79973f8e8a0133bf2cff036e03250f2845a9d11fd341549142b65429449ce235",
+      "structure_sha256": "04e8071bc0ced5aa589d921ce23d495e2f1902fae1766c84f11c9ab6ca96a7c9"
+    },
+    {
+      "from": "backend/tools/eval_association.py",
+      "to": "backend/tools/eval_association.py",
+      "source_sha256": "b97109de9615f0099005d4b259ad85851dbe17d15a975b867daa120e25fef97f",
+      "structure_sha256": "278df8f95bf7e767bab025bfd107b7ea95bb578045994790c4bc78cf584ea123"
+    },
+    {
+      "from": "backend/tools/eval_detector.py",
+      "to": "backend/tools/eval_detector.py",
+      "source_sha256": "95142105690d53c5c26bc73fdc266ceb5c097c17c3c9c583fef50d8323668a7c",
+      "structure_sha256": "48e09d246da1211676a0b00613ffe0ad9478abd2ef0601efff037fa2135fa8e4",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/eval_e2e.py",
+      "to": "backend/tools/eval_e2e.py",
+      "source_sha256": "656e6a922c7bd7b38d4307d12e25651ff3ec280ea1447e585a6676113ba025fd",
+      "structure_sha256": "ea2a789730ba6a43d4299b809651b4351fb44880862de6aca52908c174325152",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/hybrid_ocr_eval.py",
+      "to": "backend/tools/hybrid_ocr_eval.py",
+      "source_sha256": "b90a0f4719028876db45e3fdfd2ca3a44898abc4a8492eccc84eb9026ee84eb9",
+      "structure_sha256": "012642282a8ee000d38669f29a52e87f684cc94c02be525d7e83aca40590ba41"
+    },
+    {
+      "from": "backend/tools/make_demos.py",
+      "to": "backend/tools/make_demos.py",
+      "source_sha256": "7558b95d43670a43444c9e1860867f45605715542310bb355136601d3f499952",
+      "structure_sha256": "6588fcc2db95e8cfa679be294974c6df1682971d5a2429bea106e64bfc904c1f",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/make_fixtures.py",
+      "to": "backend/tools/make_fixtures.py",
+      "source_sha256": "6e40d5ffe39b56f19f34acf651ab581624ca7a3b5ee2997d7c6ef067caefbed7",
+      "structure_sha256": "3877cfeb11bf84292ab9cf489ec8dba1aeec4a5ea6244022f0d358dc5de1909c",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/make_synthetic.py",
+      "to": "backend/tools/make_synthetic.py",
+      "source_sha256": "488034fbd20e02d976cbdc1af0bf00ba1a027f0be447de8dcd3ed46dafbca34a",
+      "structure_sha256": "732ca1cf6ab8f70ccc9464424fa67e8abd33483003a52a3d7aecbe59cfdcaee9",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/merge_dataset.py",
+      "to": "backend/tools/merge_dataset.py",
+      "source_sha256": "5fcaaa6a425c5b6014176aa48fd0ee8bc1a4306edccb10cf533145c16f99c146",
+      "structure_sha256": "aaa06188df4e5e0768de07f69901f13bcd7a227248a777770ec27f8f93646215",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/ocr_benchmark.py",
+      "to": "backend/tools/ocr_benchmark.py",
+      "source_sha256": "046d61419a716491e11017de0fba3cf7039203292ee11fbc1e38a1410d9dd465",
+      "structure_sha256": "ebced3700e8745c3e116672933b11fd00d308237d5deb6ea2b7557e9c181dc8c",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/ocr_debug.py",
+      "to": "backend/tools/ocr_debug.py",
+      "source_sha256": "f7bd5189717defd583b5899ecf990037fcfab212b914d649133398dcd7eaca35",
+      "structure_sha256": "e1befa5fe3d5d40da1fc8cfd5242dc73e974c97917a97037f3a8019d70881ebb",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/ocr_eval.py",
+      "to": "backend/tools/ocr_eval.py",
+      "source_sha256": "33365f06b27e31c68e1d183f16f566cf6da5793e1c850413abcf02ca754ab75e",
+      "structure_sha256": "ebf7cf79c099d0f0fac84f3f2d5946e429b5a975fa1403bdbc7a75bb335964e6"
+    },
+    {
+      "from": "backend/tools/prelabel.py",
+      "to": "backend/tools/prelabel.py",
+      "source_sha256": "150aa25670dbbc4d9a53e7d39241b46c92a6915c5d77383c336bcb711ddb4b56",
+      "structure_sha256": "6e2c10bb3adc5db569c1313f769c7a5a2d323b47d52c2c851fa6a5f043f71fed"
+    },
+    {
+      "from": "backend/tools/recon.py",
+      "to": "backend/tools/recon.py",
+      "source_sha256": "921a9d95ba6e9e8f191cc156c66ece12c95c200ab8a8b5a9314c8928d4d45736",
+      "structure_sha256": "5cbd1170d58a21b304369731a90dcdd3d068365b7596aeb461f9d85647f06f9d",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/smoke.py",
+      "to": "backend/tools/smoke.py",
+      "source_sha256": "03ce9fa3665c6b6bdfde25a42e97a9d621950c79f79912b52da51cfdb8a5338b",
+      "structure_sha256": "b4682527aa308f6fb634e0828746cedc9f5f6f158aaed014785e75b9c229caae",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "backend/tools/thread_profile.py",
+      "to": "backend/tools/thread_profile.py",
+      "source_sha256": "542f0f9401508feeb609ee9ad061d3bdadf9042e88466af9502ee9b9266d019b",
+      "structure_sha256": "29249da284f77168f51a23ae01df204c95de8ab73906dee1b53fbf637e51198a"
+    },
+    {
+      "from": "backend/tools/train.py",
+      "to": "backend/tools/train.py",
+      "source_sha256": "1870249f14a4e911ba0792897cf2fd32faca4e5c1eb24ea5c43368ab1697a93c",
+      "structure_sha256": "d0edfdcf8fa980220bd3a35ab90bf126be1dbd19632133f9a8ac2718e0cb5632"
+    },
+    {
+      "from": "backend/tools/train_orientation.py",
+      "to": "backend/tools/train_orientation.py",
+      "source_sha256": "88316a9c1d306c345d7d1d28988db88f5d7f1a58a0143710e8b6d64751dc0b10",
+      "structure_sha256": "aeb81b511984d037d6b57d44fb37b070f915e33bfb8bede38aaaace75d2ed692"
+    },
+    {
+      "from": "backend/tools/wire_eval.py",
+      "to": "backend/tools/wire_eval.py",
+      "source_sha256": "91966344e4b0f6394163494302b86b6de617a3658c2b9e177b1f0536702ecf3d",
+      "structure_sha256": "ff7bc7e174aeeaa3a075ed2b93c3168f5cc60d170d92fa7b12cd1903908c46fa",
+      "resource_roots": {
+        "Path(__file__).resolve().parents[2]": "."
+      }
+    },
+    {
+      "from": "frontend/src/domains/circuit/index.ts",
+      "to": "frontend/src/domains/circuit/index.ts",
+      "source_sha256": "60eca55bcde48c182f1b95ef0b4932361307aab9b78a879a3fc7ab21d70da6c4",
+      "structure_sha256": "9a845f15fcfbaf1e1d0fa607c69b4e48bdb8a96f308f3a20227124a8b1dacfe6"
+    },
+    {
+      "from": "frontend/src/domains/index.ts",
+      "to": "frontend/src/domains/index.ts",
+      "source_sha256": "3c84b286d32a5d57f0c2ad2b90a1d55a41a79d6f7c4e9a8cee7626f9104a8005",
+      "structure_sha256": "6f23059b37b1dd24e9c94e1114c9a97b3d77ea916b03e127c09836d8a4f114e1"
+    },
+    {
+      "from": "frontend/src/main.ts",
+      "to": "frontend/src/main.ts",
+      "source_sha256": "c0588e888a9b323ad39b850f166b72ec48789ef13144ed0248a97a47a8774810",
+      "structure_sha256": "507361eb65a88275e610f987a409f769cd1226fd014ebec504af196542d42a0e"
+    },
+    {
+      "from": "frontend/src/shell/domain-switch.ts",
+      "to": "frontend/src/shell/domain-switch.ts",
+      "source_sha256": "7a5432f28607aa66508fbcfd53c8466533dc20ae14e56c7926724f9f3e4ea415",
+      "structure_sha256": "6a6df8c2a2be72e14170a7e96cad956dacd53825d4baa086821efffe60c40bd8"
+    },
+    {
+      "from": "frontend/src/shell/index.ts",
+      "to": "frontend/src/shell/index.ts",
+      "source_sha256": "6d33b93d2ce484d0122a4ca27c9c61004047e93cc218b4fc7fa3f5b9934c36a6",
+      "structure_sha256": "72e6db264635d9b757060bbfd985e2e77dfb2b7ee012f5b3e66c72c7649c7115"
+    },
+    {
+      "from": "frontend/src/shell/simulation.ts",
+      "to": "frontend/src/shell/simulation.ts",
+      "source_sha256": "865eb9c3bd2954f7d7bd1a39341f9407b2215251c85051dd2ce7e85e23c6269b",
+      "structure_sha256": "621c6d68495e45e624af61128a7ae73f11d85df4b2593eab3a8573ea32c527cd"
+    }
+  ]
+}

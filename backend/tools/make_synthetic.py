@@ -8,7 +8,7 @@ import random
 import numpy as np
 from PIL import Image as PILImage, ImageDraw, ImageFont, ImageFilter
 import yaml
-from ..pipeline.netlist import *
+from ..domains.circuit.netlist import *
 
 ROOT = Path(__file__).resolve().parents[2]
 

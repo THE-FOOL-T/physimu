@@ -3,9 +3,9 @@
 import json
 from pathlib import Path
 import shutil
-from ..pipeline.netlist import *
+from ..domains.circuit.netlist import *
 
-from ..config import load_config
+from ..core.config import load_config
 
 ROOT = Path(__file__).resolve().parents[2]
 

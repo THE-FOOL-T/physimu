@@ -7,8 +7,8 @@ from pathlib import Path
 import random
 import shutil
 import yaml
-from .leakage import check_frozen, balanced_records, duplicate_groups
-from ..config import load_config
+from ..core.leakage import check_frozen, balanced_records, duplicate_groups
+from ..core.config import load_config
 
 ROOT = Path(__file__).resolve().parents[2]
 

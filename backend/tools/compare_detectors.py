@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from ..config import ROOT
+from ..core.config import ROOT
 
 
 def eligible(baseline, candidate):

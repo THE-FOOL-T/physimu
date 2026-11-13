@@ -1,4 +1,4 @@
-import type { DomainModule } from "..";
+import type { DomainModule } from "../index";
 
 interface CircuitWorkspace {
   elements: HTMLElement[];

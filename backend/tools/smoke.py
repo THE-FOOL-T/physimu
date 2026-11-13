@@ -18,7 +18,7 @@ def main():
     p.add_argument("--count", type=int, default=20)
     p.add_argument("--images")
     args = p.parse_args()
-    from ..config import load_config
+    from ..core.config import load_config
 
     cfg = load_config()
     base = Path(args.images or cfg["images"])

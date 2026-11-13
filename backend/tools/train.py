@@ -5,7 +5,7 @@ import json
 import time
 from pathlib import Path
 import yaml
-from ..pipeline.detect import detector, ROOT
+from ..domains.circuit.detect import detector, ROOT
 
 
 def main():

@@ -15,8 +15,8 @@ import json
 from pathlib import Path
 from collections import Counter
 
-from ..pipeline.associate import associate
-from ..pipeline.netlist import Component
+from ..domains.circuit.associate import associate
+from ..domains.circuit.netlist import Component
 
 
 def evaluate(path: Path):

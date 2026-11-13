@@ -5,7 +5,7 @@ import hashlib
 import json
 from pathlib import Path
 import random
-from ..pipeline.detect import detector
+from ..domains.circuit.detect import detector
 
 
 def main():

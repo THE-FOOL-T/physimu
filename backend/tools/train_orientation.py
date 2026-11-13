@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import cv2
 import numpy as np
-from ..pipeline.orientation import features
+from ..domains.circuit.orientation import features
 
 
 def main():

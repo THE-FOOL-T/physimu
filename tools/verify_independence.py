@@ -121,6 +121,19 @@ def main():
         else:
             summary["test"] = summary["check"] = "not rerun (focused browser verification)"
         # A single server process makes cleanup reliable even after a failed gate.
+        # Owners may have supplied models since M0. Exercise degradation with
+        # child-only overrides instead of moving or modifying their weights.
+        absent = CACHE / "intentionally-absent-models"
+        if absent.exists():
+            raise RuntimeError("The missing-model verification path must not exist")
+        server_env = {
+            **env,
+            "CIRCUIT_MODEL": str(absent / "circuit.pt"),
+            "CIRCUIT_RAPIDOCR_DET": str(absent / "det.onnx"),
+            "CIRCUIT_RAPIDOCR_REC": str(absent / "rec.onnx"),
+            "CIRCUIT_RAPIDOCR_CLS": str(absent / "cls.onnx"),
+            "CIRCUIT_EASYOCR_MODELS": str(absent / "easyocr"),
+        }
         server_output = (CACHE / "server.log").open("w", encoding="utf-8")
         server = subprocess.Popen(
             [
@@ -134,7 +147,7 @@ def main():
                 "8000",
             ],
             cwd=ROOT,
-            env=env,
+            env=server_env,
             stdout=server_output,
             stderr=subprocess.STDOUT,
             creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,

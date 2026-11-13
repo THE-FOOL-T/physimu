@@ -21,7 +21,7 @@ def main():
 
     torch.set_num_threads(1)
     from ultralytics import YOLO
-    from ..config import load_config
+    from ..core.config import load_config
 
     cfg = load_config()
     source = Path(cfg["detector"]["original"])

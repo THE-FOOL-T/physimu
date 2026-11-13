@@ -1,9 +1,9 @@
-// Stable shared imports. Implementations remain at their current paths until M7.
-export { UploadWorkspace } from "../ui/upload";
-export type { AnalysisResult } from "../ui/upload";
-export { organizeWorkspace, activateTab } from "../ui/workspace";
-export { translateApp } from "../ui/translation";
-export { ImageStore, selfContained, withoutImage } from "../ui/image-store";
+// Stable shared imports backed by the shell implementations.
+export { UploadWorkspace } from "./upload";
+export type { AnalysisResult } from "./upload";
+export { organizeWorkspace, activateTab } from "./workspace";
+export { translateApp } from "./translation";
+export { ImageStore, selfContained, withoutImage } from "./image-store";
 export {
   language,
   setLanguage,
@@ -11,11 +11,11 @@ export {
   format,
   banglaDigits,
   setDigits,
-} from "../i18n";
-export { $, esc, options } from "../ui/dom";
+} from "./language";
+export { $, esc, options } from "./dom";
 export { mountDomainSwitch } from "./domain-switch";
-export type { DomainModule, DomainHandle, DomainId } from "../domains";
-export * from "../shared/sim";
+export type { DomainModule, DomainHandle, DomainId } from "../domains/index";
+export * from "../shared/sim/index";
 
 export interface ShellContext {
   t(key: string): string;

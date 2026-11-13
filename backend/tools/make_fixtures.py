@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from ..pipeline.netlist import (
+from ..domains.circuit.netlist import (
     Netlist,
     Component,
     Terminal,

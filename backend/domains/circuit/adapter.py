@@ -1,7 +1,7 @@
 """Call the copied circuit pipeline directly, preserving every existing result key."""
 
 from ...core import STAGES
-from ...pipeline.engine import analyze_page
+from .engine import analyze_page
 
 
 class CircuitDomain:

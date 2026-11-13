@@ -1,36 +1,40 @@
 import {
   renderParameters,
   addInductorControls as renderInductors,
-} from "./ui/parameters";
-import { renderMeasurements } from "./ui/readouts";
-import { renderExplanation } from "./ui/explain";
-import { translateApp } from "./ui/translation";
-import { createAppState } from "./ui/state";
-import { readiness } from "./ui/readiness";
-import { organizeWorkspace, activateTab } from "./ui/workspace";
-import { flowControls } from "./ui/flow-controls";
-import { componentIcon } from "./ui/icons";
-import { TextInspector } from "./ui/text-inspector";
-import { CanvasEditor } from "./ui/canvas-editor";
-import { rebuildTopology } from "./ui/topology";
-import { cloneForEdit } from "./ui/edit-history";
-import { precheck, draftWarnings } from "./ui/precheck";
-import { traceIssues, issueAt, type TraceIssue } from "./ui/trace-issues";
-import { UploadWorkspace, mountDomainSwitch } from "./shell";
-import { register } from "./domains";
-import { createCircuitDomain } from "./domains/circuit";
-import { mechanicsDomain } from "./domains/mechanics";
-import "./style.css";
-import "./workspace.css";
-import type { Netlist, Component } from "./types";
+} from "./domains/circuit/ui/parameters";
+import { renderMeasurements } from "./domains/circuit/ui/readouts";
+import { renderExplanation } from "./domains/circuit/ui/explain";
+import { translateApp } from "./shell/translation";
+import { createAppState } from "./domains/circuit/ui/state";
+import { readiness } from "./shell/readiness";
+import { organizeWorkspace, activateTab } from "./shell/workspace";
+import { flowControls } from "./domains/circuit/ui/flow-controls";
+import { componentIcon } from "./domains/circuit/ui/icons";
+import { TextInspector } from "./domains/circuit/ui/text-inspector";
+import { CanvasEditor } from "./domains/circuit/ui/canvas-editor";
+import { rebuildTopology } from "./domains/circuit/ui/topology";
+import { cloneForEdit } from "./domains/circuit/ui/edit-history";
+import { precheck, draftWarnings } from "./domains/circuit/ui/precheck";
+import {
+  traceIssues,
+  issueAt,
+  type TraceIssue,
+} from "./domains/circuit/ui/trace-issues";
+import { UploadWorkspace, mountDomainSwitch } from "./shell/index";
+import { register } from "./domains/index";
+import { createCircuitDomain } from "./domains/circuit/index";
+import { mechanicsDomain } from "./domains/mechanics/index";
+import "./shell/style.css";
+import "./shell/workspace.css";
+import type { Netlist, Component } from "./domains/circuit/types";
 import {
   solve,
   voltageTypes,
   supported,
   transient as makeTransient,
-} from "./solver/mna";
-import { resolveLocal } from "./solver/resolve";
-import { Renderer } from "./overlay/renderer";
+} from "./domains/circuit/solver/mna";
+import { resolveLocal } from "./domains/circuit/solver/resolve";
+import { Renderer } from "./domains/circuit/overlay/renderer";
 import {
   language,
   setLanguage,
@@ -38,7 +42,7 @@ import {
   format,
   banglaDigits,
   setDigits,
-} from "./i18n";
+} from "./shell/language";
 import {
   History,
   assertNetlist,
@@ -50,12 +54,12 @@ import {
   addWire,
   cutWire,
   normalizeNetlist,
-} from "./ui/editor";
+} from "./domains/circuit/ui/editor";
 import rcFixture from "../../fixtures/rc_charge.json";
 
-import { $, esc, options } from "./ui/dom";
-import shell from "./ui/shell.html?raw";
-import { ImageStore, selfContained, withoutImage } from "./ui/image-store";
+import { $, esc, options } from "./shell/dom";
+import shell from "./shell/shell.html?raw";
+import { ImageStore, selfContained, withoutImage } from "./shell/image-store";
 const appState = createAppState();
 let circuitActive = true;
 function renderControls() {

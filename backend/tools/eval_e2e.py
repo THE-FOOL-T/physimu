@@ -7,10 +7,10 @@ from pathlib import Path
 import statistics
 import time
 import networkx as nx
-from ..pipeline.netlist import load
-from ..pipeline.preprocess import decode
-from ..pipeline.engine import analyze_page
-from ..solver.mna import solve
+from ..domains.circuit.netlist import load
+from ..core.preprocess import decode
+from ..domains.circuit.engine import analyze_page
+from ..domains.circuit.solver.mna import solve
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -48,7 +48,7 @@ def main():
                 decode(path.read_bytes()),
                 style="handwritten" if split == "handwritten" else "auto",
             )
-            from ..pipeline.netlist import Netlist
+            from ..domains.circuit.netlist import Netlist
 
             pred = Netlist.model_validate(out["netlist"])
             gs = solve(gold)

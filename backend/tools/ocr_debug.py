@@ -7,8 +7,8 @@ from pathlib import Path
 
 import cv2
 
-from ..pipeline.engine import analyze_page
-from ..pipeline.preprocess import decode
+from ..domains.circuit.engine import analyze_page
+from ..core.preprocess import decode
 
 ROOT = Path(__file__).resolve().parents[2]
 

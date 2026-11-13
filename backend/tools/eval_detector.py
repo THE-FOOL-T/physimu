@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import numpy as np
 from PIL import Image
-from ..pipeline.detect import detector
+from ..domains.circuit.detect import detector
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -165,7 +165,7 @@ def main():
         from ultralytics import YOLO
 
         model = YOLO(args.weights)
-        from ..config import load_config
+        from ..core.config import load_config
 
         cfg = load_config()["detector"]
     else:

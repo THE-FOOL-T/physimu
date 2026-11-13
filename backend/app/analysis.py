@@ -2,9 +2,9 @@
 
 import logging
 import threading
-from ..pipeline.engine import analyze_page, image_url
-from ..pipeline.validate import fallback, safe_solve
-from ..pipeline.warnings import ordered
+from ..domains.circuit.engine import analyze_page, image_url
+from ..domains.circuit.validate import fallback, safe_solve
+from ..domains.circuit.warnings import ordered
 from ..domains.circuit.adapter import CircuitDomain
 from ..core.models import model_lease
 
@@ -30,7 +30,7 @@ def _run_analysis(
         # analysis, result normalization, or demo fallback.
         return domain.analyze(decoded, options, progress)
 
-    from ..config import load_config
+    from ..core.config import load_config
     from .warmup import wait_for_models
 
     def queued():

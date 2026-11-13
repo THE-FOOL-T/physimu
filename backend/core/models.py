@@ -9,7 +9,7 @@ _local = threading.local()
 
 
 def _release_circuit():
-    from ..pipeline.detect import LOCK, detector
+    from ..domains.circuit.detect import LOCK, detector
 
     with LOCK:
         detector.cache_clear()

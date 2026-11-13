@@ -18,12 +18,12 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from scipy.optimize import linear_sum_assignment
 
-from ..config import ROOT, load_config
-from ..pipeline.associate import associate
-from ..pipeline.netlist import Component, Terminal
-from ..pipeline.ocr_hybrid.normalize import normalize, parse
-from ..pipeline.ocr_regions import area, intersection
-from ..pipeline.text import read_text
+from ..core.config import ROOT, load_config
+from ..domains.circuit.associate import associate
+from ..domains.circuit.netlist import Component, Terminal
+from ..core.ocr_hybrid.normalize import normalize, parse
+from ..core.ocr_regions import area, intersection
+from ..core.text import read_text
 
 
 @contextmanager
@@ -266,9 +266,9 @@ def main():
                     }
                 )
             if args.real_count:
-                from ..pipeline.engine import analyze_page
-                from ..pipeline.preprocess import decode
-                from ..pipeline.netlist import Netlist
+                from ..domains.circuit.engine import analyze_page
+                from ..core.preprocess import decode
+                from ..domains.circuit.netlist import Netlist
                 from .eval_e2e import graph
                 import networkx as nx
 

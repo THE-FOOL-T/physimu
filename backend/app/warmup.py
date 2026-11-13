@@ -4,7 +4,7 @@ import logging
 import threading
 import time
 import numpy as np
-from ..config import load_config
+from ..core.config import load_config
 
 state = {"detector": "warming", "ocr": "warming", "ocr_backend": None, "warmup_seconds": None}
 _thread = None
@@ -24,7 +24,7 @@ def warm_models():
     backend = str(ocr.get("backend", "legacy")).strip().lower()
     state["ocr_backend"] = backend
     try:
-        from ..pipeline.detect import detect
+        from ..domains.circuit.detect import detect
 
         detect(np.full((96, 96, 3), 255, np.uint8))
         state["detector"] = "ready"
@@ -36,11 +36,11 @@ def warm_models():
         )
         state["detector"] = "error"
     try:
-        from ..pipeline.text import LOCK, easy_reader
+        from ..core.text import LOCK, easy_reader
 
         with LOCK:
             if backend == "hybrid":
-                from ..pipeline.ocr_hybrid.worker import warm_hybrid
+                from ..core.ocr_hybrid.worker import warm_hybrid
 
                 warm_hybrid(ocr)
             elif backend == "legacy":

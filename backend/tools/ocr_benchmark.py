@@ -6,9 +6,9 @@ from pathlib import Path
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from ..pipeline.text import easy_reader
-from ..pipeline.ocr_tiles import easy_tiles
-from ..pipeline.values import normalize
+from ..core.text import easy_reader
+from ..core.ocr_tiles import easy_tiles
+from ..domains.circuit.values import normalize
 
 ROOT = Path(__file__).resolve().parents[2]
 LABELS = ["4 Ω", "12 V", "2.2 kΩ", "100 µF", "২Ω", "R₁"]

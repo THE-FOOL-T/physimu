@@ -1,1 +1,1 @@
-"""Adapter only: circuit implementations remain in place until M7."""
+"""Local circuit analysis, contract, tracing and solver implementations."""

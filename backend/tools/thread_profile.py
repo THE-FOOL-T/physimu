@@ -6,9 +6,9 @@ from pathlib import Path
 import statistics
 import time
 import cv2
-from ..inference import configure_threads
-from ..pipeline.detect import detect
-from ..pipeline.text import read_text, easy_reader
+from ..core.inference import configure_threads
+from ..domains.circuit.detect import detect
+from ..core.text import read_text, easy_reader
 
 
 def main():

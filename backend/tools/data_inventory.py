@@ -4,7 +4,7 @@ import collections
 import json
 from pathlib import Path
 import yaml
-from ..config import load_config, ROOT
+from ..core.config import load_config, ROOT
 
 
 def count(labels, names):

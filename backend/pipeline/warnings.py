@@ -1,27 +1,6 @@
-"""Stable, deduplicated evidence; the UI can group these without losing references."""
+"""Compatibility alias; implementation moved in M7."""
 
-PRIORITY = {
-    code: rank
-    for rank, code in enumerate(
-        [
-            "source_open_loop",
-            "solve_failed",
-            "uncertain_topology",
-            "dangling_wire",
-            "missed_component",
-            "crossing_uncertain",
-            "value_not_found",
-            "unit_inferred",
-            "polarity_assumed",
-            "time_budget",
-        ]
-    )
-}
+from importlib import import_module as _import_module
+import sys as _sys
 
-
-def ordered(warnings):
-    unique = {(item["code"], item.get("ref")): item for item in warnings}
-    return sorted(
-        unique.values(),
-        key=lambda item: (PRIORITY.get(item["code"], 50), item["code"], item.get("ref") or ""),
-    )
+_sys.modules[__name__] = _import_module("..domains.circuit.warnings", __package__)

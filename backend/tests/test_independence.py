@@ -13,8 +13,8 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 UPSTREAM = "THE-FOOL-T/" + "circuit-sim"
-# M1 explicitly authorizes these shared boundaries (plan-M1.md). Pipeline,
-# solver, fixtures and every imported test source remain hash-protected.
+# M1 explicitly authorizes these shared boundaries (plan-M1.md). M7 follows
+# exact move mappings and checks algorithm structure; tests/assets stay hashed.
 M1_SHARED_FILES = {
     "backend/app/analysis.py",
     "backend/app/jobs.py",
@@ -80,7 +80,17 @@ def test_public_and_compatibility_imports_resolve_inside_this_checkout(tmp_path)
     code = """
 import importlib, json
 names = ['augphys', 'augphys.backend.pipeline.engine',
-         'circuit_sim', 'circuit_sim.backend.pipeline.engine']
+         'augphys.backend.domains.circuit.engine',
+         'circuit_sim', 'circuit_sim.backend.pipeline.engine',
+         'circuit_sim.backend.domains.circuit.engine']
+for ns in ('augphys.backend', 'circuit_sim.backend'):
+    for old, new in [('pipeline.engine', 'domains.circuit.engine'),
+                     ('pipeline.detect', 'domains.circuit.detect'),
+                     ('pipeline.text', 'core.text'),
+                     ('pipeline.ocr_hybrid.worker', 'core.ocr_hybrid.worker'),
+                     ('config', 'core.config'), ('app.jobs', 'core.jobs'),
+                     ('solver.mna', 'domains.circuit.solver.mna')]:
+        assert importlib.import_module(ns + '.' + old) is importlib.import_module(ns + '.' + new)
 print(json.dumps({name: importlib.import_module(name).__file__ for name in names}))
 """
     result = subprocess.run(
@@ -95,6 +105,16 @@ print(json.dumps({name: importlib.import_module(name).__file__ for name in names
 
 
 def test_circuit_implementation_fixtures_and_original_tests_match_import():
+    from tools.check_m7_moves import verify_moves
+
+    # M7 changes paths/imports only. Check the recorded implementation structure
+    # and extracted helper bodies instead of exempting the moved algorithms.
+    moved = verify_moves(ROOT)
+    move_manifest = json.loads((ROOT / "docs/mechanics/m7-moves.json").read_text(encoding="utf-8"))
+    origins = {
+        row["from"]: row["source_sha256"]
+        for row in move_manifest["moves"] + move_manifest.get("rewrites", [])
+    }
     manifest = json.loads((ROOT / "docs/import-manifest.json").read_text(encoding="utf-8"))
     prefixes = (
         "backend/",
@@ -108,6 +128,10 @@ def test_circuit_implementation_fixtures_and_original_tests_match_import():
         if item["path"] in M1_SHARED_FILES | M1_LAYOUT_SNAPSHOTS:
             continue
         if item["path"].startswith(prefixes):
+            if item["path"] in moved:
+                # The before-move bytes must still be the protected import.
+                assert origins[item["path"]] == item.get("text_sha256_lf", item["sha256"])
+                continue
             path = ROOT / item["path"]
             data = path.read_bytes()
             if "text_sha256_lf" in item:

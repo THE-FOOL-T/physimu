@@ -1,5 +1,5 @@
-import { get, names, type DomainHandle, type DomainId } from "../domains";
-import type { ShellContext } from ".";
+import { get, names, type DomainHandle, type DomainId } from "../domains/index";
+import type { ShellContext } from "./index";
 import "./domains.css";
 
 export function mountDomainSwitch(
