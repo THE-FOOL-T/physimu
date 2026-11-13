@@ -247,7 +247,7 @@ export function parseScene(input: unknown): Scene {
     new Set(["block", "ball", "bob", "cart"]),
     new Set(["incline", "floor", "wall", "ceiling"]),
     new Set(["rope", "rod", "spring"]),
-    new Set(["dimension", "angle_arc", "label", "axis"]),
+    new Set(["dimension", "angle_arc", "label", "axis", "ground_hatch"]),
   ];
   [scene.bodies, scene.surfaces, scene.links, scene.annotations].forEach(
     (group, i) =>

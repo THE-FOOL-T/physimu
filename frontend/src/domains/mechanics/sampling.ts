@@ -1,4 +1,4 @@
-import { bracket } from "../../shell";
+import { bracket } from "../../shell/simulation";
 import type { Trajectory, State, XY } from "./types";
 
 export function sample(run: Trajectory, t: number): State {

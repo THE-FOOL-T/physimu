@@ -1,20 +1,26 @@
-"""M1 placeholder. No extraction, assumed scene, solver, or circuit fallback."""
-
-from ...core import image_url
+"""Mechanics perception plugin. Solving stays in the browser."""
 
 
 class MechanicsDomain:
     name = "mechanics"
-    stages = ("received", "done")
+    stages = (
+        "received",
+        "preprocess",
+        "detect",
+        "text",
+        "geometry",
+        "associate",
+        "archetype",
+        "validate",
+        "done",
+    )
+
+    def __init__(self, detector=None, text_reader=None):
+        self.detector, self.text_reader = detector, text_reader
 
     def analyze(self, image, options: dict, progress=None) -> dict:
-        return {
-            "domain": self.name,
-            "provenance": "unsupported",
-            "reason": "not_implemented",
-            "scene": {},
-            "warnings": [{"code": "not_implemented", "ref": None, "message_key": "mech.pending"}],
-            "timings": {},
-            "source_image": image_url(image),
-            "style_estimate": {},
-        }
+        from .engine import analyze_mechanics_page
+
+        return analyze_mechanics_page(
+            image, options, progress, detector=self.detector, text_reader=self.text_reader
+        )

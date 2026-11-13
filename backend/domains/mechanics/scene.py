@@ -300,7 +300,7 @@ class Scene(Strict):
             (self.bodies, {"block", "ball", "bob", "cart"}),
             (self.surfaces, {"incline", "floor", "wall", "ceiling"}),
             (self.links, {"rope", "rod", "spring"}),
-            (self.annotations, {"dimension", "angle_arc", "label", "axis"}),
+            (self.annotations, {"dimension", "angle_arc", "label", "axis", "ground_hatch"}),
         ]
         for group, types in known:
             for item in group:

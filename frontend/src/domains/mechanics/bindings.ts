@@ -27,6 +27,14 @@ export class BindingEngine {
     );
   }
   solve() {
+    if (this.original.forces.some((f) => f.magnitude?.number !== 0))
+      return {
+        ...archetypes.unsupported.solve(this.original, {}),
+        reason: "unsupported_applied_force",
+        warnings: ["unsupported_applied_force"],
+      };
+    if (this.original.meta.provenance === "unsupported")
+      return archetypes.unsupported.solve(this.original, {});
     return archetypes[this.original.archetype].solve(
       this.original,
       this.params,

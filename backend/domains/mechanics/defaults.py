@@ -13,6 +13,8 @@ DEFAULTS = {
     "incline_length": (3.0, "m"),
     "pendulum_length": (1.0, "m"),
     "spring_rest_length": (0.5, "m"),
+    "spring_constant": (100.0, "N/m"),
+    "initial_speed": (0.0, "m/s"),
 }
 
 
