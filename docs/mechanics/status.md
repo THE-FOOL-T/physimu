@@ -1308,3 +1308,51 @@ two-panel test passes in **6.21 s**. Final full manage.py test after that change
 passed, zero guarded external attempts. Full Ruff lint/format passes too.
 Evidence: `.cache/m5-final/signed-after-panel.log` and `test-final-signed.log`.
 The after-panel identity mapping remains explicitly assumed, not recognition.
+
+## Owner-requested synthetic detector training (2026-11-13)
+
+After M5, the owner explicitly requested detector training on the 600 annotated
+synthetic images before M6. This authorizes a multi-epoch local CPU experiment
+beyond M4's subset smoke. M6 has not started; no real labels or gold are authored.
+
+Added a mechanics-only `--synthetic-bootstrap` training mode. It requires
+explicitly synthetic per-image provenance, preserves the full existing train/val
+split and uses one candidate instead of duplicating identical R1 arms. Normal
+training still requires 20 printed/20 handwritten frozen HUMAN scenes. Smoke
+remains one epoch on a subset; neither synthetic experiment nor smoke qualifies
+for promotion. Original circuit files, app configuration and defaults are unchanged.
+
+The actual background run uses the final M4 **v4** dataset: 600 annotated images,
+480 train/120 validation, 21 classes, eight archetypes. Image/label hashes and
+the existing source-group/exact/near-duplicate audit passed with zero collisions.
+There is no real frozen set, so real-set protection and real accuracy remain null.
+Run settings: local general `yolo26n.pt`, CPU, at most 50 epochs, 512 pixels,
+batch two, four Torch training threads, AdamW/0.001, seed 42 and patience 12.
+The host has no CUDA GPU. No checkpoint download or dependency change occurred.
+
+Training was launched; completed-training metrics are **pending**, not claimed.
+The first actual epoch saved best/last checkpoints and reported preliminary SDK
+synthetic mAP50 **0.21687**, mAP50:95 **0.13553**. This is an early SDK validation
+result, not the final fixed-confidence evaluator or real-image accuracy.
+The durable launcher, logs, checkpoints, live progress and automatic finalizer
+are in `.cache/synthetic-training-20261113-v1/`. On successful completion the
+finalizer evaluates synthetic styles separately, writes `report.md`, preserves
+an ignored experimental `models/mechanics-synthetic-20261113.pt`, renders
+unreviewed qualitative overlays and runs `manage.py test`. It records actual
+exit codes and never changes the default mechanics model. Inspect its
+`finalizer-status.json` and `verification.log` before treating those checks as
+executed. A failed training run does not trigger evaluation or a model copy.
+
+The initial focused training/promotion checks passed **3 tests** in **5.35 s**;
+the complete data-tools suite passed **24 tests** in **9.13 s**. Ruff lint/format
+and `git diff --check` passed. Exact command, input hashes and limits are in
+[synthetic-training.md](synthetic-training.md).
+
+The actual guarded `python manage.py test` completed successfully while training
+continued: **552 Python passed, 1 skipped** in **128.30 s**, **116 TypeScript
+passed**, type check and build passed (build **4.46 s**). The Python count is M5's
+551 plus one synthetic-bootstrap provenance/split regression; the existing
+optional model benchmark remains skipped. Logs: `regression-now.log` and exit
+record `regression-now-exit.txt` in the run's cache folder. No blocked external
+network attempts were recorded in training, focused tests or this regression
+run. Source data and original circuit implementation/tests remain unchanged.

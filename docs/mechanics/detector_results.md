@@ -1,5 +1,9 @@
 # M4 detector tooling and measured CPU smoke (2026-11-13)
 
+This is the historical M4 smoke report. The owner's later multi-epoch experiment
+on all 600 annotated synthetic images is recorded in
+[synthetic-training.md](synthetic-training.md); it does not establish real accuracy.
+
 M4 supplies data/training tools and a completed CPU smoke run. It does not supply
 a useful mechanics detector. Both one-epoch candidates scored zero on every
 supported synthetic class. Neither candidate was installed at `models/mechanics.pt`.

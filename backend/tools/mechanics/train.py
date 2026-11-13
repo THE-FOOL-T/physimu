@@ -1,4 +1,4 @@
-"""Paired mechanics fine-tune/control. Local weights only; smoke never qualifies for release."""
+"""Mechanics training candidates. Local weights only; synthetic scores never qualify for release."""
 
 import argparse
 import json
@@ -25,6 +25,10 @@ def training_plan(
     epochs=50,
     imgsz=640,
     seed=42,
+    synthetic_bootstrap=False,
+    batch=2,
+    threads=2,
+    patience=100,
 ):
     root = Path(dataset).resolve()
     manifest = load_dataset(root)
@@ -41,10 +45,23 @@ def training_plan(
             raise ValueError("Use general pretrained/mechanics checkpoints, never circuit weights")
     if not 1 <= epochs <= 500 or imgsz < 32 or imgsz % 32:
         raise ValueError("Invalid epochs/image size")
+    if batch < 1 or threads < 1 or patience < 0:
+        raise ValueError("Batch/threads must be positive and patience nonnegative")
+    if synthetic_bootstrap:
+        if smoke:
+            raise ValueError("Synthetic bootstrap and subset smoke are separate modes")
+        if manifest["origin"] != "synthetic" or not all(
+            r.get("synthetic") is True for r in manifest["records"]
+        ):
+            raise ValueError("Synthetic bootstrap requires explicitly synthetic images only")
     leakage = audit(manifest, root)
     if not leakage["passed"]:
         raise ValueError("Dataset leakage audit failed")
-    if not smoke and any(n < 20 for n in leakage["frozen_styles"].values()):
+    if (
+        not smoke
+        and not synthetic_bootstrap
+        and any(n < 20 for n in leakage["frozen_styles"].values())
+    ):
         raise ValueError(
             "Freeze 20 printed and 20 handwritten HUMAN gold scenes before full training; --smoke is plumbing only"
         )
@@ -61,11 +78,24 @@ def training_plan(
         "imgsz": imgsz,
         "seed": seed,
         "smoke_only": smoke,
-        "candidates": {"fine_tune": str(candidate), "pretrained_control": str(weights)},
+        "synthetic_bootstrap": synthetic_bootstrap,
+        "batch": batch,
+        "threads": threads,
+        "patience": patience,
+        "optimizer": "AdamW" if synthetic_bootstrap else "SGD",
+        "lr0": 0.001,
+        "candidates": {"fine_tune": str(candidate)}
+        if synthetic_bootstrap
+        else {"fine_tune": str(candidate), "pretrained_control": str(weights)},
         "checkpoint_sha256": {str(p): sha256(p) for p in {weights, candidate}},
         "leakage": leakage,
         "promotion_eligible": False,
-        "note": "R1 initializes both arms from the same general checkpoint unless a prior mechanics checkpoint is supplied. A one-epoch subset proves plumbing only.",
+        "note": (
+            "Explicit synthetic-only experiment on the complete train/val split, without frozen real gold. "
+            "One candidate; no duplicate identical control. Never eligible for production promotion."
+            if synthetic_bootstrap
+            else "R1 initializes both arms from the same general checkpoint unless a prior mechanics checkpoint is supplied. A one-epoch subset proves plumbing only."
+        ),
     }
 
 
@@ -122,6 +152,26 @@ def execute(plan):
         model = local_model(weights, general=True)
         if name == "pretrained_control" and len(model.names) != 80:
             raise ValueError("Control must be a general 80-class pretrained detector")
+        import torch
+
+        def limit_threads(_trainer):
+            # The SDK resets CPU threads during device selection; apply after setup.
+            torch.set_num_threads(plan["threads"])
+
+        def record_progress(trainer):
+            progress = {
+                "candidate": name,
+                "epoch": trainer.epoch + 1,
+                "epochs": trainer.epochs,
+                "elapsed_seconds": time.perf_counter() - start,
+                "torch_threads": torch.get_num_threads(),
+                "metrics": {key: float(value) for key, value in trainer.metrics.items()},
+            }
+            write_json(out / "progress.json", progress)
+            print("MECHANICS_PROGRESS " + json.dumps(progress), flush=True)
+
+        model.add_callback("on_train_start", limit_threads)
+        model.add_callback("on_fit_epoch_end", record_progress)
         # Known local system font avoids the SDK's automatic font-download branch.
         from ultralytics.utils import USER_CONFIG_DIR
 
@@ -141,12 +191,14 @@ def execute(plan):
             name=name,
             exist_ok=False,
             workers=0,
-            batch=2,
+            batch=plan["batch"],
             amp=False,
             plots=False,
             cache=False,
-            optimizer="SGD",
-            lr0=0.001,
+            optimizer=plan["optimizer"],
+            lr0=plan["lr0"],
+            warmup_bias_lr=0.0 if plan["synthetic_bootstrap"] else 0.1,
+            patience=plan["patience"],
             freeze=0,
             deterministic=True,
             mosaic=0,
@@ -169,13 +221,17 @@ def execute(plan):
         training_seconds = time.perf_counter() - start
         metrics = evaluate(data.parent, best, imgsz=plan["imgsz"], device=plan["device"])
         metrics["smoke_only"] = plan["smoke_only"]
+        metrics["synthetic_bootstrap"] = plan["synthetic_bootstrap"]
+        metrics["promotion_eligible"] = False
         metrics["training_seconds"] = training_seconds
         metrics["training_metrics_available"] = result is not None
         write_json(directory / "evaluation.json", metrics)
         (directory / "MODEL_CARD.md").write_text(
             "# Mechanics candidate\n\n"
             + json.dumps(plan, indent=2)
-            + "\n\nSynthetic validation is not real accuracy. Smoke candidates cannot be promoted. No full/GPU training is claimed. Ultralytics licensing requires owner review.\n",
+            + "\n\nSynthetic validation is not real accuracy. Synthetic-only and smoke candidates cannot be promoted. "
+            + f"This run executed {plan['epochs']} maximum epochs on device {plan['device']}; see results.csv for completed epochs. "
+            + "Ultralytics licensing requires owner review.\n",
             encoding="utf-8",
         )
         reports[name] = {
@@ -199,6 +255,14 @@ def main():
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--device", default="cpu")
     p.add_argument("--smoke", action="store_true")
+    p.add_argument(
+        "--synthetic-bootstrap",
+        action="store_true",
+        help="Train one experimental candidate on all synthetic train images without real gold; never promotion eligible",
+    )
+    p.add_argument("--batch", type=int, default=2)
+    p.add_argument("--threads", type=int, default=2)
+    p.add_argument("--patience", type=int, default=100)
     p.add_argument("--execute", action="store_true")
     a = p.parse_args()
     plan = training_plan(
@@ -211,6 +275,10 @@ def main():
         epochs=a.epochs,
         imgsz=a.imgsz,
         seed=a.seed,
+        synthetic_bootstrap=a.synthetic_bootstrap,
+        batch=a.batch,
+        threads=a.threads,
+        patience=a.patience,
     )
     print(json.dumps(plan, indent=2))
     if a.execute:

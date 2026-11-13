@@ -378,6 +378,48 @@ def test_training_plan_is_safe_smoke_and_cannot_use_circuit_weights(work):
             training_plan(root, circuit, work / "wrong")
 
 
+def test_synthetic_bootstrap_uses_complete_split_without_claiming_promotion(work):
+    root = work / "synthetic"
+    manifest = dataset(root)
+    for row in manifest["records"]:
+        row["synthetic"] = True
+    write_json(root / "manifest.json", manifest)
+    checkpoint = work / "STUB.pt"
+    checkpoint.write_bytes(b"TEST ONLY")
+    plan = training_plan(
+        root,
+        checkpoint,
+        work / "bootstrap",
+        synthetic_bootstrap=True,
+        epochs=50,
+        imgsz=512,
+        threads=4,
+    )
+    assert plan["epochs"] == 50 and not plan["smoke_only"]
+    assert plan["origin"] == "synthetic" and not plan["promotion_eligible"]
+    assert list(plan["candidates"]) == ["fine_tune"]
+    data = copy_training_data(plan, fresh(work / "bootstrap"))
+    copied = load_dataset(data.parent)
+    assert len(copied["records"]) == len(manifest["records"])
+    assert [r["split"] for r in copied["records"]] == ["train", "val"]
+    assert sorted(r["sha256"] for r in copied["records"]) == sorted(
+        r["sha256"] for r in manifest["records"]
+    )
+    # The experiment option cannot bypass the normal real-data training gate.
+    with pytest.raises(ValueError, match="20 printed"):
+        training_plan(root, checkpoint, work / "ordinary")
+    with pytest.raises(ValueError, match="separate modes"):
+        training_plan(root, checkpoint, work / "both", synthetic_bootstrap=True, smoke=True)
+    manifest["records"][0]["synthetic"] = False
+    write_json(root / "manifest.json", manifest)
+    with pytest.raises(ValueError, match="synthetic images only"):
+        training_plan(root, checkpoint, work / "mixed", synthetic_bootstrap=True)
+    real = work / "real"
+    dataset(real, origin="real")
+    with pytest.raises(ValueError, match="synthetic images only"):
+        training_plan(real, checkpoint, work / "real-refused", synthetic_bootstrap=True)
+
+
 def test_external_class_mapping_binds_reviewed_labels_and_refuses_frozen_sources(work):
     export = work / "external"
     image(export / "images/one.png")
