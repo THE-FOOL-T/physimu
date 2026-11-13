@@ -1079,3 +1079,232 @@ gold physics, real model/HTTP latency, full/GPU training duration, Linux/macOS,
 human Bangla approval and physical-device testing remain **null/unverified**.
 No smoke weight was installed at `models/mechanics.pt`. M4 stops here; M5 needs
 the next explicit continue.
+
+## M5 — perception, jobs and editable results (2026-11-13)
+
+M5 is implemented with the inherited full-run keyboard chooser failure disclosed
+below. M6 has not started. Production mechanics weights and reviewed real gold
+are still absent. A useful real-image recognizer is not established by this work.
+
+### Implemented
+
+- Added the independent local 21-class lazy detector, file-identity cache,
+  MECHANICS_MODEL override and explicit missing/incompatible-weight result.
+  A cancellable core lease serializes application-domain detector use, waits for
+  startup warmup and evicts the other detector before loading. Circuit analysis,
+  hybrid locking, cancellation, fallback keys and warning order are preserved.
+- Implemented measured lines/circles, masked skeleton traces, pendulum geometry,
+  spring endpoints/coils, trajectory fits, dimension scale, native body masks,
+  static-line repairs and ink/paper/stroke estimates. Collinear ink support
+  distinguishes an occluded incline from its uninterrupted parallel rope.
+- Added EN/BN/subscript digit normalization and mechanics SI grammar, typed
+  Hungarian association with confidence/distance, user-value preservation,
+  unplaced Values, structural archetype rules, alternate contact/link scoring,
+  physical checks and explicit priors/regime warnings. Bare m/M/g are names.
+  Bengali unit spellings remain pending HUMAN review.
+- Both existing analysis routes now execute the nine mechanics stages and expose
+  partial boxes/text. Results contain a validated native-coordinate scene,
+  reason, source image, warnings, timings and diagnostics; no circuit netlist,
+  solution or demo. Auto routing remains an unimplemented interface/HTTP 400.
+- Wired upload/progress/cancel/result loading into the M3 workspace. The actual
+  preprocessed raster replaces the upload preview before native partial boxes
+  are drawn. Partial/unsupported results open editing; replacement, edits,
+  fixture/import and unmount reject stale results. No second animation loop.
+- Unsupported provenance withholds simulation while retaining recognized objects
+  for repair. Unresolved/nonzero arbitrary force arrows also block after an
+  unrelated authoring edit, so changing a mass cannot enable a solver that
+  ignores a retained force. Numerical solvers and renderer thresholds are unchanged.
+- Reused the corrections endpoint with explicit mechanics domain/scene validation.
+  Consent starts off, requires a separate save action and resets after save or
+  replacement/unmount. Native image, scene and consent records are local,
+  unreviewed corrections, never gold or training approval. Circuit payloads retain
+  their existing validation/storage path.
+- Added the frozen end-to-end evaluator with separate printed/handwritten metrics,
+  ID-independent scene correspondence, required-Value/attachment comparisons and
+  the existing TypeScript solvers/sampler for trajectories. A narrow pure shell
+  facade avoids loading browser CSS in the Node metric process. The actual null
+  baseline is [end_to_end_baseline.json](end_to_end_baseline.json).
+- Recognized ground_hatch as a known static annotation in both validators; the
+  open-string field, schema shape and version are unchanged. Added matching
+  mech.* text, localized automatic binding labels, and replaced ten pre-existing
+  Bangla question-mark strings. Native language review remains pending.
+
+No circuit pipeline, solver, original test source, dependency pin, fixture or
+visual baseline changed. No data/model was added to Git, no model was downloaded
+and no training or promotion was run. M1-owned placeholder tests now assert the
+M5 missing-model/stage contract; their circuit/unknown-domain isolation remains.
+
+### Commands and measured gates
+
+The Windows/Python/Node/Edge environment is the one recorded above. Commands used
+the workspace .venv and pinned frontend dependencies. The full isolation launcher
+in `.cache/m5-final/run_isolated.py` uses the tracked Python/Node process guards,
+checks both source rename targets, and restores the source in finally. It allows
+loopback/IPC; this is not a kernel-level browser firewall or host network shutdown.
+The source path is recorded only in [IMPORT.md](../IMPORT.md).
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest backend/tests/mechanics -q
+.\.venv\Scripts\python.exe manage.py test
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe -m circuit_sim.backend.tests.mechanics.perception_probe
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.eval_end_to_end --out .cache/m5-final/frozen-end-to-end.json
+.\.venv\Scripts\python.exe manage.py doctor
+# From frontend, with the local app/server available for the full suite:
+npm.cmd test
+npm.cmd run build
+npx.cmd playwright test
+npx.cmd playwright test --grep 'keyboard operation reaches' --repeat-each 5
+npx.cmd playwright test browser-tests/mechanics-analysis.spec.ts
+```
+
+| Gate | Actual result |
+| --- | --- |
+| Focused initial domain/perception suite | **76 passed**, 11.64 s. Later additions cover scale, two collision panels, correction API and evaluation/cache behavior. |
+| Expanded mechanics suite before the final three cases | **143 passed**, 58.86 s. Final perception-only suite has **56 passed**, 7.27 s; all cases are also in the full gates below. |
+| Corrected full pre-commit manage.py test | **551 Python passed, 1 skipped**, 73.71 s; **115 TS passed**; type check/build passed. |
+| Source-absent guarded manage.py test | **551 Python passed, 1 skipped**, 74.76 s; **115 TS passed**; type check/build passed. Full CLI wall time 89.25 s. |
+| Source-absent guarded manage.py check | Ruff lint/format and Prettier passed; **551 Python passed, 1 skipped**, 77.33 s; **115 TS passed**; type check/build passed. Full CLI wall time 102.80 s. |
+| Completion manage.py test, after force guard and label review | **551 Python passed, 1 skipped**, 79.15 s; **116 TS passed**; type check/build passed. Full CLI wall time 94.92 s. |
+| Completion manage.py check | Ruff lint/format and Prettier passed; **551 Python passed, 1 skipped**, 85.48 s; **116 TS passed**; type check/build passed. Full CLI wall time 108.13 s. |
+| Full guarded/source-absent browser run | **122 collected: 119 passed, 1 failed, 2 skipped**, 5.4 min. Sole failure: unchanged keyboard file chooser. |
+| Unchanged keyboard scenario, isolated repeats | **5 passed**, 26.5 s. Across full/focused runs, all **120 available unique scenarios** pass; this is not a clean single-run 120/120 claim. |
+| New mechanics browser cases | All **4 passed** in the full run and again on the final bundle (**24.0 s**): real HTTP oracle upload/progress/text/play/edit, cancellation/switch, missing weights/consent, phone BN layout/accessibility. |
+| Strict circuit layouts | **12/12 at zero pixel tolerance**, no snapshot regeneration. Twelve default-layout accessibility reports have zero recorded violations; mechanics accessibility assertions, including the new phone BN case, pass. |
+| Actual local API | Root HTTP **200**; mechanics advertises nine stages. Missing mechanics model returns unsupported/weights_unavailable with matching native raster dimensions and no netlist/solution. The negative circuit run preserves detector_unavailable/demo_fallback and its response keys. |
+| Real local checkpoint ownership probe | Circuit cache **1/0**, then three mechanics requests **0/1**, then Circuit **1/0**. The second number is mechanics cache size. Only the unpromoted M4 smoke was temporarily selected in that child process. |
+| Network/source proof | Both intentional Python/Node external probes blocked. **Zero runtime external attempts** in isolated gates, model probe and completion gates. Original source restored and tracked status clean. |
+| Doctor | Exit **0**: all five circuit/OCR files match. This does not approve or inventory a mechanics checkpoint. |
+
+Python is **491 M4 + 56 perception/correction + 4 evaluation/cache = 551 passed**.
+TS is **109 M4 + 7 = 116**; the seventh case was added after isolation to prevent
+an unrelated authored edit from enabling an unmodelled force. Browser is
+**118 M4 + 4 = 122**. The existing opt-in real-model OCR benchmark and two optional
+private owner-analysis browser cases retain their original skips.
+
+The full browser failure is the same layout.spec.ts keyboard file-chooser wait
+recorded in M0–M4: 30 seconds waiting for the chooser, followed by five unchanged
+focused passes. No test retry, timeout, assertion, production keyboard delay,
+skip or visual threshold was changed to hide it. The final bundle's focused M5
+rerun follows the additional force guard and localized binding labels; no circuit
+layout/code was changed after the full browser run.
+
+The first full unit run had **550 passes, one failure, one skip**: immediate
+model-lease acquisition emitted a redundant queued stage in an original circuit
+job test. The lease now reports queue checks only while waiting; the unchanged
+original test and all full gates pass. Initial test-harness import/kwargs/fixture
+assumptions, a Node CSS import, and exact-floating-point zero assertion were
+corrected. The first browser attempt found an unbound fetch receiver (no upload
+reached the API); the default transport now calls fetch through an arrow wrapper.
+These failures are retained in logs, not counted as successful gates.
+
+### Synthetic correctness and CPU measurements
+
+The tracked perception_probe uses the ten M2 painted QA fixtures. Providers
+supply only their detector boxes and actual printed label strings, never a scene,
+archetype or attachment answer. These are known QA fixtures, not a held-out model
+benchmark. Every returned supported scene is partial because required Values
+remain assumed or unplaced. **Synthetic, not real accuracy.**
+
+| Metric | Measured result |
+| --- | --- |
+| Archetype correct | **10/10** across all eight archetypes |
+| Attachments/contact relationships correct | **20/20**, with geometry-based object correspondence and point support tolerance recorded in the protocol |
+| Required parameter Values correct | **21/157 (13.38%)**; missing/assumed Values count wrong even when numerically equal. Includes scale, initial state and physical inputs, not merely detected label precision. |
+| Trajectory correct | **2/10**, pendulum and Atwood, at the explicit .05 m displacement/.02 s capped-duration protocol |
+| Simulation produced | **10/10**, separate from correctness |
+| Independent detector/OCR accuracy | **null** in this oracle probe |
+| Frozen printed and handwritten real metrics | **all null**, zero reviewed images/scenes/labels |
+
+Most fixture parameter legends are distant from plausible physical owners and
+stay unplaced; they are not silently treated as spatial labels. Defaults and
+scale differences therefore make most required Values and trajectories fail.
+Correct archetype/attachments and producing an animation do not validate those
+Values or trajectories. The UI retains the source, assumptions, warnings and
+editor so they can be repaired.
+
+Native geometry tests measure six drawn lines (0/15/30/60/90/−30 degrees): maximum
+angle error **0.0746 degrees**, length error **2.0 px**. Circle centre error
+**0.0123 px**, radius error **0.0924 px**; derived pendulum length error
+**0.0117 px**, angle error **0.0010 degrees**. The drawn ten-coil spring yields
+**10 coils**, endpoints **6 px** from truth. Parabola launch tangent error is
+**0.00193 degrees**, coefficient error **7.08e−8**, median pixel residual
+**0.280 px**. Empty geometry raises explicit unmeasured errors. Dimension labels
+also calibrate native scale in a separate test. These controlled drawings do not
+establish these errors on real diagrams. Some fixture body masks fall back to
+boxes, and all pulley wrapping is inferred with a warning.
+
+Ten-image CPU engine timings, median/p95 milliseconds, with oracle detection and
+OCR (not real inference/HTTP): received **50.672/61.956**, preprocess
+**85.971/95.816**, detect **0.423/0.485**, text **0.114/0.145**, geometry
+**21.474/34.787**, associate **0.451/1.019**, archetype **2.793/4.859**, validate
+**1.181/2.020**, total **161.830/199.202**. Received includes model-lease/GC work
+in this direct-call probe; service queue time is outside engine timing.
+
+A separate guarded runtime probe deliberately selected the existing unpromoted
+M4 smoke checkpoint on three public candidates (Atwood, spring–mass, incline).
+It used actual local detection/OCR and returned **zero detections**, unsupported
+with retained images on all three. Wall times were **22.581 / 17.070 / 14.667 s**,
+including cold/cache/OCR-budget work while verification was active. This is a
+runtime/cache check, not a useful model, real correctness score, production HTTP
+benchmark or target-latency claim. No smoke weight was copied into models/.
+
+Fresh circuit browser timing JSON was copied to `.cache/m5-final/` and historical
+tracked files restored. Thirty synchronous edited-Run events: median **13.1 ms**,
+p95 **15.5 ms**, max **26.4 ms**. One hundred parameter events: median **5.7 ms**,
+p95 **8.0 ms**, max **9.1 ms**. Both exclude paint; neither is mechanics latency.
+
+### Review, shared boundaries and stop point
+
+Opened actual desktop EN uploaded/edited/paused pendulum and phone BN partial
+analysis captures. They retain the source diagram, warning/provenance text,
+consent-off control and editable assumptions. The phone browser assertion has
+no horizontal overflow. Binding labels and shared OCR/preprocess warnings were
+localized after review; Bangla text and physical-device usability are not HUMAN
+approved. No frame-0 or render comparison threshold was weakened.
+
+Shared imported-file audit against M4 9c9123b (insertions/deletions): README.md
+**8/3**, backend/app/analysis.py **24/2**, backend/app/main.py **20/2**, core facade
+**12/0**, frontend EN **60/2**, BN **69/11**. New core/model and pure shell facade
+files are separate additions. Mechanics workspace/controller/contract changes
+are domain-owned; circuit pipeline/frontend controllers and original tests are
+unchanged. No config, packaging list, pin, original fixture or layout snapshot
+changed and no imported-source hash allowance was added.
+
+Full source-absent logs are in `.cache/m5-final/isolated/`; completion logs and
+summary, null real baseline, synthetic metric/geometry records, actual API/model
+probe, captures and timing copies are in `.cache/m5-final/`. Guard probes are
+logged separately from runtime. Test-owned oracle providers and the synthetic
+probe are tracked/reproducible. Verification servers were closed. The verified
+workspace app was restarted at http://127.0.0.1:8000 with its normal circuit/OCR
+weights; health reports ready/ready/hybrid. Mechanics still reports missing
+weights by default. Source restoration and original-source cleanliness hold.
+
+HUMAN: review licences; independently author/review and freeze at least 20 printed
+and 20 handwritten scenes; review disjoint real labels and adequate training/
+evaluation before any model promotion; review Bangla and physical devices/novices.
+Public candidates, manual QA and synthetic test mocks are not gold. No real gold,
+licence approval, useful production mechanics weights or training was produced.
+Production mechanics accuracy/latency, GPU duration, Linux/macOS, real-device QA
+and human Bangla review remain **null/unverified**. M5 ends here. M6 requires the
+next explicit continue.
+
+Ownership/facades/plan commit: **d5e6676**; domain perception, tests and evaluation:
+**3ebb53b**; shared app/workspace integration, translations and browser cases:
+**de0d1bd**. Documentation is separate. Full test passed before the shared commits.
+Final evaluator review also covers force correspondence by measured arrow
+endpoints with arbitrary ids, and canonicalizes optional gold defaults before
+comparison. Its existing four regression tests pass in **13.19 s**; no HUMAN
+gold was written. The post-review full test log is
+`.cache/m5-final/test-post-review.log`: **551 Python passed, 1 skipped**, 86.73 s;
+**116 TS passed**, type check/build passed, zero guarded external attempts.
+Full Ruff lint/format also passes after this review. All source/model/transport
+boundaries remain the ones audited above.
+
+The final signed after-panel regression (**29a076f**) keeps a negative component
+signed and restricts arrow direction to its nearest owning body. The affected
+two-panel test passes in **6.21 s**. Final full manage.py test after that change:
+**551 Python passed, 1 skipped**, **90.45 s**; **116 TS passed**, type check/build
+passed, zero guarded external attempts. Full Ruff lint/format passes too.
+Evidence: `.cache/m5-final/signed-after-panel.log` and `test-final-signed.log`.
+The after-panel identity mapping remains explicitly assumed, not recognition.

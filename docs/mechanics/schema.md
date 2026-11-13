@@ -66,6 +66,9 @@ Repairs reference a surface or line object and contain native polyline segments.
 Constraint and warning refs resolve too.
 
 Annotations carry typed geometry (points, optional bbox/text/radius/arc angles).
+M5 recognizes `ground_hatch` as a static annotation, matching the fixed detector
+class list. Annotation.type remains an open string; no version/schema shape
+changed. Other unknown types retain their warning and simulation guard.
 `text_id` references another label annotation, not a separate unlisted OCR store.
 `bound_to` is an existing document path. Optional collision `after_velocity`
 constraints carry body ids in refs and a body-id-to-Value map (`m/s`); the solver

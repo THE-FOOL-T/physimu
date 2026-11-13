@@ -6,9 +6,12 @@ human language approval, novice testing or physical-device QA.
 
 1. Open Circuit, change a resistor, switch to Mechanics and back. The edited
    resistor/document must remain. Inactive circuit shortcuts/paste must stay off.
-2. In Mechanics upload a real diagram, choose and place a template. Verify every
-   assumption, delete absent objects, position native handles, set boxes/masks,
-   attach ends, draw a missing line, and repair lines revealed under moving bodies.
+2. In Mechanics upload a real diagram and observe stages/partial boxes/text.
+   Missing weights must give an explicit unsupported result and retain the image.
+   Partial/unsupported results must open editing. Review an extracted result too.
+   If needed, choose and place a template. Verify every assumption, delete absent
+   objects, position native handles, set boxes/masks, attach ends, draw a missing
+   line, and repair lines revealed under moving bodies.
 3. Enter physical Values, assign unplaced chips and check confidence/status badges.
    Run. Compare the trajectory/regime/units and readouts to an independently worked
    physical solution. Check the original toggle and any composition warning.
@@ -27,6 +30,10 @@ human language approval, novice testing or physical-device QA.
 8. On a physical phone/tablet test 44px control targets, tab order/selection,
    pointer capture, scroll/zoom, keyboard arrows, clear focus and cancellation.
    Under reduced motion confirm no autoplay and readable static paths/vectors.
+9. Cancel or switch domains during analysis, then edit or load a fixture. A late
+   response must not replace it. Correction consent starts off; saving requires
+   both checking the box and pressing Save correction. Verify only the native
+   image/edited scene are saved locally as unreviewed data, and consent resets.
 
 Public-source manual QA provenance is in [real-qa-sources.md](real-qa-sources.md).
 No model inference, gold review or recognition score follows from these checks.

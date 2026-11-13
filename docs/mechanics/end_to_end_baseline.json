@@ -1,0 +1,261 @@
+{
+  "domain": "mechanics",
+  "origin": "real",
+  "protocol": {
+    "object_iou": 0.5,
+    "scene_correspondence_iou": 0.2,
+    "point_anchor_tolerance_px": 12,
+    "parameter_text": "exact SI numeric value and unit; missing/assumed values count as incorrect",
+    "measured_angle_tolerance_deg": 3,
+    "trajectory": "existing TypeScript solver; 121 equal-time samples over common horizon <=5s; displacements from initial state within .05m; capped end times within .02s",
+    "simulation_produced": "reported independently; it does not establish correctness"
+  },
+  "partitions": {
+    "printed": {
+      "images": 0,
+      "frozen": false,
+      "metrics": {
+        "archetype_correct": null,
+        "attachment_correct": null,
+        "parameter_correct": null,
+        "trajectory_correct": null,
+        "simulation_produced": null,
+        "seconds": null,
+        "object_recall": {
+          "block": null,
+          "ball": null,
+          "bob": null,
+          "cart": null,
+          "incline": null,
+          "floor": null,
+          "wall": null,
+          "ceiling": null,
+          "pivot": null,
+          "ground_hatch": null,
+          "pulley": null,
+          "rope": null,
+          "rod": null,
+          "spring": null,
+          "arrow_force": null,
+          "arrow_velocity": null,
+          "angle_mark": null,
+          "axis": null,
+          "trajectory_arc": null,
+          "dimension_line": null,
+          "text_label": null
+        }
+      },
+      "classes": {
+        "block": {
+          "support": null,
+          "recall": null
+        },
+        "ball": {
+          "support": null,
+          "recall": null
+        },
+        "bob": {
+          "support": null,
+          "recall": null
+        },
+        "cart": {
+          "support": null,
+          "recall": null
+        },
+        "incline": {
+          "support": null,
+          "recall": null
+        },
+        "floor": {
+          "support": null,
+          "recall": null
+        },
+        "wall": {
+          "support": null,
+          "recall": null
+        },
+        "ceiling": {
+          "support": null,
+          "recall": null
+        },
+        "pivot": {
+          "support": null,
+          "recall": null
+        },
+        "ground_hatch": {
+          "support": null,
+          "recall": null
+        },
+        "pulley": {
+          "support": null,
+          "recall": null
+        },
+        "rope": {
+          "support": null,
+          "recall": null
+        },
+        "rod": {
+          "support": null,
+          "recall": null
+        },
+        "spring": {
+          "support": null,
+          "recall": null
+        },
+        "arrow_force": {
+          "support": null,
+          "recall": null
+        },
+        "arrow_velocity": {
+          "support": null,
+          "recall": null
+        },
+        "angle_mark": {
+          "support": null,
+          "recall": null
+        },
+        "axis": {
+          "support": null,
+          "recall": null
+        },
+        "trajectory_arc": {
+          "support": null,
+          "recall": null
+        },
+        "dimension_line": {
+          "support": null,
+          "recall": null
+        },
+        "text_label": {
+          "support": null,
+          "recall": null
+        }
+      },
+      "records": [],
+      "human_task": "Supply independently HUMAN-reviewed, source-separated frozen scenes and labels. No real metric was measured."
+    },
+    "handwritten": {
+      "images": 0,
+      "frozen": false,
+      "metrics": {
+        "archetype_correct": null,
+        "attachment_correct": null,
+        "parameter_correct": null,
+        "trajectory_correct": null,
+        "simulation_produced": null,
+        "seconds": null,
+        "object_recall": {
+          "block": null,
+          "ball": null,
+          "bob": null,
+          "cart": null,
+          "incline": null,
+          "floor": null,
+          "wall": null,
+          "ceiling": null,
+          "pivot": null,
+          "ground_hatch": null,
+          "pulley": null,
+          "rope": null,
+          "rod": null,
+          "spring": null,
+          "arrow_force": null,
+          "arrow_velocity": null,
+          "angle_mark": null,
+          "axis": null,
+          "trajectory_arc": null,
+          "dimension_line": null,
+          "text_label": null
+        }
+      },
+      "classes": {
+        "block": {
+          "support": null,
+          "recall": null
+        },
+        "ball": {
+          "support": null,
+          "recall": null
+        },
+        "bob": {
+          "support": null,
+          "recall": null
+        },
+        "cart": {
+          "support": null,
+          "recall": null
+        },
+        "incline": {
+          "support": null,
+          "recall": null
+        },
+        "floor": {
+          "support": null,
+          "recall": null
+        },
+        "wall": {
+          "support": null,
+          "recall": null
+        },
+        "ceiling": {
+          "support": null,
+          "recall": null
+        },
+        "pivot": {
+          "support": null,
+          "recall": null
+        },
+        "ground_hatch": {
+          "support": null,
+          "recall": null
+        },
+        "pulley": {
+          "support": null,
+          "recall": null
+        },
+        "rope": {
+          "support": null,
+          "recall": null
+        },
+        "rod": {
+          "support": null,
+          "recall": null
+        },
+        "spring": {
+          "support": null,
+          "recall": null
+        },
+        "arrow_force": {
+          "support": null,
+          "recall": null
+        },
+        "arrow_velocity": {
+          "support": null,
+          "recall": null
+        },
+        "angle_mark": {
+          "support": null,
+          "recall": null
+        },
+        "axis": {
+          "support": null,
+          "recall": null
+        },
+        "trajectory_arc": {
+          "support": null,
+          "recall": null
+        },
+        "dimension_line": {
+          "support": null,
+          "recall": null
+        },
+        "text_label": {
+          "support": null,
+          "recall": null
+        }
+      },
+      "records": [],
+      "human_task": "Supply independently HUMAN-reviewed, source-separated frozen scenes and labels. No real metric was measured."
+    }
+  }
+}

@@ -119,3 +119,32 @@ licence review. Setup/start permit absent models; doctor is a strict optional
 inventory. Circuit API, algorithms, editor, renderer, and original tests are
 preserved. Historical upstream checkout references are consolidated in IMPORT.md;
 earlier measurements remain explicitly historical. No mechanics code is in M0.
+
+## M5 mechanics perception and detector ownership
+
+Mechanics uses its own local 21-class checkpoint, cache and parser. Shared
+preprocessing, OCR and job behavior are reached through the facade; circuit
+pipeline implementations stay unchanged. A cancellable application model lease
+serializes both domains, waits for startup warmup and clears the other detector
+cache before loading. OCR models remain shared. This trades detector reload time
+for single-domain detector ownership on CPU; it is a per-process guarantee for
+the supported service path, not arbitrary mixed-namespace internal calls.
+
+An analysis scene refers to the actual preprocessed native raster returned with
+it. Upload preview coordinates are replaced before partial boxes are drawn.
+Object location boxes never substitute for measured line/circle angles. Unread
+values remain assumed or unplaced, and uncertain geometry remains editable.
+The runtime performs constraint checks, not a second mechanics solver. An
+unsupported result retains objects and blocks simulation until an authored
+repair; recognized archetypes keep their existing unit conventions.
+
+The broad frontend shell facade loads CSS. A narrow pure simulation facade lets
+the evaluation process reuse the existing sampler and TypeScript solvers in
+Node without importing browser styles. No numerical solver was replaced.
+Collision after-panel readings use the existing after_velocity constraint; the
+left-to-right body mapping is explicitly assumed and requires review.
+
+Mechanics correction storage uses the existing corrections endpoint, with an
+explicit domain and separate scene/image validation. Saved corrections are
+unreviewed local data, never agent-authored gold or training approval. The M4
+smoke checkpoint remains unpromoted; real correctness is null without HUMAN gold.
