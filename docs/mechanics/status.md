@@ -1788,3 +1788,122 @@ model/data licence approval, GPU execution, Linux/macOS, HUMAN Bangla review and
 physical-device/novice QA remain **null/unverified**. HUMAN: supply and review
 disjoint real labels and frozen scenes, decide licences and review the actual
 candidate before promotion. M7 stops here; no further milestone was started.
+
+## Post-M7 — detector data audit and next synthetic corpus (2026-11-13)
+
+The owner's next continue was interpreted as a bounded recognition-data
+follow-up. The three M7 public trials exposed missing essential objects and
+letters proposed as bodies. No additional numbered milestone was invented.
+The [plan](plan-post-M7-data.md) preceded code. The new corpus and its baseline
+are complete; **no new training or production promotion ran**.
+
+### Implemented and measured
+
+- Added a target-size audit using the existing manifest/hash/label validator.
+  It reports per-class/split minimum-side quantiles and under-4/under-8-pixel
+  counts at an explicit inference size. These describe geometry, not recall or
+  a proven cause of detector failure.
+- Added the explicit `--appearance textbook` generator/painter profile: more
+  diagram coverage, enlarged/separated bodies, varied fills, pulley rims/spokes,
+  zigzag/sinusoidal springs, larger pivot/angle marks, stronger strokes,
+  separated body labels, and four independently positioned letter text targets.
+  Every box remains an actual authored extent; no box-padding workaround.
+- Final ignored corpus: `data/generated_mechanics/post-m7-textbook-20261113-v3/`,
+  **600 images, 480 train / 120 validation**, seed 73, generated in **372.11 s**,
+  exit 0. All eight archetypes have 75 images. All 21 classes have at least 75
+  instances. Styles are 180 printed / 180 simulated handwritten / 120 scan /
+  120 simulated photo; 300 mirrored, 150 without numbers, 60 Bengali-digit cases.
+  The final corpus uses the lighter baseline handwriting option. Strong pen
+  deformation remains available and is covered by the new alignment tests.
+- The complete split audit passed with **zero collisions**. It reports zero
+  frozen real images and null real-frozen protection. Template families are
+  shared across synthetic examples; this is not independent real data.
+- At size 512, median minimum sides changed from R1 to this corpus: floor
+  **2.280 → 4.331 px**, pivot **3.779 → 9.267 px**, text **5.923 → 10.196 px**.
+  The final 40-sample comparison with saved pre-change baseline pixels, masks,
+  objects, scenes and settings has zero differences. Default generation is
+  preserved; existing datasets, fixture images and checkpoints are unchanged.
+- Evaluated the existing, unchanged experimental checkpoint on the new
+  **120 synthetic validation images / 1,983 objects**. Macro precision
+  **0.663588**, recall **0.678523**, AP50 **0.684247**, AP50:95 **0.474520**.
+  Size/confidence/matching/NMS/AP protocol remains 512 / 0.25 / 0.50 / 0.70 /
+  0.50:0.05:0.95, AP floor 0.001, 101-point interpolation. This is a synthetic
+  appearance-challenge baseline, not improved training or real accuracy.
+  Wall, pivot and angle-mark recall remains **zero**.
+- Validated a fresh **30-epoch, two-thread CPU** fine-tune plan from the existing
+  candidate using the synthetic-only experiment mode, without `--execute`.
+  The prepared command, corpus/model hashes, complete class table, size table
+  and reproduction are in [next-detector-data.md](next-detector-data.md).
+
+Predict-only timing on the new synthetic split: median **222.2 ms**, p95
+**768.2 ms**, total **41.96 s**. This includes preprocessing/first-call warmup,
+excludes auditing/OCR/geometry/HTTP, and is not a controlled comparison with the
+prior session or a real HTTP latency result. Changing evaluation inputs does
+not establish a model improvement against R1's earlier score.
+
+### Gates and development failures
+
+| Gate                                       | Actual result                                                                                                                                                                                                                 |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full guarded `python manage.py test`       | **607 Python passed, 1 skipped**, **170.82 s**; **117 TS passed**, type check/build passed (**2.17 s** build). Full command wall time **203.37 s**.                                                                           |
+| New dataset/audit tests                    | **9 passed** within that full run: reproducibility, native masks/boxes, contact/endpoints, fills, Atwood body/actual-glyph separation over 24 seeds, coil spacing, spring styles, size scaling and explicit profile handling. |
+| Independence suite after staging code      | **8 passed**, **12.86 s**. Original imported tests/assertions remain intact.                                                                                                                                                  |
+| M7 move/algorithm audit                    | All **109 implementation paths** and extracted helpers verified.                                                                                                                                                              |
+| Ruff lint/format; pinned frontend Prettier | All passed. No circuit/frontend product file changed.                                                                                                                                                                         |
+| `python manage.py doctor`                  | Exit **0**, all five circuit/OCR model files match. It does not approve a mechanics checkpoint.                                                                                                                               |
+| New data/evaluation/training-plan CLIs     | Exit **0**, complete 600-image contract/leakage validation and actual 120-image detector evaluation; plan generation only, no training execution.                                                                             |
+
+Python is **598 M7 + 9 = 607 passed**. TS remains **117**. The existing opt-in
+real-model OCR benchmark retains its skip. Browser tests were not rerun for
+these mechanics-tool-only changes; the M7 full browser result remains historical
+evidence, including its previously disclosed chooser-flake history.
+
+The first draft focused run had **12 passes and two failures** because its new
+test calculations used NumPy's removed two-dimensional cross-product operation.
+Those tests now use the scalar determinant; assertions were not relaxed.
+Visual QA found generator defects too: v1 was interrupted after **195 image
+files** for overlapping enlarged masses/dense coils. V2 completed **600 images**
+in **619.34 s**, but was rejected for overlapping mass labels. Its exact original
+manifest is preserved as `manifest.rejected.json`, with no trainable
+`manifest.json`. V3 fixes spacing/label placement and is the sole prepared
+corpus. These earlier attempts are not counted as successful dataset gates.
+
+Opened the actual final contact sheet and full-resolution annotated printed
+Atwood example. This is limited synthetic visual QA, not exhaustive legibility
+review, HUMAN labels, Bangla approval, real recognition or device testing.
+
+### Boundaries and stop point
+
+Changes are limited to mechanics tools/tests and mechanics documentation. No
+circuit implementation, shared core, runtime detector, API, scene schema,
+numerical solver, package/dependency pin, fixture or browser snapshot changed.
+The original R1 manifest and experimental checkpoint hashes still match their
+recorded values. The normal mechanics default still has no installed checkpoint.
+
+Generation/evaluation/full gates used the existing Python/Node process guards,
+loopback allowed; their logs record **zero blocked external attempts**. The
+original source was present and remains clean. This is not a fresh source-absent
+run, host network shutdown or browser kernel-firewall proof. No download,
+provider request, real-image training, gold writing or HUMAN review occurred.
+
+Raw logs, comparison/hashes, size/leakage/evaluation reports, plan output and
+captures are under ignored `.cache/post-m7-data/`. The owned app was paused for
+memory during generation/heavy verification and has been restored with its
+normal configuration. No training job is running. All new data/masks/scenes,
+labels and models stay ignored by Git.
+
+Real printed/handwritten recognition, independent physics correctness, licences,
+GPU execution, native Bangla and real-device/novice QA remain **null/unverified**.
+HUMAN: independently review real labels/frozen scenes and decide licences. The
+next training action is the concrete fine-tune command in the data guide; it
+must be evaluated on the same new split/protocol and remains experimental.
+This bounded preparation follow-up ends here.
+
+Completion: the app at **http://127.0.0.1:8000** reports detector/OCR **ready/ready**,
+hybrid OCR and both workers ready; measured startup **40.918 s**. The configured
+mechanics path remains `models/mechanics.pt`, absent. App status and actual health
+are in `.cache/post-m7-data/app-status.json` and `final-health.json`. The final
+staged-document independence check passed **8 tests in 12.32 s**. Code/plan
+commit: **4e8a87f**; this measured report is a separate documentation commit.
+
+A separate whole-file status-document Prettier check warns on inherited historical table formatting; the committed HEAD already has those warnings. Historical sections were preserved, and the new guide/plan and frontend formatter checks pass.
