@@ -134,6 +134,8 @@ test("all binding classes preserve source, locks and original reset", async ({
   await row("position").locator('input[type="number"]').fill("1.5");
   await row("position").locator('input[type="number"]').press("Tab");
   expect((await state(page)).background).toBe(before.background);
+  await expect(row("theta")).toHaveCount(0);
+  await action(page, "edit_scene").click();
   await expect(row("theta").locator('input[type="range"]')).toBeDisabled();
   await row("theta").locator("button").click();
   await row("theta").locator('input[type="number"]').fill("35");
@@ -199,6 +201,13 @@ test("draw every missing line, attach rope/spring ends, edit repairs and assign 
   expect((await state(page)).project.scene.pulleys[0].center).toEqual([
     400, 140,
   ]);
+  await action(page, "add_body").click();
+  expect((await state(page)).project.scene.bodies).toHaveLength(3);
+  expect((await state(page)).project.scene.bodies.at(-1).mass.status).toBe(
+    "assumed",
+  );
+  await action(page, "undo").click();
+  expect((await state(page)).project.scene.bodies).toHaveLength(2);
 });
 test("native handles, keyboard movement, masks and incline geometry edits", async ({
   page,
@@ -300,6 +309,7 @@ for (const lang of ["en", "bn"]) {
     await page
       .locator('.mechanics-workspace [data-field="archetype"]')
       .selectOption("pendulum");
+    await action(page, "edit_scene").click();
     await action(page, "place_template").click();
     await field(page, "anchor", "470, 320");
     await action(page, "run").click();
@@ -309,6 +319,7 @@ for (const lang of ["en", "bn"]) {
       .poll(async () => (await state(page)).time)
       .toBeGreaterThan(0.01);
     await action(page, "pause").click();
+    await action(page, "fix_interpretation").click();
     await page
       .locator('.mechanics-workspace [data-field="archetype"]')
       .selectOption("unsupported");
@@ -361,6 +372,7 @@ test("optional downloaded real diagram: author, validate, simulate and export", 
   await page
     .locator('.mechanics-workspace [data-field="archetype"]')
     .selectOption("pendulum");
+  await action(page, "edit_scene").click();
   await action(page, "place_template").click();
   await page
     .locator('.mechanics-workspace [data-field="object"]')

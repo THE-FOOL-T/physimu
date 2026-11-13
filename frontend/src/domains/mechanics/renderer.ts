@@ -11,6 +11,7 @@ import type {
 import { archetypes } from "./archetypes";
 import { read, RAD } from "./archetypes/common";
 import { valueAt } from "./validate";
+import { labelQuantity } from "./labels";
 
 export const FRAME0_LIMITS = {
   meanAbsolute: 2,
@@ -152,16 +153,72 @@ export class MechanicsRenderer {
   private springSprites = new Map<string, HTMLCanvasElement>();
   private predictedPaths = new Map<string, Point[]>();
   private source: HTMLCanvasElement;
+  private liftRisk = false;
+  private changedLabelPaths = new Set<string>();
   constructor(
     readonly scene: Scene,
     readonly image: HTMLImageElement,
+    recognition: Scene = scene,
   ) {
+    for (const binding of scene.bindings) {
+      try {
+        if (
+          valueAt(scene, binding.path).number !==
+            valueAt(recognition, binding.path).number ||
+          binding.labels.some(
+            (id) =>
+              scene.annotations.find((a) => a.id === id)?.geometry.text !==
+              recognition.annotations.find((a) => a.id === id)?.geometry.text,
+          )
+        )
+          this.changedLabelPaths.add(binding.path);
+      } catch {
+        /* Newly authored Values have no original printed label. */
+      }
+    }
     this.source = canvas(scene.image.width, scene.image.height);
     this.source.getContext("2d")!.drawImage(image, 0, 0);
+    this.liftRisk = scene.warnings.some((w) =>
+      ["mask_unmeasured", "mask_invalid"].includes(w.code),
+    );
+    // A single paper-color erase is unsafe over a textured photograph. Sample
+    // the perimeter outside each body, preserving all original pixels on fallback.
+    const pixels = this.source
+      .getContext("2d")!
+      .getImageData(0, 0, scene.image.width, scene.image.height).data;
+    const paper = [1, 3, 5].map((i) =>
+      parseInt(scene.frame.paper_color.slice(i, i + 2), 16),
+    );
+    for (const b of scene.bodies) {
+      let checked = 0,
+        different = 0;
+      for (let t = 0; t <= 1; t += 0.05)
+        for (const [x, y] of [
+          [b.bbox[0] + t * (b.bbox[2] - b.bbox[0]), b.bbox[1] - 6],
+          [b.bbox[0] + t * (b.bbox[2] - b.bbox[0]), b.bbox[3] + 6],
+        ]) {
+          if (
+            x < 0 ||
+            y < 0 ||
+            x >= scene.image.width ||
+            y >= scene.image.height
+          )
+            continue;
+          const i = (Math.round(y) * scene.image.width + Math.round(x)) * 4;
+          const delta = Math.max(
+            ...paper.map((v, c) => Math.abs(v - pixels[i + c])),
+          );
+          // Dark strokes are expected diagram ink, not a textured paper sample.
+          if (Math.min(pixels[i], pixels[i + 1], pixels[i + 2]) < 140) continue;
+          checked++;
+          if (delta > 24) different++;
+        }
+      if (checked && different / checked > 0.2) this.liftRisk = true;
+    }
     this.background = canvas(scene.image.width, scene.image.height);
     this.buildLayers();
   }
-  static async load(scene: Scene, url: string) {
+  static async load(scene: Scene, url: string, recognition: Scene = scene) {
     const img = new Image();
     img.src = url;
     await img.decode();
@@ -170,7 +227,7 @@ export class MechanicsRenderer {
       img.naturalHeight !== scene.image.height
     )
       throw new Error("Source dimensions differ from scene");
-    return new MechanicsRenderer(scene, img);
+    return new MechanicsRenderer(scene, img, recognition);
   }
   private cut(points: Point[]): Sprite {
     const [x, y, x1, y1] = bounds(points, 2),
@@ -250,7 +307,11 @@ export class MechanicsRenderer {
       ctx.fillStyle = s.frame.paper_color;
       ctx.fill();
     }
-    for (const a of s.annotations.filter((a) => a.id === "launch")) {
+    for (const a of s.annotations.filter(
+      (a) =>
+        a.id === "launch" ||
+        (s.archetype === "projectile" && a.id.startsWith("velocity")),
+    )) {
       const [x, y, x1, y1] = bounds(a.geometry.points, 12);
       ctx.fillStyle = s.frame.paper_color;
       ctx.fillRect(x, y, x1 - x, y1 - y);
@@ -391,7 +452,11 @@ export class MechanicsRenderer {
       );
       ctx.restore();
     }
-    const launch = s.annotations.find((a) => a.id === "launch");
+    const launch = s.annotations.find(
+      (a) =>
+        a.id === "launch" ||
+        (s.archetype === "projectile" && a.id.startsWith("velocity")),
+    );
     if (launch) {
       const source = s.bodies[0],
         h = read(s, params, "params.launch_height"),
@@ -434,13 +499,21 @@ export class MechanicsRenderer {
         binding.labels.some((id) => source.label_ids.includes(id)),
       )) {
         if (
-          !(binding.path in params) ||
-          params[binding.path] === valueAt(s, binding.path).number
+          !this.changedLabelPaths.has(binding.path) &&
+          (!(binding.path in params) ||
+            params[binding.path] === valueAt(s, binding.path).number)
         )
           continue;
         for (const id of binding.labels) {
-          const box = s.annotations.find((a) => a.id === id)?.geometry.bbox;
+          const label = s.annotations.find((a) => a.id === id),
+            box = label?.geometry.bbox;
           if (!box) continue;
+          const current = labelQuantity(
+            s,
+            binding.path,
+            label.geometry.text ?? "",
+            params,
+          );
           ctx.fillStyle = s.frame.paper_color;
           ctx.fillRect(
             box[0] - source.anchor[0] - 1,
@@ -454,7 +527,7 @@ export class MechanicsRenderer {
             : "16px sans-serif";
           ctx.textBaseline = "top";
           ctx.fillText(
-            `${numeric?.(params[binding.path], 1) ?? params[binding.path].toFixed(1)} ${binding.control.unit}`,
+            `${numeric?.(current.number!, 1) ?? current.number?.toFixed(1) ?? "?"} ${current.unit}`,
             box[0] - source.anchor[0],
             box[1] - source.anchor[1],
           );
@@ -464,13 +537,21 @@ export class MechanicsRenderer {
     }
     // Bound labels outside body masks follow the same Value overrides.
     for (const binding of s.bindings.filter(
-      (b) => b.path in params && params[b.path] !== valueAt(s, b.path).number,
+      (b) =>
+        this.changedLabelPaths.has(b.path) ||
+        (b.path in params && params[b.path] !== valueAt(s, b.path).number),
     ))
       for (const id of binding.labels) {
         if (s.bodies.some((b) => b.label_ids.includes(id))) continue;
         const a = s.annotations.find((a) => a.id === id),
           box = a?.geometry.bbox;
         if (!box) continue;
+        const current = labelQuantity(
+          s,
+          binding.path,
+          a.geometry.text ?? "",
+          params,
+        );
         ctx.fillStyle = s.frame.paper_color;
         ctx.fillRect(
           ...([
@@ -486,7 +567,7 @@ export class MechanicsRenderer {
           : "16px sans-serif";
         ctx.textBaseline = "top";
         ctx.fillText(
-          `${numeric?.(params[binding.path], 2) ?? params[binding.path]} ${binding.control.unit}`,
+          `${numeric?.(current.number!, 2) ?? current.number ?? "?"} ${current.unit}`,
           box[0],
           box[1],
         );
@@ -520,6 +601,8 @@ export class MechanicsRenderer {
     return output;
   }
   renderFrame0Check(st: State): Frame0Report {
+    const edits = this.changedLabelPaths;
+    this.changedLabelPaths = new Set();
     const composed = this.compose({}, st),
       a = this.source
         .getContext("2d")!
@@ -527,6 +610,7 @@ export class MechanicsRenderer {
     const b = composed
       .getContext("2d")!
       .getImageData(0, 0, composed.width, composed.height).data;
+    this.changedLabelPaths = edits;
     let total = 0,
       over = 0;
     for (let i = 0; i < a.length; i += 4) {
@@ -563,8 +647,11 @@ export class MechanicsRenderer {
         fraction <= FRAME0_LIMITS.fractionOver16 &&
         anchorError <= FRAME0_LIMITS.anchorErrorPx,
     };
-    this.degraded = !this.frame0.passed;
-    this.warnings = this.degraded ? ["render_mismatch"] : [];
+    this.degraded = !this.frame0.passed || this.liftRisk;
+    this.warnings = [
+      ...(!this.frame0.passed ? ["render_mismatch"] : []),
+      ...(this.liftRisk ? ["source_lift_approximate"] : []),
+    ];
     this.confidence = this.degraded ? 0.5 : 1;
     return this.frame0;
   }
@@ -600,7 +687,8 @@ export class MechanicsRenderer {
       h = this.scene.image.height + this.padding.top + this.padding.bottom;
     const checked = this.frame0.mean_absolute_channel !== null;
     this.warnings = checked && !this.frame0.passed ? ["render_mismatch"] : [];
-    this.degraded = checked && !this.frame0.passed;
+    this.degraded = (checked && !this.frame0.passed) || this.liftRisk;
+    if (this.liftRisk) this.warnings.push("source_lift_approximate");
     this.confidence = checked ? (this.degraded ? 0.5 : 1) : 0;
     if (
       w * this.dpr > 16000 ||
@@ -666,8 +754,10 @@ export class MechanicsRenderer {
       );
     }
     const draw = archetypes[s.archetype].layout(s, params, st);
-    if (options.original || this.degraded) ctx.drawImage(this.source, 0, 0);
-    else {
+    if (options.original || this.degraded) {
+      ctx.drawImage(this.source, 0, 0);
+      if (this.degraded && !options.original) this.approximate(ctx, draw);
+    } else {
       this.staticBackground(ctx, params, draw);
       this.moving(ctx, draw, params, options.number);
     }
@@ -781,5 +871,31 @@ export class MechanicsRenderer {
           handle.point[1] - 10,
         );
       }
+  }
+  private approximate(ctx: CanvasRenderingContext2D, draw: Drawables) {
+    ctx.save();
+    ctx.setLineDash([5, 3]);
+    for (const link of draw.links) line(ctx, link.points, "#00689d", 2);
+    for (const body of draw.bodies) {
+      const source = this.scene.bodies.find((b) => b.id === body.id)!;
+      ctx.save();
+      ctx.translate(...body.anchor);
+      ctx.rotate(body.rotation);
+      path(
+        ctx,
+        source.mask.map((p) => [
+          p[0] - source.anchor[0],
+          p[1] - source.anchor[1],
+        ]),
+      );
+      ctx.closePath();
+      ctx.fillStyle = "#d8f0ff99";
+      ctx.fill();
+      ctx.strokeStyle = "#005789";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
   }
 }

@@ -19,97 +19,35 @@ import {
   emptyScene,
   objects,
   nameOf,
-  rename,
   handles,
   moveHandle,
-  setBox,
-  attach,
   addLine,
-  assignValue,
-  userValue,
   switchArchetype,
-  valuePaths,
   SceneHistory,
   calibrate,
-  removeObject,
+  addBody,
+  userValue,
   type Handle,
   type EditState,
 } from "./authoring";
-import {
-  project,
-  parseProject,
-  restoreEngine,
-  checkImage,
-  readFile,
-  download,
-} from "./project";
+import { project, restoreEngine, download } from "./project";
 import "./workspace.css";
+import { el, button, select } from "./workspace-dom";
+import { renderAuthoringPanel } from "./authoring-panel";
+import { WorkspacePanels, type WorkspaceMode } from "./panels";
+import { MechanicsSession } from "./session";
+import { readiness } from "./readiness";
+import { updateReadouts } from "./readouts";
 import {
-  MechanicsAnalysis,
-  type DetectionBox,
-  type AnalysisProgress,
-  type MechanicsAnalysisOptions,
-} from "./analysis";
+  PhysicsInteractionController,
+  physicsHandles,
+  drawPhysicsInteraction,
+} from "./interaction";
 
 const numberText = (n: number, places = 2) => {
   const v = n.toFixed(places);
   return banglaDigits ? v.replace(/\d/g, (d) => "০১২৩৪৫৬৭৮৯"[Number(d)]) : v;
 };
-function el<K extends keyof HTMLElementTagNameMap>(
-  tag: K,
-  parent?: HTMLElement,
-  key?: string,
-) {
-  const n = document.createElement(tag);
-  if (key) {
-    n.dataset.i18n = `mech.${key}`;
-    n.textContent = t(`mech.${key}`);
-  }
-  parent?.append(n);
-  return n;
-}
-function button(parent: HTMLElement, key: string, action: () => void) {
-  const b = el("button", parent, key);
-  b.type = "button";
-  b.dataset.action = key;
-  b.addEventListener("click", action);
-  return b;
-}
-function select(
-  parent: HTMLElement,
-  key: string,
-  items: string[],
-  action: (value: string) => void,
-) {
-  const label = el("label", parent);
-  el("span", label, key);
-  const input = el("select", label);
-  input.dataset.field = key;
-  for (const item of items) {
-    const o = el("option", input);
-    o.value = item;
-    o.textContent =
-      t(`mech.${item}`) === `mech.${item}` ? item : t(`mech.${item}`);
-  }
-  input.addEventListener("change", () => action(input.value));
-  return input;
-}
-function input(
-  parent: HTMLElement,
-  key: string,
-  value: string,
-  apply: (value: string) => void,
-  type = "text",
-) {
-  const label = el("label", parent);
-  el("span", label, key);
-  const n = el("input", label);
-  n.type = type;
-  n.value = value;
-  n.dataset.field = key;
-  n.addEventListener("change", () => apply(n.value));
-  return n;
-}
 const archetypeIds = Object.keys(archetypes) as ArchetypeId[];
 type Tool =
   | "select"
@@ -135,6 +73,18 @@ export class MechanicsWorkspace implements DomainHandle {
   private tool: Tool = "select";
   private points: Point[] = [];
   private drag: { handle: Handle; point: Point } | null = null;
+  private interaction: PhysicsInteractionController;
+  private panels: WorkspacePanels;
+  private workspaceMode: WorkspaceMode = "explore";
+  private readinessNotice: HTMLElement;
+  private figureSelect: HTMLSelectElement;
+  private interpretationSelect: HTMLSelectElement;
+  private resizeObserver = new ResizeObserver(() => {
+    if (this.active && !this.interaction?.dragging) this.render();
+  });
+  private get interpretations() {
+    return this.session?.interpretations ?? [];
+  }
   private options: RenderOptions = {
     forces: true,
     components: false,
@@ -166,10 +116,13 @@ export class MechanicsWorkspace implements DomainHandle {
   private playButton: HTMLButtonElement;
   private runButton: HTMLButtonElement;
   private locale = "";
-  private analysis = new MechanicsAnalysis();
-  private analysisEpoch = 0;
-  private analyzing = false;
-  private analysisBoxes: DetectionBox[] = [];
+  private session: MechanicsSession;
+  private get analyzing() {
+    return this.session?.analyzing ?? false;
+  }
+  private get analysisBoxes() {
+    return this.session?.analysisBoxes ?? [];
+  }
   private analysisStatus: HTMLElement;
   private analysisProgress: HTMLProgressElement;
   private cancelAnalysis: HTMLButtonElement;
@@ -250,6 +203,7 @@ export class MechanicsWorkspace implements DomainHandle {
         if (blob) download(blob, "mechanics-overlay.png");
       }),
     );
+    button(top, "reanalyze", () => void this.reanalyze());
     const correction = el("div", this.root);
     correction.className = "mech-toolbar";
     const consent = el("label", correction);
@@ -277,6 +231,7 @@ export class MechanicsWorkspace implements DomainHandle {
       const name = fixtureNames.find((n) => fixture(n).scene.archetype === id)!;
       this.edit((s) => Object.assign(s, stencil(fixture(name).scene, s.image)));
       this.editing = true;
+      this.workspaceMode = "advanced";
       this.refresh();
     });
     el("p", this.root, "author_hint");
@@ -290,16 +245,17 @@ export class MechanicsWorkspace implements DomainHandle {
     this.handwritingNotice.hidden = true;
     this.validation = el("p", this.root);
     this.validation.dataset.testid = "mechanics-validation";
+    this.readinessNotice = el("p", this.root);
+    this.readinessNotice.dataset.testid = "mechanics-readiness";
+    this.readinessNotice.setAttribute("role", "status");
     const controls = el("div", this.root);
     controls.className = "mech-toolbar";
     button(controls, "edit_scene", () => {
-      this.editing = true;
-      this.clock.reset();
-      this.points = [];
-      this.refresh();
+      this.setMode("advanced");
     });
     this.runButton = button(controls, "run", () => {
       this.editing = false;
+      this.workspaceMode = "explore";
       this.points = [];
       this.clock.reset();
       void this.prepare();
@@ -374,7 +330,14 @@ export class MechanicsWorkspace implements DomainHandle {
         this.render();
       });
     }
-    select(oc, "zoom", ["fit", "1", "1.5", "2"], () => this.render());
+    const zoom = select(oc, "zoom", ["fit", "1", "1.5", "2"], () =>
+      this.render(),
+    );
+    button(oc, "reset_view", () => {
+      zoom.value = "fit";
+      this.viewport.scrollTo(0, 0);
+      this.render();
+    });
     this.viewport = el("div", dp);
     this.viewport.className = "mech-viewport";
     this.canvas = el("canvas", this.viewport);
@@ -383,8 +346,54 @@ export class MechanicsWorkspace implements DomainHandle {
     this.canvas.dataset.testid = "mechanics-canvas";
     this.canvas.width = 800;
     this.canvas.height = 520;
+    this.interaction = new PhysicsInteractionController({
+      canvas: this.canvas,
+      viewport: this.viewport,
+      engine: () => this.engine,
+      enabled: () => !this.editing && !this.analyzing && !this.options.original,
+      point: (event) => this.nativePoint(event),
+      radius: () => this.hitRadius(),
+      time: () => this.clock.displayTime,
+      pause: () => this.clock.reset(),
+      selected: () => this.selected,
+      select: (id) => {
+        this.selected = id;
+        this.refresh();
+      },
+      snapshot: () => this.snapshot(),
+      restore: (state) => {
+        this.engine = restoreEngine(state);
+        void this.prepare();
+      },
+      preview: () => {
+        if (this.renderer && this.engine?.trajectory.supported) {
+          const padding = this.renderer.padding;
+          this.renderer.fitTrajectory(
+            this.engine.trajectory,
+            this.engine.params,
+          );
+          this.renderer.padding = padding;
+          for (const row of this.engine.rows()) {
+            for (const input of this.params.querySelectorAll<HTMLInputElement>(
+              `[data-parameter="${row.id}"] input`,
+            ))
+              input.value = String(row.value);
+          }
+        }
+        this.render();
+      },
+      commit: (before) => {
+        this.stopAnalysis();
+        this.history.push(before, this.snapshot());
+        this.clock.reset();
+        this.refresh();
+        void this.prepare();
+      },
+      error: (error) => this.report(error),
+    });
     this.canvas.addEventListener("pointerdown", (e) => this.down(e));
     this.canvas.addEventListener("pointermove", (e) => {
+      if (this.interaction.move(e)) return;
       if (this.drag) {
         this.drag.point = this.nativePoint(e);
         this.render();
@@ -392,9 +401,13 @@ export class MechanicsWorkspace implements DomainHandle {
     });
     this.canvas.addEventListener("pointerup", (e) => this.up(e));
     this.canvas.addEventListener("pointercancel", () => {
+      this.interaction.cancel();
       this.drag = null;
       this.render();
     });
+    this.canvas.addEventListener("lostpointercapture", () =>
+      this.interaction.cancel(),
+    );
     this.canvas.addEventListener("keydown", (e) => this.key(e));
     const aside = el("aside", layout),
       tablist = el("div", aside);
@@ -436,6 +449,11 @@ export class MechanicsWorkspace implements DomainHandle {
       this.refreshEditor();
       this.render();
     });
+    button(this.editor, "add_body", () =>
+      this.edit((s) => {
+        this.selected = addBody(s);
+      }),
+    );
     select(
       this.editor,
       "tool",
@@ -479,12 +497,89 @@ export class MechanicsWorkspace implements DomainHandle {
       this.refreshWarnings();
       this.render();
     });
+    this.panels = new WorkspacePanels(
+      this.root,
+      (mode) => this.setMode(mode),
+      (id) => {
+        this.selected = id;
+        this.refresh();
+      },
+    );
+    const setup = this.root.querySelector<HTMLElement>(
+      ".mech-authoring-setup",
+    )!;
+    button(setup, "restore_recognition", () =>
+      this.change(() => {
+        this.engine = new BindingEngine(this.engine!.recognition);
+      }),
+    );
+    this.figureSelect = select(
+      setup,
+      "figure_region",
+      ["auto"],
+      () => void this.reanalyze(),
+    );
+    this.figureSelect.parentElement!.hidden = true;
+    this.interpretationSelect = select(setup, "interpretation", [], (value) => {
+      const candidate = this.interpretations[Number(value)];
+      if (!candidate) return;
+      this.edit((s) => {
+        for (const b of s.bodies)
+          if (b.id in candidate.surfaces)
+            b.on_surface = candidate.surfaces[b.id];
+        for (const l of s.links)
+          if (l.id in candidate.attachments)
+            [l.a.ref, l.b.ref] = candidate.attachments[l.id];
+        switchArchetype(s, candidate.archetype as ArchetypeId);
+        calibrate(s);
+      });
+    });
+    this.interpretationSelect.parentElement!.hidden = true;
+    this.session = new MechanicsSession(
+      {
+        engine: () => this.engine,
+        image: () => this.image,
+        active: () => this.active,
+        version: () => this.generation,
+        setVersion: (n) => {
+          this.generation = n;
+        },
+        editing: () => this.editing,
+        setEditing: (value) => {
+          this.editing = value;
+        },
+        history: () => this.history,
+        setHistory: (history) => {
+          this.history = history;
+        },
+        install: (scene, image, editing, state) =>
+          this.install(scene, image, editing, state),
+        snapshot: () => this.snapshot(),
+        refresh: () => this.refresh(),
+        render: () => this.render(),
+        report: (error) => this.report(error),
+        number: numberText,
+      },
+      {
+        analysisStatus: this.analysisStatus,
+        analysisProgress: this.analysisProgress,
+        cancelAnalysis: this.cancelAnalysis,
+        labelConsent: this.labelConsent,
+        analysisStyle: this.analysisStyle,
+        correctionConsent: this.correctionConsent,
+        figureSelect: this.figureSelect,
+        interpretationSelect: this.interpretationSelect,
+        notice: this.notice,
+      },
+    );
+
     this.tab("parameters");
     this.refresh();
   }
   mount(container: HTMLElement) {
     this.active = true;
     container.append(this.root);
+    this.resizeObserver.observe(this.viewport);
     document.addEventListener("workspace:translate", this.translate);
     this.translate();
     if (this.engine) void this.prepare();
@@ -492,10 +587,12 @@ export class MechanicsWorkspace implements DomainHandle {
     return this;
   }
   unmount() {
+    this.interaction.cancel();
     this.stopAnalysis();
     this.labelConsent.checked = false;
     this.correctionConsent.checked = false;
     this.active = false;
+    this.resizeObserver.disconnect();
     ++this.generation;
     this.clock.pause();
     cancelAnimationFrame(this.raf);
@@ -525,6 +622,18 @@ export class MechanicsWorkspace implements DomainHandle {
       handles: this.engine
         ? structuredClone(handles(this.engine.original))
         : [],
+      physicsHandles: this.engine ? physicsHandles(this.engine) : [],
+      selected: this.selected,
+      mode: this.workspaceMode,
+      metrics: this.engine?.trajectory.metrics,
+      initialState: this.engine?.trajectory.states[0],
+      initialLayout: this.engine?.trajectory.supported
+        ? archetypes[this.engine.original.archetype].layout(
+            this.engine.original,
+            this.engine.params,
+            this.engine.trajectory.states[0],
+          )
+        : null,
     };
   }
   private translate = () => {
@@ -542,6 +651,16 @@ export class MechanicsWorkspace implements DomainHandle {
     }
     if (this.canvas) this.render();
   }
+  private setMode(mode: WorkspaceMode) {
+    this.interaction.cancel();
+    this.workspaceMode = mode;
+    this.editing = mode !== "explore";
+    this.clock.reset();
+    this.points = [];
+    this.drag = null;
+    this.refresh();
+    void this.prepare();
+  }
   private report(error: unknown) {
     const key = error instanceof Error ? error.message : String(error);
     this.notice.textContent = key.startsWith("mech.")
@@ -549,195 +668,22 @@ export class MechanicsWorkspace implements DomainHandle {
       : `${t("mech.validation_failed")}: ${key}`;
   }
   private stopAnalysis() {
-    this.analysisEpoch++;
-    this.analysis.cancel();
-    this.analyzing = false;
-    this.analysisBoxes = [];
-    this.analysisProgress.hidden = true;
-    this.cancelAnalysis.hidden = true;
-    this.analysisStatus.textContent = "";
+    this.session.cancel();
   }
-  private async analyze(file: File) {
-    this.stopAnalysis();
-    const analysisOptions: MechanicsAnalysisOptions = {
-      style: this.analysisStyle.value as MechanicsAnalysisOptions["style"],
-      useLabelReader: this.labelConsent.checked,
-    };
-    this.labelConsent.checked = false;
-    const epoch = this.analysisEpoch;
-    this.analyzing = true;
-    this.analysisProgress.value = 0;
-    this.analysisProgress.hidden = false;
-    this.cancelAnalysis.hidden = false;
-    this.analysisStatus.textContent = t("mech.stage_queued");
-    try {
-      let canonicalImage = "";
-      const result = await this.analysis.start(
-        file,
-        language,
-        async (job: AnalysisProgress) => {
-          if (epoch !== this.analysisEpoch || !this.active) return;
-          const p = job.partial;
-          if (
-            p?.source_image &&
-            p.width &&
-            p.height &&
-            canonicalImage !== p.source_image
-          ) {
-            await checkImage(p.source_image, p.width, p.height);
-            if (epoch !== this.analysisEpoch || !this.active) return;
-            canonicalImage = p.source_image;
-            this.install(
-              emptyScene({ path: file.name, width: p.width, height: p.height }),
-              canonicalImage,
-              true,
-            );
-          }
-          this.analysisProgress.value = job.percent;
-          const text = (p?.texts ?? [])
-            .slice(0, 12)
-            .map((r) => r.text)
-            .join(" · ");
-          this.analysisStatus.textContent = `${t(`mech.stage_${job.stage}`)} · ${numberText(job.percent, 0)}% · ${numberText(job.elapsed_seconds)} s${text ? ` · ${text}` : ""}`;
-          if (job.partial?.detections)
-            this.analysisBoxes = job.partial.detections.filter(
-              (d) =>
-                Array.isArray(d.bbox) &&
-                d.bbox.length === 4 &&
-                d.bbox.every(Number.isFinite),
-            );
-          this.render();
-        },
-        analysisOptions,
-      );
-      if (!result || epoch !== this.analysisEpoch || !this.active) return;
-      await checkImage(
-        result.source_image,
-        result.scene.image.width,
-        result.scene.image.height,
-      );
-      if (epoch !== this.analysisEpoch || !this.active) return;
-      this.analyzing = false;
-      this.analysisBoxes = [];
-      this.install(
-        result.scene,
-        result.source_image,
-        result.provenance !== "extracted",
-      );
-      this.analysisStatus.textContent = t("mech.stage_done");
-      this.notice.textContent = t(
-        result.warnings.some((w) => w.code === "weights_unavailable")
-          ? "mech.weights_unavailable"
-          : result.provenance === "unsupported"
-            ? "mech.unsupported_analysis"
-            : result.provenance === "partial"
-              ? "mech.partial_analysis"
-              : "mech.extracted_analysis",
-      );
-    } catch (error) {
-      if (epoch === this.analysisEpoch && this.active) {
-        this.report(error);
-        this.editing = true;
-      }
-    } finally {
-      if (epoch === this.analysisEpoch) {
-        this.analyzing = false;
-        this.analysisProgress.hidden = true;
-        this.cancelAnalysis.hidden = true;
-      }
-    }
+  private reanalyze() {
+    return this.session.reanalyze();
   }
-  private async saveCorrection() {
-    if (!this.correctionConsent.checked || !this.engine) {
-      this.notice.textContent = t("mech.correction_opt_in");
-      return;
-    }
-    const epoch = this.generation;
-    try {
-      const form = new FormData();
-      form.append(
-        "image",
-        new File(
-          [await (await fetch(this.image)).blob()],
-          "mechanics-correction.png",
-          { type: "image/png" },
-        ),
-      );
-      form.append("domain", "mechanics");
-      form.append("scene", JSON.stringify(this.engine.original));
-      form.append("opt_in", "true");
-      const response = await fetch("/api/corrections", {
-        method: "POST",
-        body: form,
-      });
-      if (!response.ok) throw new Error("mech.correction_failed");
-      if (epoch === this.generation && this.active) {
-        this.notice.textContent = t("mech.correction_saved");
-        this.correctionConsent.checked = false;
-      }
-    } catch (error) {
-      if (epoch === this.generation && this.active) this.report(error);
-    }
+  private saveCorrection() {
+    return this.session.saveCorrection();
   }
-  private async upload(file: File) {
-    this.stopAnalysis();
-    const token = ++this.generation;
-    try {
-      if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
-        throw new Error("mech.invalid_image");
-      const data = await readFile(file),
-        img = await checkImage(data);
-      if (token !== this.generation) return;
-      this.install(
-        emptyScene({
-          path: file.name,
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-        }),
-        data,
-        true,
-      );
-      void this.analyze(file);
-    } catch (e) {
-      if (token === this.generation) this.report(e);
-    }
+  private upload(file: File) {
+    return this.session.upload(file);
   }
-  private async import(file: File) {
-    this.stopAnalysis();
-    const token = ++this.generation;
-    try {
-      if (file.size > 44000000) throw new Error("mech.image_size");
-      const p = parseProject(JSON.parse(await file.text()));
-      await checkImage(
-        p.source_image,
-        p.scene.image.width,
-        p.scene.image.height,
-      );
-      if (token !== this.generation) return;
-      this.install(p.scene, p.source_image, false, {
-        scene: p.scene,
-        overrides: p.parameter_overrides,
-        unlocked: p.unlocked_geometry,
-      });
-      this.notice.textContent = t("mech.import_valid");
-    } catch (e) {
-      if (token === this.generation) this.report(e);
-    }
+  private import(file: File) {
+    return this.session.import(file);
   }
-  private async loadFixture(name: string) {
-    this.stopAnalysis();
-    const token = ++this.generation;
-    try {
-      const f = fixture(name),
-        res = await fetch(f.url),
-        data = await readFile(
-          new File([await res.blob()], `${name}.png`, { type: "image/png" }),
-        );
-      if (token !== this.generation) return;
-      this.install(f.scene, data, false);
-    } catch (e) {
-      if (token === this.generation) this.report(e);
-    }
+  private loadFixture(name: string) {
+    return this.session.loadFixture(name);
   }
   private install(
     scene: Scene,
@@ -745,6 +691,7 @@ export class MechanicsWorkspace implements DomainHandle {
     editing: boolean,
     state?: EditState,
   ) {
+    this.interaction.cancel();
     this.clock.reset();
     this.image = image;
     this.engine = state
@@ -752,6 +699,7 @@ export class MechanicsWorkspace implements DomainHandle {
       : new BindingEngine(parseScene(scene));
     this.history = new SceneHistory();
     this.editing = editing;
+    this.workspaceMode = editing ? "fix" : "explore";
     this.selected = scene.bodies[0]?.id ?? objects(scene)[0]?.id ?? "";
     this.points = [];
     this.correctionConsent.checked = false;
@@ -764,6 +712,7 @@ export class MechanicsWorkspace implements DomainHandle {
   private snapshot(): EditState {
     return {
       scene: structuredClone(this.engine!.original),
+      recognition: structuredClone(this.engine!.recognition),
       overrides: { ...this.engine!.params },
       unlocked: [...this.engine!.unlocked],
     };
@@ -795,7 +744,7 @@ export class MechanicsWorkspace implements DomainHandle {
       s.meta.provenance =
         s.archetype === "unsupported" ? "unsupported" : "authored";
       const checked = parseScene(s),
-        engine = new BindingEngine(checked);
+        engine = new BindingEngine(checked, old.recognition);
       for (const id of old.unlocked)
         if (checked.bindings.some((b) => b.id === id && b.class === "geometry"))
           engine.unlock(id);
@@ -831,16 +780,24 @@ export class MechanicsWorkspace implements DomainHandle {
       token = ++this.generation;
     if (!engine) return;
     try {
-      const renderer = await MechanicsRenderer.load(engine.original, image);
+      const renderer =
+        this.renderer?.scene === engine.original
+          ? this.renderer
+          : await MechanicsRenderer.load(
+              engine.original,
+              image,
+              engine.recognition,
+            );
       if (token !== this.generation) return;
       if (engine.trajectory.supported) {
         const initial = archetypes[engine.original.archetype].solve(
           engine.original,
           {},
         );
-        if (initial.states.length)
-          renderer.renderFrame0Check(initial.states[0]);
-        renderer.fitTrajectory(engine.trajectory, engine.params);
+        const reference = initial.states[0] ?? engine.trajectory.states[0];
+        if (reference && renderer.frame0.mean_absolute_channel === null)
+          renderer.renderFrame0Check(reference);
+        renderer.fitTrajectory(engine.trajectory, engine.solverParameters());
       }
       this.renderer = renderer;
       this.clock.duration = engine.trajectory.duration;
@@ -887,12 +844,39 @@ export class MechanicsWorkspace implements DomainHandle {
     this.modified.textContent = this.engine?.modified ? t("mech.modified") : "";
     this.runButton.disabled = !s;
     this.refreshPlayback();
+    const reanalyze = this.root.querySelector<HTMLButtonElement>(
+      '[data-action="reanalyze"]',
+    );
+    if (reanalyze) reanalyze.disabled = !this.engine || this.analyzing;
     if (this.engine) {
       try {
-        const rows = this.engine.rows().map((row) => ({
-          ...row,
-          label: this.bindingLabel(row.id),
-        }));
+        const related = new Set([this.selected]);
+        const body = s?.bodies.find((b) => b.id === this.selected);
+        if (body?.on_surface) related.add(body.on_surface);
+        for (const link of s?.links ?? [])
+          if ([link.a.ref, link.b.ref].includes(this.selected))
+            related.add(link.id);
+        const rows = this.engine
+          .rows()
+          .filter((row) => {
+            const binding = this.engine!.binding(row.id);
+            if (
+              this.workspaceMode !== "advanced" &&
+              binding.class === "geometry"
+            )
+              return false;
+            if (this.workspaceMode !== "explore") return true;
+            const parts = binding.path.split(".");
+            return (
+              parts[0] === "params" ||
+              parts[0] === "constants" ||
+              related.has(parts[1])
+            );
+          })
+          .map((row) => ({
+            ...row,
+            label: this.bindingLabel(row.id),
+          }));
         parameterPanel(
           this.params,
           rows,
@@ -919,6 +903,20 @@ export class MechanicsWorkspace implements DomainHandle {
           b.setAttribute("aria-label", `${b.textContent} ${row.label}`);
           for (const i of field.querySelectorAll("input"))
             i.setAttribute("aria-label", `${row.label} ${t(`mech.${i.type}`)}`);
+          const confirm = field.querySelector<HTMLElement>("[data-confirm]");
+          if (row.status === "assumed" && row.value !== null) {
+            if (!confirm) {
+              const b = button(field, "confirm_assumption", () =>
+                this.change(() => this.engine!.set(row.id, row.value!)),
+              );
+              b.dataset.confirm = row.id;
+              b.disabled = row.locked;
+              b.setAttribute(
+                "aria-label",
+                `${t("mech.confirm_assumption")} ${row.label}`,
+              );
+            } else (confirm as HTMLButtonElement).disabled = row.locked;
+          } else confirm?.remove();
         }
       } catch (e) {
         this.params.replaceChildren();
@@ -935,6 +933,12 @@ export class MechanicsWorkspace implements DomainHandle {
       }
     }
     this.refreshEditor();
+    this.panels?.refresh(this.workspaceMode, s, this.selected);
+    this.readinessNotice.textContent = this.engine
+      ? t(
+          `mech.readiness_${readiness(this.engine.document, this.engine.trajectory, this.analyzing)}`,
+        )
+      : "";
     this.refreshWarnings();
     this.render();
   }
@@ -959,7 +963,7 @@ export class MechanicsWorkspace implements DomainHandle {
   private refreshWarnings() {
     this.warnings.replaceChildren();
     const codes = [
-      ...(this.engine?.original.warnings.map((w) => w.code) ?? []),
+      ...(this.engine?.document.warnings.map((w) => w.code) ?? []),
       ...(this.engine?.trajectory.warnings ?? []),
       ...(this.renderer?.warnings ?? []),
     ];
@@ -976,185 +980,17 @@ export class MechanicsWorkspace implements DomainHandle {
     if (this.renderer?.degraded) el("p", this.warnings, "render_notice");
   }
   private refreshEditor() {
-    const s = this.engine?.original,
-      fields = this.editor.querySelector<HTMLElement>(
-        '[data-testid="mechanics-object-fields"]',
-      )!,
-      chips = this.editor.querySelector<HTMLElement>(
-        '[data-testid="mechanics-chips"]',
-      )!;
-    fields.replaceChildren();
-    chips.replaceChildren();
-    this.objectSelect.replaceChildren();
-    if (!s) return;
-    for (const o of objects(s)) {
-      const option = el("option", this.objectSelect);
-      option.value = o.id;
-      option.textContent = `${nameOf(s, o.id)} (${o.id})`;
-    }
-    if (!objects(s).some((o) => o.id === this.selected))
-      this.selected = objects(s)[0]?.id ?? "";
-    this.objectSelect.value = this.selected;
-    const object = objects(s).find((o) => o.id === this.selected),
-      body = s.bodies.find((b) => b.id === this.selected),
-      link = s.links.find((l) => l.id === this.selected);
-    if (object) {
-      button(fields, "delete_object", () =>
-        this.edit((s) => removeObject(s, object.id)),
-      );
-      input(fields, "name", nameOf(s, object.id), (v) =>
-        this.edit((s) => rename(s, object.id, v)),
-      );
-      if ("type" in object)
-        input(fields, "object_type", object.type, (v) =>
-          this.edit((s) => {
-            const o = objects(s).find((o) => o.id === object.id)!;
-            if ("type" in o) o.type = v;
-            s.warnings = s.warnings.filter((w) => w.code !== "unknown_type");
-          }),
-        );
-      if (body) {
-        input(fields, "box", body.bbox.join(", "), (v) =>
-          this.edit((s) => setBox(s, body.id, this.coordinates(v, 4) as BBox)),
-        );
-        input(fields, "sprite_mask", JSON.stringify(body.mask), (v) =>
-          this.edit((s) => {
-            s.bodies.find((b) => b.id === body.id)!.mask = this.polygon(v);
-          }),
-        );
-      }
-      for (const h of handles(s).filter((h) => h.object === object.id))
-        input(
-          fields,
-          h.id.endsWith(":a")
-            ? "end_a"
-            : h.id.endsWith(":b")
-              ? "end_b"
-              : h.kind === "surface"
-                ? h.index === 0
-                  ? "base"
-                  : "tip"
-                : h.kind === "body"
-                  ? "anchor"
-                  : "centre",
-          h.point.join(", "),
-          (v) =>
-            this.edit((s) => moveHandle(s, h, this.coordinates(v, 2) as Point)),
-        );
-      if (link)
-        for (const end of ["a", "b"] as const) {
-          const candidates = [
-              ...s.bodies,
-              ...s.pulleys,
-              ...s.annotations.filter((a) => a.type === "axis"),
-            ].map((v) => v.id),
-            sel = select(fields, `attach_${end}`, candidates, (v) =>
-              this.edit((s) => attach(s, link.id, end, v)),
-            );
-          sel.value = link[end].ref;
-        }
-      if (s.surfaces.some((v) => v.id === object.id) || link) {
-        const repair = s.repairs.find(
-          (r) => r.surface_or_line_id === object.id,
-        );
-        input(
-          fields,
-          "repair_segments",
-          JSON.stringify(repair?.segments ?? []),
-          (v) =>
-            this.edit((s) => {
-              const segments = JSON.parse(v) as Point[][];
-              if (!Array.isArray(segments))
-                throw new Error("mech.invalid_points");
-              s.repairs = s.repairs.filter(
-                (r) => r.surface_or_line_id !== object.id,
-              );
-              s.repairs.push({ surface_or_line_id: object.id, segments });
-            }),
-        );
-      }
-    }
-    input(fields, "paper_color", s.frame.paper_color, (v) =>
-      this.edit((s) => (s.frame.paper_color = v)),
-    );
-    input(fields, "ink_color", s.frame.ink_color, (v) =>
-      this.edit((s) => (s.frame.ink_color = v)),
-    );
-    input(
-      fields,
-      "stroke_px",
-      String(s.frame.stroke_px),
-      (v) => this.edit((s) => (s.frame.stroke_px = Number(v))),
-      "number",
-    );
-    for (const path of valuePaths(s).filter(
-      (p) =>
-        !p.startsWith("params.unplaced_") &&
-        (p.startsWith(`bodies.${this.selected}.`) ||
-          p.startsWith(`links.${this.selected}.`) ||
-          p.startsWith(`surfaces.${this.selected}.`) ||
-          p.startsWith(`pulleys.${this.selected}.`) ||
-          p.startsWith("params.") ||
-          p === "frame.px_per_m" ||
-          p === "constants.g"),
-    )) {
-      const value = valueAt(s, path),
-        label = el("label", fields),
-        caption = el("span", label);
-      caption.textContent = `${this.valueLabel(path)} (${value.unit}) · ${t(`mech.${value.status}`)} · ${numberText(value.confidence * 100, 0)}%`;
-      const n = el("input", label);
-      n.type = "number";
-      n.step = "any";
-      n.value = value.number === null ? "" : String(value.number);
-      n.dataset.valuePath = path;
-      n.addEventListener("change", () =>
-        this.edit((s) => {
-          Object.assign(
-            valueAt(s, path),
-            userValue(n.value === "" ? null : n.valueAsNumber, value.unit),
-          );
-          if (path === "frame.px_per_m") calibrate(s);
-        }),
-      );
-    }
-    for (const [key, value] of Object.entries(s.params).filter(([k]) =>
-      k.startsWith("unplaced_"),
-    )) {
-      const group = el("fieldset", chips);
-      group.dataset.chip = key;
-      el("legend", group).textContent =
-        `${t("mech.unplaced_value")} ${key.split("_").at(-1)}`;
-      input(
-        group,
-        "value",
-        value.number === null ? "" : String(value.number),
-        (v) =>
-          this.edit((s) =>
-            Object.assign(
-              s.params[key],
-              userValue(v === "" ? null : Number(v), value.unit),
-            ),
-          ),
-        "number",
-      );
-      input(group, "unit", value.unit, (v) =>
-        this.edit((s) => (s.params[key].unit = v)),
-      );
-      const paths = valuePaths(s).filter(
-          (p) =>
-            !p.startsWith("params.unplaced_") &&
-            valueAt(s, p).unit === value.unit,
-        ),
-        target = select(
-          group,
-          "assign_to",
-          ["choose_target", ...paths],
-          () => {},
-        );
-      button(group, "assign_value", () =>
-        this.edit((s) => assignValue(s, key, target.value)),
-      );
-    }
+    this.selected = renderAuthoringPanel({
+      scene: this.engine?.document,
+      root: this.editor,
+      objectSelect: this.objectSelect,
+      selected: this.selected,
+      edit: (action) => this.edit(action),
+      coordinates: (text, n) => this.coordinates(text, n),
+      polygon: (text) => this.polygon(text),
+      valueLabel: (path) => this.valueLabel(path),
+      numberText,
+    });
   }
   private valueLabel(path: string) {
     const key = `mech.value_${path.split(".").at(-1)}`;
@@ -1211,7 +1047,15 @@ export class MechanicsWorkspace implements DomainHandle {
         p.top,
     ];
   }
+  private hitRadius() {
+    return (
+      (22 * this.canvas.width) /
+      (this.renderer?.dpr ?? 1) /
+      this.canvas.getBoundingClientRect().width
+    );
+  }
   private down(e: PointerEvent) {
+    if (this.interaction.down(e)) return;
     if (!this.engine || !this.editing) return;
     const p = this.nativePoint(e);
     if (this.tool !== "select") {
@@ -1242,10 +1086,13 @@ export class MechanicsWorkspace implements DomainHandle {
     }
   }
   private up(e: PointerEvent) {
+    if (this.interaction.up(e)) return;
     if (!this.drag) return;
     const h = this.drag.handle,
       p = this.nativePoint(e);
     this.drag = null;
+    if (this.canvas.hasPointerCapture(e.pointerId))
+      this.canvas.releasePointerCapture(e.pointerId);
     this.edit((s) => moveHandle(s, h, p));
   }
   private finishShape() {
@@ -1291,6 +1138,7 @@ export class MechanicsWorkspace implements DomainHandle {
   }
   private key(e: KeyboardEvent) {
     if (!this.engine) return;
+    if (this.interaction.key(e)) return;
     if ((e.ctrlKey || e.metaKey) && ["z", "y"].includes(e.key.toLowerCase())) {
       e.preventDefault();
       this.travel(e.key.toLowerCase() === "y" || e.shiftKey);
@@ -1346,10 +1194,10 @@ export class MechanicsWorkspace implements DomainHandle {
         if (this.drag) moveHandle(draft, this.drag.handle, this.drag.point);
         this.drawEditor(ctx, draft);
       }
-    } else
+    } else {
       r.render(
         this.canvas,
-        engine.params,
+        engine.solverParameters(),
         sample(run, this.clock.displayTime),
         run,
         {
@@ -1362,6 +1210,19 @@ export class MechanicsWorkspace implements DomainHandle {
           },
         },
       );
+      if (!this.options.original) {
+        const ctx = this.canvas.getContext("2d")!;
+        // Renderer leaves its transform in native coordinates, including padding.
+        drawPhysicsInteraction(
+          ctx,
+          engine,
+          sample(run, this.clock.displayTime),
+          this.selected,
+          Math.min(12, this.hitRadius() / 2),
+          t("mech.drag_physics"),
+        );
+      }
+    }
     const zoom = this.root.querySelector<HTMLSelectElement>(
         '[data-field="zoom"]',
       )!.value,
@@ -1376,18 +1237,7 @@ export class MechanicsWorkspace implements DomainHandle {
     this.refreshPlayback();
     if (run.supported) {
       const state = sample(run, this.clock.displayTime);
-      this.readouts.replaceChildren();
-      for (const [key, value, unit] of [
-        ["kinetic", state.kinetic, "J"],
-        ["potential", state.potential, "J"],
-        ["momentum_x", state.momentum.x, "kg m/s"],
-        ["momentum_y", state.momentum.y, "kg m/s"],
-      ] as const)
-        el("p", this.readouts).textContent =
-          `${t(`mech.${key}`)}: ${numberText(value)} ${unit}`;
-      for (const [id, v] of Object.entries(state.velocities))
-        el("p", this.readouts).textContent =
-          `${nameOf(s, id)} · ${t("mech.velocity")}: (${numberText(v.x)}, ${numberText(v.y)}) m/s`;
+      updateReadouts(this.readouts, s, state, numberText);
       if (!this.tabs.get("graphs")!.hidden)
         drawGraphs(
           this.graph,

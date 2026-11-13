@@ -9,6 +9,16 @@ export interface MechanicsResult {
   source_image: string;
   warnings: Scene["warnings"];
   timings: Record<string, number | null>;
+  diagnostics?: {
+    figure_regions?: [number, number, number, number][];
+    alternatives?: {
+      archetype: string;
+      score: number;
+      violations: string[];
+      surfaces: Record<string, string | null>;
+      attachments: Record<string, [string, string]>;
+    }[];
+  };
 }
 export interface DetectionBox {
   id: string;
@@ -31,6 +41,7 @@ export interface AnalysisProgress {
 export interface MechanicsAnalysisOptions {
   style?: "auto" | "printed" | "handwritten";
   useLabelReader?: boolean;
+  figureRegion?: [number, number, number, number];
 }
 
 export function parseResult(input: unknown): MechanicsResult {
@@ -83,6 +94,8 @@ export class MechanicsAnalysis {
     form.append("lang", lang);
     form.append("style", options.style ?? "auto");
     form.append("use_label_reader", String(options.useLabelReader === true));
+    if (options.figureRegion)
+      form.append("figure_region", JSON.stringify(options.figureRegion));
     const response = await this.transport("/api/analyze/start", {
       method: "POST",
       body: form,

@@ -1,11 +1,11 @@
 .mechanics-workspace {
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 16px auto;
-  padding: 18px;
-  color: var(--text, #172c42);
-  background: var(--panel, #fff);
-  border-radius: 14px;
-  font-family: "Noto Sans Bengali", sans-serif;
+  padding: 16px 24px;
+  color: var(--ink);
+  background: var(--bg);
+  border-radius: var(--radius);
+  font-family: "Segoe UI", "Noto Sans Bengali", sans-serif;
 }
 .mechanics-workspace * {
   box-sizing: border-box;
@@ -26,11 +26,11 @@
   min-height: 44px;
   max-width: 100%;
   font: inherit;
-  border: 1px solid #73869a;
+  border: 1px solid var(--line);
   border-radius: 6px;
   padding: 8px;
-  color: #172c42;
-  background: #fff;
+  color: var(--ink);
+  background: var(--paper);
 }
 .mechanics-workspace button {
   cursor: pointer;
@@ -81,7 +81,7 @@
 }
 .mechanics-workspace .mech-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(285px, 340px);
   gap: 18px;
   margin-top: 14px;
 }
@@ -93,8 +93,9 @@
   width: 100%;
   overflow: auto;
   max-height: 75vh;
-  background: #e5eaf0;
-  border: 1px solid #8293a5;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
   margin-top: 12px;
 }
 .mechanics-workspace .mech-viewport canvas {
@@ -114,7 +115,7 @@
   display: none !important;
 }
 .mechanics-workspace [role="tabpanel"] {
-  max-height: 70vh;
+  max-height: 62vh;
   overflow: auto;
   padding: 4px;
 }
@@ -161,10 +162,9 @@
   overflow-wrap: anywhere;
 }
 .mechanics-workspace [data-testid="mechanics-provenance"] {
-  padding: 10px;
-  background: #e9f1f5;
-  color: #18394f;
-  border-left: 4px solid #164d72;
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
 }
 .mechanics-workspace [data-testid="mechanics-graphs"] {
   width: 100%;
@@ -172,8 +172,7 @@
 }
 @media (max-width: 900px) {
   .mechanics-workspace .mech-layout {
-    display: flex;
-    flex-direction: column-reverse;
+    grid-template-columns: minmax(0, 1fr);
   }
   .mechanics-workspace {
     margin: 8px;
@@ -184,6 +183,115 @@
   }
   .mechanics-workspace [role="tabpanel"] {
     max-height: 55vh;
+  }
+}
+.mechanics-workspace .mech-filebar {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+.mechanics-workspace .mech-modebar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.mechanics-workspace .mech-modebar [aria-pressed="true"] {
+  background: #00689d;
+  color: #fff;
+  border-color: #00689d;
+}
+.mechanics-workspace :is(.mech-diagram-panel, .mech-inspector-panel) {
+  padding: 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.mechanics-workspace .mech-diagram-panel > h2 {
+  margin-top: 0;
+}
+.mechanics-workspace .mech-playback {
+  margin-top: 12px;
+  align-items: center;
+}
+.mechanics-workspace .mech-canvas-hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.mechanics-workspace .mech-timeline {
+  display: grid;
+  grid-template-columns: auto minmax(80px, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.mechanics-workspace .mech-setup {
+  margin-top: 8px;
+  color: var(--muted);
+}
+.mechanics-workspace .mech-setup summary {
+  cursor: pointer;
+  min-height: 30px;
+  padding: 6px 0;
+}
+.mechanics-workspace .mech-setup[open] {
+  padding: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.mechanics-workspace .mech-context {
+  margin-bottom: 12px;
+}
+.mechanics-workspace .mech-context h2 {
+  margin-top: 0;
+}
+.mechanics-workspace .mech-authoring-setup {
+  margin-top: 12px;
+}
+.mechanics-workspace .mech-authoring-setup label {
+  margin-bottom: 8px;
+}
+.mechanics-workspace[data-mode="fix"]
+  .mech-editor
+  :is(
+    label:has([data-field="box"]),
+    label:has([data-field="sprite_mask"]),
+    label:has([data-field="paper_color"]),
+    label:has([data-field="ink_color"]),
+    label:has([data-field="stroke_px"]),
+    label:has([data-field="repair_segments"]),
+    label:has([data-field="tool"]),
+    [data-action="finish_shape"],
+    [data-action="cancel_shape"]
+  ) {
+  display: none;
+}
+.mechanics-workspace[data-mode="explore"] .mech-secondary-action {
+  font-size: 12px;
+}
+.mechanics-workspace
+  :is(
+    [data-testid="mechanics-notice"],
+    [data-testid="mechanics-validation"]
+  ):empty {
+  display: none;
+}
+@media (max-width: 600px) {
+  .mechanics-workspace {
+    margin: 0;
+    padding: 12px;
+  }
+  .mechanics-workspace :is(.mech-diagram-panel, .mech-inspector-panel) {
+    padding: 10px;
+  }
+  .mechanics-workspace .mech-timeline {
+    grid-template-columns: auto minmax(80px, 1fr);
+  }
+  .mechanics-workspace .mech-timeline output {
+    grid-column: 1 / -1;
   }
 }
 @media (prefers-reduced-motion: reduce) {

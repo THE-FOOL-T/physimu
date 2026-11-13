@@ -51,6 +51,61 @@ test.afterAll(async () => {
     logs,
   );
 });
+
+test("reanalysis retains user physics and immutable recognition; OCR repair changes the bound solver value", async ({
+  page,
+}) => {
+  await open(page);
+  await upload(page, "pendulum");
+  await expect.poll(async () => (await state(page)).analyzing).toBe(false);
+  await expect
+    .poll(async () => (await state(page)).project?.scene.archetype)
+    .toBe("pendulum");
+  const first = (await state(page)).project;
+  await page.locator('[data-parameter="g"] [data-confirm]').click();
+  expect((await state(page)).project.current_scene.constants.g.status).toBe(
+    "user",
+  );
+  await action(page, "run").click();
+  const mass = page.locator('[data-parameter="mass_B1"] input[type="number"]');
+  await mass.fill("4");
+  await mass.press("Tab");
+  await action(page, "reanalyze").click();
+  await expect.poll(async () => (await state(page)).analyzing).toBe(false);
+  let current = (await state(page)).project;
+  expect(current.current_scene.bodies[0].mass).toMatchObject({
+    number: 4,
+    status: "user",
+    source: "user",
+  });
+  expect(current.recognition_scene).toEqual(first.recognition_scene);
+  expect(current.source_image).toBe(first.source_image);
+  await action(page, "fix_interpretation").click();
+  const label = current.current_scene.annotations.find(
+    (a: any) => a.bound_to === "bodies.B1.mass",
+  );
+  await page
+    .locator('.mechanics-workspace [data-field="object"]')
+    .selectOption(label.id);
+  const text = page.locator('.mechanics-workspace [data-field="ocr_text"]');
+  await text.fill("m=5 kg");
+  await text.press("Tab");
+  current = (await state(page)).project;
+  expect(current.current_scene.bodies[0].mass.number).toBe(5);
+  expect(current.recognition_scene).toEqual(first.recognition_scene);
+  await action(page, "reanalyze").click();
+  await expect.poll(async () => (await state(page)).analyzing).toBe(false);
+  expect((await state(page)).project.current_scene).toEqual(
+    current.current_scene,
+  );
+  await action(page, "explore").click();
+  await expect(action(page, "play")).toBeEnabled();
+  await action(page, "fix_interpretation").click();
+  await action(page, "restore_recognition").click();
+  expect((await state(page)).project.current_scene.bodies[0].mass.number).toBe(
+    first.recognition_scene.bodies[0].mass.number,
+  );
+});
 for (const lang of ["en", "bn"]) {
   test(`handwritten notice and one-upload crop consent work in ${lang}`, async ({
     page,
@@ -61,6 +116,7 @@ for (const lang of ["en", "bn"]) {
       await page.getByRole("button", { name: "Switch language" }).click();
     const consent = page.getByTestId("mechanics-label-consent");
     await expect(consent).not.toBeChecked();
+    await page.locator(".mech-setup > summary").click();
     await page
       .getByTestId("mechanics-analysis-style")
       .selectOption("handwritten");
@@ -220,6 +276,7 @@ test("missing mechanics weights retain editable native image; correction saving 
   expect((await state(page)).editing).toBe(true);
   expect((await state(page)).project.scene.bodies).toEqual([]);
   const consent = page.getByTestId("mechanics-correction-consent");
+  await page.locator(".mech-setup > summary").click();
   await expect(consent).not.toBeChecked();
   let saves = 0;
   page.on("request", (r) => {
