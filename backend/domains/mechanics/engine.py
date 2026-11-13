@@ -274,8 +274,18 @@ def analyze_mechanics_page(image, options=None, progress=None, *, detector=None,
                 row = speeds.get(body["id"])
                 if not row:
                     continue
+
+                def owns_arrow(annotation):
+                    tail = annotation["geometry"]["points"][0]
+                    owner = min(after["bodies"], key=lambda b: math.dist(tail, b["anchor"]))
+                    return owner["id"] == body["id"] and math.dist(tail, body["anchor"]) <= 120
+
                 arrow = min(
-                    (a for a in after["annotations"] if a["id"].startswith("velocity")),
+                    (
+                        a
+                        for a in after["annotations"]
+                        if a["id"].startswith("velocity") and owns_arrow(a)
+                    ),
                     key=lambda a: math.dist(a["geometry"]["points"][0], body["anchor"]),
                     default=None,
                 )
@@ -288,7 +298,9 @@ def analyze_mechanics_page(image, options=None, progress=None, *, detector=None,
                 checks.append(
                     dict(
                         body=before["id"],
-                        velocity_x=sign * row["number"],
+                        # A signed component already supplies its direction;
+                        # a nonnegative speed uses its own body's drawn arrow.
+                        velocity_x=row["number"] if row["number"] < 0 else sign * row["number"],
                         confidence=row["confidence"],
                         bbox=row["bbox"],
                     )

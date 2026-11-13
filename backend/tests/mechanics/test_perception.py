@@ -351,6 +351,9 @@ def test_two_collision_panels_keep_after_labels_as_checks_only():
         )
         for d in first
     ]
+    # A left arrow belongs to body 2 only. Its signed -1 label is not reversed twice.
+    cv2.arrowedLine(canvas, (1375, 340), (1320, 340), (30, 30, 30), 2, tipLength=0.2)
+    second.append(Detection("after_velocity", "arrow_velocity", [1317.0, 332.0, 1377.0, 348.0]))
     texts = []
     # TEST OCR supplies spatial body-speed readings, never a completed graph.
     for dx in (0, 1000):
@@ -371,6 +374,7 @@ def test_two_collision_panels_keep_after_labels_as_checks_only():
     assert result["scene"]["archetype"] == "collision_1d"
     check = result["diagnostics"]["collision_panels"]
     assert len(check["observed"]) == 2 and check["comparison"] == "frontend_solver_only"
+    assert {r["body"]: r["velocity_x"] for r in check["observed"]} == {"B1": 2.0, "B2": -1.0}
     assert result["scene"]["constraints"][0]["type"] == "after_velocity"
     assert all(b["anchor"][0] < 1000 for b in result["scene"]["bodies"])
 
