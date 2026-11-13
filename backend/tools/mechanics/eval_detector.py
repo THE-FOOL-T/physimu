@@ -184,9 +184,11 @@ def evaluate(
     return {
         "domain": "mechanics",
         "origin": origin,
-        "label": "synthetic, not real accuracy"
-        if origin == "synthetic"
-        else "HUMAN-reviewed real labels; verify source-separated frozen membership",
+        "label": {
+            "synthetic": "synthetic, not real accuracy",
+            "mixed": "mixed synthetic/reviewed real validation, not independent real accuracy",
+            "real": "HUMAN-reviewed real labels; verify source-separated frozen membership",
+        }[origin],
         "images": len(records),
         "image_sha256": sorted(r["sha256"] for r in records),
         "split": split,

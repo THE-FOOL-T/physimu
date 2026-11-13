@@ -51,6 +51,65 @@ test.afterAll(async () => {
     logs,
   );
 });
+for (const lang of ["en", "bn"]) {
+  test(`handwritten notice and one-upload crop consent work in ${lang}`, async ({
+    page,
+  }) => {
+    if (lang === "bn") await page.setViewportSize({ width: 390, height: 844 });
+    await open(page);
+    if (lang === "bn")
+      await page.getByRole("button", { name: "Switch language" }).click();
+    const consent = page.getByTestId("mechanics-label-consent");
+    await expect(consent).not.toBeChecked();
+    await page
+      .getByTestId("mechanics-analysis-style")
+      .selectOption("handwritten");
+    const sent = page.waitForRequest(
+      (r) => r.url().endsWith("/api/analyze/start") && r.method() === "POST",
+    );
+    await upload(page, "pendulum");
+    const body = (await sent).postData()!;
+    expect(body).toMatch(/name="style"\r\n\r\nhandwritten/);
+    expect(body).toMatch(/name="use_label_reader"\r\n\r\nfalse/);
+    await expect
+      .poll(async () => (await state(page)).project?.scene.meta.style)
+      .toBe("handwritten");
+    await expect(
+      page.getByTestId("mechanics-handwriting-notice"),
+    ).toBeVisible();
+    expect((await state(page)).editing).toBe(true);
+    expect(
+      (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze())
+        .violations,
+    ).toEqual([]);
+    expect(
+      await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth <=
+          document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
+    mkdirSync(path.join(root, ".cache/m6"), { recursive: true });
+    await page.screenshot({
+      path: path.join(root, `.cache/m6/handwritten-${lang}.png`),
+      fullPage: true,
+    });
+    await consent.check();
+    const optedIn = page.waitForRequest(
+      (r) => r.url().endsWith("/api/analyze/start") && r.method() === "POST",
+    );
+    await upload(page, "pendulum");
+    expect((await optedIn).postData()).toMatch(
+      /name="use_label_reader"\r\n\r\ntrue/,
+    );
+    await expect(consent).not.toBeChecked();
+    await expect.poll(async () => (await state(page)).analyzing).toBe(false);
+    await consent.check();
+    await page.getByTestId("domain-switch").selectOption("circuit");
+    await page.getByTestId("domain-switch").selectOption("mechanics");
+    await expect(consent).not.toBeChecked();
+  });
+}
 const state = (page: Page) =>
   page.evaluate(() => (window as any).mechanicsWorkspace);
 const action = (page: Page, name: string) =>

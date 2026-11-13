@@ -48,6 +48,7 @@ import {
   MechanicsAnalysis,
   type DetectionBox,
   type AnalysisProgress,
+  type MechanicsAnalysisOptions,
 } from "./analysis";
 
 const numberText = (n: number, places = 2) => {
@@ -173,6 +174,9 @@ export class MechanicsWorkspace implements DomainHandle {
   private analysisProgress: HTMLProgressElement;
   private cancelAnalysis: HTMLButtonElement;
   private correctionConsent: HTMLInputElement;
+  private labelConsent: HTMLInputElement;
+  private analysisStyle: HTMLSelectElement;
+  private handwritingNotice: HTMLElement;
   constructor() {
     this.root.className = "mechanics-workspace";
     this.root.dataset.testid = "mechanics-workspace";
@@ -194,6 +198,20 @@ export class MechanicsWorkspace implements DomainHandle {
     });
     const analysis = el("section", this.root);
     analysis.className = "mech-analysis";
+    const analysisOptions = el("div", analysis);
+    analysisOptions.className = "mech-toolbar";
+    this.analysisStyle = select(
+      analysisOptions,
+      "analysis_style",
+      ["auto", "printed", "handwritten"],
+      () => {},
+    );
+    this.analysisStyle.dataset.testid = "mechanics-analysis-style";
+    const labelConsent = el("label", analysisOptions);
+    this.labelConsent = el("input", labelConsent);
+    this.labelConsent.type = "checkbox";
+    this.labelConsent.dataset.testid = "mechanics-label-consent";
+    el("span", labelConsent, "label_reader_consent");
     this.analysisStatus = el("p", analysis);
     this.analysisStatus.dataset.testid = "mechanics-analysis-status";
     this.analysisStatus.setAttribute("role", "status");
@@ -266,6 +284,10 @@ export class MechanicsWorkspace implements DomainHandle {
     this.notice = el("p", this.root);
     this.notice.setAttribute("role", "status");
     this.notice.dataset.testid = "mechanics-notice";
+    this.handwritingNotice = el("p", this.root, "handwriting_edit_expected");
+    this.handwritingNotice.dataset.testid = "mechanics-handwriting-notice";
+    this.handwritingNotice.setAttribute("role", "status");
+    this.handwritingNotice.hidden = true;
     this.validation = el("p", this.root);
     this.validation.dataset.testid = "mechanics-validation";
     const controls = el("div", this.root);
@@ -471,6 +493,7 @@ export class MechanicsWorkspace implements DomainHandle {
   }
   unmount() {
     this.stopAnalysis();
+    this.labelConsent.checked = false;
     this.correctionConsent.checked = false;
     this.active = false;
     ++this.generation;
@@ -536,6 +559,11 @@ export class MechanicsWorkspace implements DomainHandle {
   }
   private async analyze(file: File) {
     this.stopAnalysis();
+    const analysisOptions: MechanicsAnalysisOptions = {
+      style: this.analysisStyle.value as MechanicsAnalysisOptions["style"],
+      useLabelReader: this.labelConsent.checked,
+    };
+    this.labelConsent.checked = false;
     const epoch = this.analysisEpoch;
     this.analyzing = true;
     this.analysisProgress.value = 0;
@@ -580,6 +608,7 @@ export class MechanicsWorkspace implements DomainHandle {
             );
           this.render();
         },
+        analysisOptions,
       );
       if (!result || epoch !== this.analysisEpoch || !this.active) return;
       await checkImage(
@@ -846,6 +875,7 @@ export class MechanicsWorkspace implements DomainHandle {
       .querySelector('[role="tablist"]')!
       .setAttribute("aria-label", t("mech.panels"));
     const s = this.engine?.original;
+    this.handwritingNotice.hidden = s?.meta.style !== "handwritten";
     this.provenance.textContent = `${t("mech.provenance")}: ${t(`mech.${s?.meta.provenance ?? "unsupported"}`)}`;
     this.validation.textContent = s
       ? `${t("mech.validation_ok")} · ${numberText(objects(s).length, 0)} ${t("mech.objects")}`

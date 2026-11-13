@@ -28,6 +28,10 @@ export interface AnalysisProgress {
     texts?: { text: string; bbox: number[] }[];
   };
 }
+export interface MechanicsAnalysisOptions {
+  style?: "auto" | "printed" | "handwritten";
+  useLabelReader?: boolean;
+}
 
 export function parseResult(input: unknown): MechanicsResult {
   const r = input as MechanicsResult;
@@ -65,6 +69,7 @@ export class MechanicsAnalysis {
     file: File,
     lang: string,
     progress: (p: AnalysisProgress) => void | Promise<void>,
+    options: MechanicsAnalysisOptions = {},
   ): Promise<MechanicsResult | null> {
     this.cancel();
     const token = this.generation,
@@ -76,7 +81,8 @@ export class MechanicsAnalysis {
     form.append("image", file);
     form.append("domain", "mechanics");
     form.append("lang", lang);
-    form.append("style", "auto");
+    form.append("style", options.style ?? "auto");
+    form.append("use_label_reader", String(options.useLabelReader === true));
     const response = await this.transport("/api/analyze/start", {
       method: "POST",
       body: form,

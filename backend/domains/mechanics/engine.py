@@ -9,6 +9,7 @@ from ...core import preprocess, estimate_style, figure_regions, read_text, image
 from .detect import detect, Detection, WeightsUnavailable
 from .scene import Scene
 from .labels import read_tokens
+from .label_reader import read_fallback
 from .associate import associate, centre
 from .perception import blank, measure, calibrate
 from .validate import interpretations, finalize, warning
@@ -58,7 +59,9 @@ def readings(rows, w, h):
     return clean
 
 
-def analyze_mechanics_page(image, options=None, progress=None, *, detector=None, text_reader=None):
+def analyze_mechanics_page(
+    image, options=None, progress=None, *, detector=None, text_reader=None, label_reader=None
+):
     options = options or {}
     lang = options.get("lang", "en")
     if lang not in {"en", "bn"}:
@@ -115,6 +118,8 @@ def analyze_mechanics_page(image, options=None, progress=None, *, detector=None,
             "override": options.get("style", "auto") != "auto",
         }
         scene = blank(source, lang, effective)
+        if effective == "handwritten":
+            warning(scene, "handwriting_edit_expected")
         for code, _ in notes:
             warning(scene, code)
         advance(
@@ -185,6 +190,16 @@ def analyze_mechanics_page(image, options=None, progress=None, *, detector=None,
             if chosen[0] <= centre(r["bbox"])[0] <= chosen[2]
             and chosen[1] <= centre(r["bbox"])[1] <= chosen[3]
         ]
+        text, fallback_notes, fallback_diagnostics = read_fallback(
+            source,
+            text,
+            selected,
+            consent=options.get("use_label_reader") is True,
+            reader=label_reader,
+            check=check,
+        )
+        ocr_notes.extend(fallback_notes)
+        diagnostics["label_reader"] = fallback_diagnostics
         diagnostics["texts"] = text
         diagnostics["ocr"] = {
             k: v
@@ -200,8 +215,6 @@ def analyze_mechanics_page(image, options=None, progress=None, *, detector=None,
             warning(scene, "multiple_figures")
         for code, _ in ocr_notes:
             warning(scene, code)
-        if options.get("use_label_reader"):
-            warning(scene, "local_ocr_only")
         # Raw OCR is retained as real native labels, not replaced by parser guesses.
         for i, r in enumerate(text):
             scene["annotations"].append(

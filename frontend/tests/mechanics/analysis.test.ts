@@ -34,6 +34,40 @@ const reply = (x: unknown, status = 200) =>
   new Response(JSON.stringify(x), { status });
 const file = () =>
   new File([new Uint8Array([1, 2])], "diagram.png", { type: "image/png" });
+test("mechanics style override and crop-reader consent apply only to their own request", async () => {
+  const forms: FormData[] = [];
+  const client = new MechanicsAnalysis((async (_url, options) => {
+    if (options?.method === "POST") {
+      forms.push(options.body as FormData);
+      return reply({
+        domain: "mechanics",
+        job_id: "TEST",
+        stages: ["received", "done"],
+      });
+    }
+    return reply({
+      stage: "done",
+      percent: 100,
+      elapsed_seconds: 0.1,
+      result: result(),
+    });
+  }) as typeof fetch);
+  await client.start(file(), "en", () => {});
+  await client.start(file(), "en", () => {}, {
+    style: "handwritten",
+    useLabelReader: true,
+  });
+  await client.start(file(), "en", () => {});
+  assert.deepEqual(
+    forms.map((form) => form.get("style")),
+    ["auto", "handwritten", "auto"],
+  );
+  assert.deepEqual(
+    forms.map((form) => form.get("use_label_reader")),
+    ["false", "true", "false"],
+  );
+});
+
 test("mechanics polling sends explicit domain and receives canonical partial image and scene", async () => {
   const calls: { url: string; options?: RequestInit }[] = [];
   let poll = 0;

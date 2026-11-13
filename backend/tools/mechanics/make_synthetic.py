@@ -17,6 +17,7 @@ from ...domains.mechanics.scene import Scene
 from .build_fixtures import fixtures, value
 from .common import ARCHETYPES, NAMES, fresh, sha256, write_json, yolo_line
 from .synthetic_painter import render, texture
+from .handwriting import elastic_parameters, deform, inverse_maps, warp, notebook
 
 STYLES = ("printed", "scan", "handwritten", "photo")
 
@@ -197,11 +198,27 @@ def project_point(point, H):
     return [float(p[0] / p[2]), float(p[1] / p[2])]
 
 
-def transform_scene(scene, H, width, height, name):
+def transform_scene(scene, H, width, height, name, elastic=None):
     d = scene.model_dump(mode="json", by_alias=True)
 
     def p(v):
-        return project_point(v, H)
+        point = project_point(v, H)
+        return deform(point, elastic).tolist() if elastic else point
+
+    def polyline(points, closed=False):
+        if not elastic or len(points) < 2:
+            return [p(v) for v in points]
+        source = list(points) + ([points[0]] if closed else [])
+        dense = []
+        for a, b in zip(source, source[1:]):
+            count = max(1, math.ceil(math.dist(a, b) / 10))
+            dense.extend(
+                [
+                    [a[0] + (b[0] - a[0]) * t / count, a[1] + (b[1] - a[1]) * t / count]
+                    for t in range(count)
+                ]
+            )
+        return [p(v) for v in [*dense, source[-1]]]
 
     def box(b):
         points = [p([b[0], b[1]]), p([b[2], b[1]]), p([b[2], b[3]]), p([b[0], b[3]])]
@@ -216,13 +233,13 @@ def transform_scene(scene, H, width, height, name):
     for b in d["bodies"]:
         b["anchor"] = p(b["anchor"])
         b["bbox"] = box(b["bbox"])
-        b["mask"] = [p(v) for v in b["mask"]]
+        b["mask"] = polyline(b["mask"], closed=True)
     for sf in d["surfaces"]:
-        sf["polyline"] = [p(v) for v in sf["polyline"]]
+        sf["polyline"] = polyline(sf["polyline"])
     for link in d["links"]:
         link["a"]["point"] = p(link["a"]["point"])
         link["b"]["point"] = p(link["b"]["point"])
-        link["polyline"] = [p(v) for v in link["polyline"]]
+        link["polyline"] = polyline(link["polyline"])
     for pulley in d["pulleys"]:
         centre = p(pulley["center"])
         radius = p([pulley["center"][0] + pulley["radius_px"], pulley["center"][1]])
@@ -230,7 +247,7 @@ def transform_scene(scene, H, width, height, name):
         pulley["radius_px"] = math.dist(centre, radius)
     for a in d["annotations"]:
         g = a["geometry"]
-        g["points"] = [p(v) for v in g["points"]]
+        g["points"] = polyline(g["points"])
         if g["bbox"]:
             g["bbox"] = box(g["bbox"])
     for f in d["forces"]:
@@ -242,7 +259,9 @@ def transform_scene(scene, H, width, height, name):
     return Scene.model_validate(d)
 
 
-def sample(source, spec, rng, name):
+def sample(source, spec, rng, name, *, handwriting="baseline"):
+    if handwriting not in {"baseline", "strong"}:
+        raise ValueError("Unknown handwriting profile")
     archetype, style, mirror, no_values, bengali = spec
     scene = variant(source, rng, no_values, bengali)
     raw = scene.model_dump(mode="json", by_alias=True)
@@ -269,6 +288,7 @@ def sample(source, spec, rng, name):
         arrow_style=rng.choice(["filled", "open"]),
         hatch_spacing=rng.randint(11, 23),
         mirror_text=mirror,
+        handwriting=handwriting,
     )
     # Record actual authored mask/text extents, not estimated text widths. The
     # masks come from our drawing commands; this is not automatic real annotation.
@@ -308,7 +328,10 @@ def sample(source, spec, rng, name):
             [cv2.getRotationMatrix2D((width / 2, height / 2), angle, 1), [0, 0, 1]]
         )
         H = rotation @ H
-    if style == "photo":
+    phone_photo = style == "photo" or (
+        style == "handwritten" and handwriting == "strong" and rng.random() < 0.5
+    )
+    if phone_photo:
         src = np.float32([[0, 0], [width - 1, 0], [width - 1, height - 1], [0, height - 1]])
         d = min(width, height) * 0.04
         dst = src + np.float32(
@@ -324,13 +347,24 @@ def sample(source, spec, rng, name):
     raster = cv2.warpPerspective(
         np.array(image), H, (width, height), flags=cv2.INTER_CUBIC, borderValue=paper
     )
+    elastic = (
+        elastic_parameters(rng) if style == "handwritten" and handwriting == "strong" else None
+    )
+    maps = inverse_maps(width, height, elastic) if elastic else None
+    if maps is not None:
+        raster = warp(raster, maps, border=paper)
     raster = texture(Image.fromarray(raster), rng, style)
+    ruling = None
+    if elastic:
+        raster, ruling = notebook(raster, rng)
     if style in {"handwritten", "scan", "photo"}:
         raster = raster.filter(ImageFilter.GaussianBlur(rng.uniform(0.15, 0.55)))
     instances = np.zeros((height, width), np.uint16)
     transformed = []
     for i, o in enumerate(objects, 1):
         mask = cv2.warpPerspective(np.array(o["mask"]), H, (width, height), flags=cv2.INTER_NEAREST)
+        if maps is not None:
+            mask = warp(mask, maps, mask=True)
         yy, xx = np.where(mask > 0)
         if (
             not len(xx)
@@ -343,7 +377,7 @@ def sample(source, spec, rng, name):
         bbox = [int(xx.min()), int(yy.min()), int(xx.max()) + 1, int(yy.max()) + 1]
         instances[mask > 0] = i
         transformed.append({"id": o["id"], "class": o["class"], "bbox": bbox, "mask_index": i})
-    transformed_scene = transform_scene(scene, H, width, height, name)
+    transformed_scene = transform_scene(scene, H, width, height, name, elastic)
     raw = transformed_scene.model_dump(mode="json", by_alias=True)
     for obj in transformed:
         for body in raw["bodies"]:
@@ -367,11 +401,15 @@ def sample(source, spec, rng, name):
             "bengali_digits": bengali,
             "style": style,
             "archetype": archetype,
+            "handwriting_profile": handwriting,
+            "elastic": elastic,
+            "notebook_ruling": ruling,
+            "phone_photo": phone_photo,
         },
     )
 
 
-def generate(output, count=600, seed=42, *, small=False):
+def generate(output, count=600, seed=42, *, small=False, handwriting="baseline"):
     if not small and not 400 <= count <= 800:
         raise ValueError("R1 needs 400–800 images; --small is for tests/smoke only")
     out = fresh(output)
@@ -387,7 +425,7 @@ def generate(output, count=600, seed=42, *, small=False):
         name = f"synthetic_{i:04d}"
         extension = ".jpg" if style in {"scan", "photo"} else ".png"
         image, masks, objects, scene, settings = sample(
-            rng.choice(by_type[archetype]), spec, rng, name + extension
+            rng.choice(by_type[archetype]), spec, rng, name + extension, handwriting=handwriting
         )
         image_path = out / "images" / (name + extension)
         image.save(
@@ -501,8 +539,16 @@ def main():
     p.add_argument("--count", type=int, default=600)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--small", action="store_true")
+    p.add_argument("--handwriting", choices=["baseline", "strong"], default="baseline")
     args = p.parse_args()
-    print(json.dumps(generate(args.out, args.count, args.seed, small=args.small), indent=2))
+    print(
+        json.dumps(
+            generate(
+                args.out, args.count, args.seed, small=args.small, handwriting=args.handwriting
+            ),
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":

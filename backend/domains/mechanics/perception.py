@@ -80,13 +80,15 @@ def measure(image, detections, lang, style, check):
             continue
         try:
             if d.type == "pulley":
-                fit = geometry.fit_circle(image, d.bbox)
+                fit = geometry.fit_circle(image, d.bbox, style=style)
                 ref = id_("P")
                 scene["pulleys"].append(
                     dict(id=ref, center=fit["center"], radius_px=fit["radius_px"], mass=None)
                 )
             else:
-                fit = geometry.fit_line(image, d.bbox, [*texts, *bodies], orientation=d.type)
+                fit = geometry.fit_line(
+                    image, d.bbox, [*texts, *bodies], orientation=d.type, style=style
+                )
                 ref = id_("S")
                 scene["surfaces"].append(
                     dict(
@@ -115,13 +117,13 @@ def measure(image, detections, lang, style, check):
         check()
         if d.type not in {"block", "ball", "bob", "cart"}:
             continue
-        fit = sprites.body_mask(image, d.bbox, lines)
+        fit = sprites.body_mask(image, d.bbox, lines, style=style)
         ref = id_("B")
         polygon = fit["polygon"]
         anchor = np.mean(polygon, axis=0).tolist()
         if d.type in {"ball", "bob"}:
             try:
-                anchor = geometry.fit_circle(image, d.bbox)["center"]
+                anchor = geometry.fit_circle(image, d.bbox, style=style)["center"]
             except ValueError:
                 pass
         # Use a polygon centroid for uneven contour sampling.
@@ -188,9 +190,9 @@ def measure(image, detections, lang, style, check):
             continue
         try:
             fit = (
-                geometry.spring(image, d.bbox, exclusions)
+                geometry.spring(image, d.bbox, exclusions, style=style)
                 if d.type == "spring"
-                else geometry.trace(image, d.bbox, exclusions)
+                else geometry.trace(image, d.bbox, exclusions, style=style)
             )
             points = np.array(fit["endpoints"] if d.type == "spring" else fit["points"])
             ref = id_("L")
@@ -270,7 +272,7 @@ def measure(image, detections, lang, style, check):
         ref = id_("T")
         try:
             if d.type in {"arrow_force", "arrow_velocity", "axis", "dimension_line"}:
-                fit = geometry.fit_line(image, d.bbox, texts)
+                fit = geometry.fit_line(image, d.bbox, texts, style=style)
                 points = fit["points"]
                 # Arrowhead has more ink than its tail in a small endpoint neighbourhood.
                 ink = geometry.foreground(image)

@@ -123,9 +123,19 @@ def load_dataset(root, *, reviewed_real=True):
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
     if manifest.get("domain") != "mechanics" or manifest.get("class_names") != list(NAMES):
         raise ValueError("Mechanics class order/manifest mismatch")
-    if manifest.get("origin") not in {"synthetic", "real"}:
-        raise ValueError("Explicit synthetic/real origin is required")
+    if manifest.get("origin") not in {"synthetic", "real", "mixed"}:
+        raise ValueError("Explicit synthetic/real/mixed origin is required")
     records = manifest.get("records", [])
+    if manifest["origin"] == "mixed":
+        cap = manifest.get("exposure_cap", {}).get("max_synthetic_per_real")
+        if not isinstance(cap, (int, float)) or not math.isfinite(cap) or cap < 0:
+            raise ValueError("Mixed data requires a finite synthetic exposure cap")
+        for split in ("train", "val"):
+            rows = [r for r in records if r.get("split") == split]
+            real_count = sum(r.get("synthetic") is False for r in rows)
+            synthetic_count = sum(r.get("synthetic") is True for r in rows)
+            if not real_count or synthetic_count > math.floor(cap * real_count):
+                raise ValueError("Mixed data exceeds its per-split synthetic exposure cap")
     seen = set()
     for row in records:
         image = relative_file(root, row["image"])
@@ -141,8 +151,13 @@ def load_dataset(root, *, reviewed_real=True):
             raise ValueError("Image hash/split mismatch")
         if not row.get("source_group") or row.get("archetype") not in ARCHETYPES:
             raise ValueError("Source group and supported archetype are required")
+        if manifest["origin"] == "mixed" and type(row.get("synthetic")) is not bool:
+            raise ValueError("Mixed data requires explicit per-image synthetic provenance")
+        real = manifest["origin"] == "real" or (
+            manifest["origin"] == "mixed" and not row["synthetic"]
+        )
         if (
-            manifest["origin"] == "real"
+            real
             and reviewed_real
             and (
                 row.get("human_reviewed") is not True

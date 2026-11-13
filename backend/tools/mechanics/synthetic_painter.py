@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 from .common import ROOT
 from .paint_scene import spring_points
+from .handwriting import label_mask
 
 
 def font_for(size, variant):
@@ -16,13 +17,23 @@ def font_for(size, variant):
 
 
 def render(
-    scene, rng, *, style, font_size, font_variant, arrow_style, hatch_spacing, mirror_text=False
+    scene,
+    rng,
+    *,
+    style,
+    font_size,
+    font_variant,
+    arrow_style,
+    hatch_spacing,
+    mirror_text=False,
+    handwriting="baseline",
 ):
     """Return RGB, amodal native mask per object, and their explicit detector classes."""
     image = Image.new("RGB", (scene.image.width, scene.image.height), scene.frame.paper_color)
     objects = []
     ink, stroke = scene.frame.ink_color, scene.frame.stroke_px
-    jitter = 1.5 if style == "handwritten" else 0
+    strong = style == "handwritten" and handwriting == "strong"
+    jitter = 2.5 if strong else 1.5 if style == "handwritten" else 0
     font = font_for(font_size, font_variant)
 
     def object_mask(name, id, draw_fn, *, fill=False):
@@ -48,7 +59,10 @@ def render(
                 [
                     (
                         a[0] + (b[0] - a[0]) * i / n + rng.uniform(-jitter, jitter),
-                        a[1] + (b[1] - a[1]) * i / n + rng.uniform(-jitter, jitter),
+                        a[1]
+                        + (b[1] - a[1]) * i / n
+                        + rng.uniform(-jitter, jitter)
+                        + (1.5 * math.sin(i * 0.7) if strong else 0),
                     )
                     for i in range(n)
                 ]
@@ -150,6 +164,12 @@ def render(
         g = a.geometry
         if a.type == "label" and g.text and g.bbox:
             x, y = g.bbox[:2]
+            if strong:
+                glyphs = label_mask(g.text, font, rng)
+                object_mask(
+                    "text_label", a.id, lambda d, c, x=x, y=y, m=glyphs: d.bitmap((x, y), m, fill=c)
+                )
+                continue
             object_mask(
                 "text_label",
                 a.id,

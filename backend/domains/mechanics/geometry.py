@@ -7,6 +7,15 @@ import cv2
 import numpy as np
 from scipy.signal import find_peaks
 
+FIT_THRESHOLDS = {
+    "printed": dict(line_band=3.5, line_gap=12, circle_band=2.5),
+    "handwritten": dict(line_band=7.0, line_gap=20, circle_band=4.5),
+}
+
+
+def thresholds(style):
+    return FIT_THRESHOLDS["handwritten" if style == "handwritten" else "printed"]
+
 
 def foreground(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
@@ -31,9 +40,12 @@ def crop_mask(image, bbox, exclude=(), pad=3):
     return mask, np.array([x, y], float)
 
 
-def fit_line(image, bbox, exclude=(), orientation=None):
+def fit_line(image, bbox, exclude=(), orientation=None, *, style="printed"):
+    settings = thresholds(style)
     mask, offset = crop_mask(image, bbox, exclude)
-    lines = cv2.HoughLinesP(mask, 1, np.pi / 720, 12, minLineLength=12, maxLineGap=12)
+    lines = cv2.HoughLinesP(
+        mask, 1, np.pi / 720, 12, minLineLength=12, maxLineGap=settings["line_gap"]
+    )
     if lines is None:
         raise ValueError("line_unmeasured")
     candidates = list(lines[:, 0])
@@ -57,7 +69,7 @@ def fit_line(image, bbox, exclude=(), orientation=None):
         delta = points - [a, b]
         length = math.hypot(c - a, d - b)
         residual = np.abs((c - a) * delta[:, 1] - (d - b) * delta[:, 0]) / max(1, length)
-        return int(np.count_nonzero(residual <= 3.5)), length
+        return int(np.count_nonzero(residual <= settings["line_band"])), length
 
     # An occluded incline can have two short collinear pieces, while its rope
     # is one longer piece. Rank all collinear ink, not one Hough span.
@@ -66,7 +78,7 @@ def fit_line(image, bbox, exclude=(), orientation=None):
     direction /= np.linalg.norm(direction)
     delta = points - np.array([a, b])
     residual = np.abs(direction[0] * delta[:, 1] - direction[1] * delta[:, 0])
-    inliers = points[residual <= 3.5]
+    inliers = points[residual <= settings["line_band"]]
     if len(inliers) < 8:
         raise ValueError("line_unmeasured")
     vx, vy, x, y = cv2.fitLine(inliers.astype(np.float32), cv2.DIST_HUBER, 0, 0.01, 0.01).ravel()
@@ -87,13 +99,14 @@ def fit_line(image, bbox, exclude=(), orientation=None):
     }
 
 
-def fit_circle(image, bbox):
+def fit_circle(image, bbox, *, style="printed"):
     mask, offset = crop_mask(image, bbox, pad=2)
     points = np.column_stack(np.where(mask > 0)[::-1]).astype(float) + offset
     centre = np.array([(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2])
     radius = min(bbox[2] - bbox[0], bbox[3] - bbox[1]) / 2
     distances = np.linalg.norm(points - centre, axis=1)
-    points = points[(distances > radius * 0.65) & (distances < radius * 1.22)]
+    lower, upper = (0.5, 1.4) if style == "handwritten" else (0.65, 1.22)
+    points = points[(distances > radius * lower) & (distances < radius * upper)]
     if len(points) < 12:
         raise ValueError("circle_unmeasured")
     for _ in range(4):
@@ -104,7 +117,7 @@ def fit_circle(image, bbox):
             raise ValueError("circle_unmeasured")
         centre, radius = np.array([cx, cy]), math.sqrt(radius2)
         residual = np.abs(np.linalg.norm(points - centre, axis=1) - radius)
-        keep = residual <= max(2.5, float(np.median(residual)) * 2)
+        keep = residual <= max(thresholds(style)["circle_band"], float(np.median(residual)) * 2)
         if keep.all() or keep.sum() < 12:
             break
         points = points[keep]
@@ -133,8 +146,10 @@ def skeleton(mask):
     return result
 
 
-def trace(image, bbox, exclude=()):
+def trace(image, bbox, exclude=(), *, style="printed"):
     mask, offset = crop_mask(image, bbox, exclude, pad=4)
+    if style == "handwritten":
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
     skel = skeleton(mask)
     count, labels, stats, _ = cv2.connectedComponentsWithStats(skel, 8)
     segments = []
@@ -181,8 +196,8 @@ def trace(image, bbox, exclude=()):
     return {"segments": segments, "points": all_points, "confidence": 0.8}
 
 
-def spring(image, bbox, exclude=()):
-    measured = trace(image, bbox, exclude)
+def spring(image, bbox, exclude=(), *, style="printed"):
+    measured = trace(image, bbox, exclude, style=style)
     pts = np.array(measured["points"])
     vertical = (bbox[3] - bbox[1]) > (bbox[2] - bbox[0])
     axis = 1 if vertical else 0
@@ -198,6 +213,8 @@ def spring(image, bbox, exclude=()):
     samples = np.array(samples)
     valid = np.isfinite(samples)
     samples = np.interp(np.arange(len(samples)), np.flatnonzero(valid), samples[valid])
+    if style == "handwritten":
+        samples = cv2.GaussianBlur(samples.astype(np.float32)[None, :], (5, 1), 0.7)[0]
     peaks, _ = find_peaks(samples, prominence=max(2, float(np.ptp(samples)) * 0.35), distance=3)
     return {
         **measured,

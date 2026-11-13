@@ -6,7 +6,7 @@ import numpy as np
 from .geometry import foreground
 
 
-def body_mask(image, bbox, static_lines=()):
+def body_mask(image, bbox, static_lines=(), *, style="printed"):
     h, w = image.shape[:2]
     x, y, z, v = map(int, bbox)
     x, y, z, v = max(0, x - 3), max(0, y - 3), min(w, z + 4), min(h, v + 4)
@@ -19,7 +19,8 @@ def body_mask(image, bbox, static_lines=()):
             0,
             3,
         )
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+    gap = min(7, max(3, int(min(z - x, v - y) * 0.1) | 1)) if style == "handwritten" else 3
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((gap, gap), np.uint8))
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     candidates = [c for c in contours if cv2.contourArea(c) > 0.12 * (z - x) * (v - y)]
     if not candidates:
@@ -37,7 +38,11 @@ def body_mask(image, bbox, static_lines=()):
     polygon = cv2.approxPolyDP(contour, 0.6, True).reshape(-1, 2).astype(float) + [x, y]
     if len(polygon) < 3:
         raise ValueError("mask_unmeasured")
-    return {"polygon": polygon.tolist(), "confidence": 0.85, "warning": None}
+    return {
+        "polygon": polygon.tolist(),
+        "confidence": 0.75 if style == "handwritten" else 0.85,
+        "warning": None,
+    }
 
 
 def repairs(bodies, surfaces):
