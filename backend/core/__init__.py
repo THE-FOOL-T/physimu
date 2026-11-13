@@ -12,6 +12,7 @@ from ..pipeline.value_tokens import DIGITS as OCR_DIGITS
 from ..pipeline.ocr_tiles import windows as ocr_windows
 from ..pipeline.ocr_regions import anchored_regions, crop_variants
 from .models import model_lease, register_model_release
+from .label_reader import CropLabelReader
 
 __all__ = [
     "load_config",
@@ -36,4 +37,5 @@ __all__ = [
     "crop_variants",
     "model_lease",
     "register_model_release",
+    "CropLabelReader",
 ]

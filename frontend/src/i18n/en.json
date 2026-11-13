@@ -667,5 +667,15 @@
   "mech.perspective_estimated": "Page corners were estimated. Check alignment against the returned source image.",
   "mech.ruling_removed": "Faint notebook ruling was removed. Check that the diagram lines remain intact.",
   "mech.low_quality_image": "Image quality is low. Check object geometry and label readings.",
-  "mech.ocr_unavailable": "Local OCR is unavailable. Enter the missing labels and values in edit mode."
+  "mech.ocr_unavailable": "Local OCR is unavailable. Enter the missing labels and values in edit mode.",
+  "mech.analysis_style": "Diagram style for the next upload",
+  "mech.auto": "Auto",
+  "mech.printed": "Printed",
+  "mech.handwritten": "Handwritten",
+  "mech.label_reader_consent": "For the next upload, allow ambiguous label crops to be sent to Google Gemini. The full diagram stays here. Off by default; server setup required.",
+  "mech.handwriting_edit_expected": "Handwritten diagrams have lower recognition accuracy. Expect to correct objects, labels and values in edit mode.",
+  "mech.label_reader_unavailable": "The optional label reader is not configured. Local readings remain available for editing.",
+  "mech.label_reader_failed": "The optional label reader failed. Check the local readings in edit mode.",
+  "mech.label_reader_rejected": "A label-reader response did not match the allowed mechanics vocabulary and was ignored.",
+  "mech.label_reader_time_budget": "The optional label reader reached its time limit. Check the available readings."
 }

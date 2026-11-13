@@ -148,3 +148,30 @@ Mechanics correction storage uses the existing corrections endpoint, with an
 explicit domain and separate scene/image validation. Saved corrections are
 unreviewed local data, never agent-authored gold or training approval. The M4
 smoke checkpoint remains unpromoted; real correctness is null without HUMAN gold.
+
+## M6 rounds, handwriting and explicit crop consent
+
+Real review/import and immutable model comparisons are coordinated in separate
+round stages. Mixed datasets retain per-image origin/review/source hashes, and
+synthetic image exposure is bounded independently in each split. Synthetic or
+mixed scores never satisfy frozen real promotion. The tool records a decision;
+it does not install weights or run retraining automatically.
+
+Existing generator and printed-fit defaults remain available for reproducibility.
+A strong handwriting profile deforms pixels/masks/native geometry together and
+records its smooth spatial warp. Handwritten fits use separate bounded settings;
+failed geometry and large open masks stay editable. Synthetic fixture trajectory
+correctness remains limited and is reported independently of recognition.
+
+A generic crop transport was added behind the core facade without moving or
+editing the circuit label reader. Mechanics uses its own local grammar/crop gate,
+separate environment credentials and explicit per-upload consent. Handwriting
+selection alone does not permit network calls. Provider fields other than a
+validated short transcription are ignored; real provider calls were not tested.
+
+The owner authorized multi-epoch synthetic training before M6 and then authorized
+M6 while it continued. Parallel verification exhausted this host's memory and
+interrupted epoch 5; the saved epoch-4 weights/optimizer and exact dataset hashes
+were verified before resuming. Heavy gates now run sequentially, and Node tests
+use one test-file process. Assertions, counts, retry/timeouts and circuit behavior
+are unchanged. This scheduling change reduces peak memory on the 7.31-GiB host.

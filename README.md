@@ -14,6 +14,9 @@ perception pipeline and return an editable scene with explicit provenance. A
 compatible independent mechanics checkpoint is required for detection; without
 one, analysis reports `weights_unavailable` and retains the image for authoring.
 See the [analysis guide](docs/mechanics/perception.md) for limits and evaluation.
+Mechanics also has [handwriting controls and crop consent](docs/mechanics/handwriting.md)
+and [reviewed-data round tooling](docs/mechanics/rounds.md). Real printed/handwritten
+accuracy remains unverified; synthetic-only training candidates are experimental.
 The domain registry and shared facades are in place; circuit files stay at
 their existing locations until M7. See [milestone status](docs/mechanics/status.md).
 The Python distribution/public package is `augphys`; `circuit_sim` is a local
