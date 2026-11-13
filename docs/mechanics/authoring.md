@@ -1,9 +1,22 @@
 # Mechanics scene authoring
 
 Choose **Mechanics** in the main app. This workspace runs locally in browser
-memory. Upload a PNG/JPEG/WebP, choose the archetype, then press **Place authoring
-template**. Templates propose editable handles and assumed physical Values; they
-do not inspect the image. The synthetic fixture menu is explicitly labelled.
+memory. Upload a PNG/JPEG/WebP for local analysis. In **Explore**, select a body
+and drag its physical handle, or edit the contextual numerical controls. Dragging
+pauses playback and edits initial conditions; it does not move source geometry.
+Arrow keys adjust the selected body; Shift increases the step. Drag empty canvas
+space to pan, choose a zoom level, or use Reset view. Reset rewinds playback;
+Back to original parameters clears simulation overrides.
+
+Use **Fix interpretation** for OCR text/units, label ownership, contact and endpoint
+corrections, and alternative figure/physics interpretations. Confident conflicting
+OCR readings stay unplaced. Explicit Confirm this value buttons mark accepted
+assumptions as user values. A valid schema alone does not establish supported
+physics or accurate recognition; readiness and warning panels distinguish these.
+
+Use **Advanced authoring** to choose an archetype and **Place authoring template**,
+draw missing objects/links and repair masks. Templates propose editable handles
+and assumed Values; they do not inspect the image. Synthetic fixtures are labelled.
 
 Position each body box/mask, pivot, pulley centre, incline base/tip and link end
 over its actual source pixels. Select objects from the list or click their
@@ -45,10 +58,14 @@ reduced motion; explicit Play remains available, alongside Step and the path.
 
 ## Portable scene and image JSON
 
-Export produces a version-1 `augphys-mechanics-project` envelope:
+Export produces a version-2 `augphys-mechanics-project` envelope. Canonical scenes
+remain version 1; the project wrapper records an additional immutable snapshot:
 
 - `scene`: canonical source scene with native geometry and source calibration.
 - `current_scene`: canonical typed Values after simulation parameter changes.
+- `recognition_scene`: first recognition/authored-load snapshot, retained through
+  geometry corrections, history, replay and reanalysis. Restore first interpretation
+  explicitly returns to it; ordinary Reset does not discard corrections.
 - `source_image`: embedded PNG/JPEG/WebP data URL; no remote image dependency.
 - `parameter_overrides`: SI numbers addressed by existing binding paths.
 - `unlocked_geometry`: geometry binding ids; version and format identify the file.
@@ -60,6 +77,27 @@ imports leave the current document intact. This separation prevents saved geomet
 overrides from accidentally becoming a new source calibration. JSON key ordering
 does not matter. Direct raw scene JSON must first be packaged with its matching
 image and replayed state; arbitrary remote paths are not fetched.
+
+Version-1 projects are accepted and explicitly migrated: their source scene becomes
+the initial recognition snapshot. Missing pulley displacement, collision position
+and pendulum angular-speed controls are added consistently to both snapshots.
+Old scalar-system velocity bindings, labels and saved overrides migrate to the
+solver parameter path. Conflicting saved corrections stay unplaced for review.
+Native geometry remains unchanged. New exports require a version-2-capable reader.
+
+A pendulum speed observed in m/s derives angular speed through the calibrated
+length. This conversion is assumed until reviewed. Editing length retains that
+observed linear speed; explicitly editing angular speed, or correcting its bound
+label, takes ownership of the angular Value instead.
+Bound linear-speed labels continue to display m/s using the current length.
+An explicit angular reading takes priority over a conflicting linear reading;
+the conflicting observation remains unplaced.
+
+Reanalyze image reuses the embedded local image and never runs during a parameter
+drag. User Values follow unique native object matches, not incidental detector IDs;
+unmatched corrections remain unplaced for reassignment. A manually authored/repaired
+interpretation is retained intact and the new alternatives are available for review.
+Reanalysis retains history and cannot overwrite edits made after its request began.
 
 Images are limited to 32 MB, 8000 px per side and 16 megapixels. PNG export is the
 current composed canvas (including enabled overlays/edit handles). No video export,

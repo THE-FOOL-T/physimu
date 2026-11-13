@@ -24,18 +24,23 @@ Unexecuted timings are null. Engine time excludes service-queue time; job elapse
 time includes it. Model inference is cooperatively cancellable before/after the
 native call, not interruptible during it.
 
-The source_image is the actual analyzed raster after shared decoding,
-orientation, size limiting and preprocessing. All scene coordinates use that
-raster. The controller validates its dimensions and replaces the upload preview
-before drawing partial boxes. Complete results are schema-validated in Python
-and TypeScript. Partial and unsupported results open in edit mode automatically.
+The source_image is the actual raster after shared decoding, orientation and size
+limiting. Mechanics retains those pixels and dimensions: shared perspective/ruling
+modifications are not applied without an inverse coordinate-transform contract.
+Coarse figure proposals are layout evidence only. All detections, measurements and
+relationships use native pixels. The controller validates dimensions before drawing
+partial boxes. Complete results are schema-validated in Python and TypeScript.
+Partial/unsupported results open Fix interpretation; Explore and Advanced authoring
+remain explicitly available. Circuit preprocessing is unchanged.
 
 The pipeline measures ink lines, circles, masked skeletons, spring coils,
 pendulum geometry, trajectory tangents and dimension scale. It extracts native
 body polygons and static-line repairs. The label grammar handles SI units,
 English/Bangla/subscript digits and raw OCR alternatives; a bare m/M/g is a
 name, and an unowned number stays in Unplaced Values. Hungarian assignment is
-typed and distance-limited. OCR confidence and geometric rule scores are not
+typed and distance-limited. Mechanics ranks the shared local engines' **raw**
+readings independently of circuit OCR semantics. Confident conflicts and ambiguous
+body ownership remain unresolved. OCR confidence and geometric rule scores are not
 calibrated accuracy estimates. The Bengali unit table and UI need native review.
 
 Printed angles override geometry with an angle_mismatch warning above five
@@ -76,8 +81,37 @@ requests without explicit opt_in and mismatched scene/image dimensions. It
 stores native PNG, scene JSON and consent metadata below ignored
 `data/corrections/mechanics/`. These are unreviewed corrections, not HUMAN gold.
 Nothing is automatically sent to a provider, put in training or persisted by
-ordinary upload. This milestone uses local OCR even if label-reader consent is
-submitted; provider fallback is later work.
+ordinary upload. The existing optional label reader requires explicit per-upload
+consent and server configuration; local-only behavior is the default.
+
+## Evidence and compilation contracts
+
+`understanding.py` proposes figure regions before recognition. The independent
+detector and shared OCR execution retain their existing jobs, cancellation and
+offline model behavior. `ocr.py` performs mechanics candidate fusion; `labels.py`
+normalizes supported units/digits without assigning units to arbitrary numbers.
+`relationships.py` requires measured trace points to reach body boundaries.
+`archetypes.py` ranks topology requirements and contradictions for all eight models;
+moving-object counts remain solver capability limits, not sufficient evidence.
+
+`parameters.py` remaps observed speeds to authoritative solver paths after topology
+resolution: launch speed for projectiles, scalar initial speed for incline/spring/
+pulley systems, and per-body signed velocity for collisions. Annotation ownership
+and binding labels follow the same paths. Coupled speed conflicts remain unresolved.
+The existing calibration and SI Value provenance remain explicit.
+
+`evidence.py` provides a typed diagnostic representation outside the portable v1
+scene: native image/regions, source detection identities, measurements, raw OCR and
+alternatives/engines, candidate relationships, hypotheses/contradictions, unassigned
+labels, unresolved attachments, assumptions and warnings. Relation states distinguish
+supported, candidate, assumed and unresolved evidence. Inferred rope wraps remain
+assumptions. `readiness.py` returns actionable issues separately from structural
+scene validity and solver support. The UI recomputes readiness after repairs.
+
+The mechanics-only optional `figure_region` form field accepts four native image
+coordinates. The main route validates bounds and wraps the selected mechanics
+domain in a request-local options adapter; shared circuit analysis is unchanged.
+Circuit requests ignore this mechanics field. No global domain option is mutated.
 
 ## Reproduce evaluation
 

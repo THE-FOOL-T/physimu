@@ -1907,3 +1907,37 @@ staged-document independence check passed **8 tests in 12.32 s**. Code/plan
 commit: **4e8a87f**; this measured report is a separate documentation commit.
 
 A separate whole-file status-document Prettier check warns on inherited historical table formatting; the committed HEAD already has those warnings. Historical sections were preserved, and the new guide/plan and frontend formatter checks pass.
+
+## Mechanics reconstruction integration — 2026-11-14
+
+Validation head: **4109f4a on main**, with application code **252a7b7**,
+following backend/evidence **d00ee00**, pendulum
+conversion **8c5a937**, and state/binding migration **07ea711**. The detailed
+[implementation report](reconstruction-report.md) and [progress record](reconstruction-progress.md)
+record the reproduced defects, changes, executed checks and remaining boundaries.
+
+Implemented: constrained Explore interactions for all eight archetypes/ten fixtures,
+Fix interpretation and Advanced authoring, contextual parameters, shared solver/label
+ownership, version-2 projects with explicit version-1 migration, immutable recognition
+snapshots, repair/reanalysis retention, source-preserving fallback, native panel
+selection, typed evidence/relationships and separate simulation/readiness states.
+Existing equations, circuit core/domain and shared analysis coordinator are retained.
+
+The final `manage.py check` passed **649 Python, 1 skipped**, **130 TypeScript**,
+lint, formatting and production build. The skipped Python case is the opt-in CPU
+OCR benchmark. All five bundled circuit/OCR model hashes pass doctor. The app was
+restarted on the final backend and reports detector/OCR **ready/ready**, both hybrid
+OCR engines ready, startup **25.572 s**. The final browser gate passed **136 tests,
+2 skipped, zero failed** in **5.3 minutes**. The existing circuit keyboard test now
+registers native file-chooser interception before navigation; its original actions
+and assertions remain. Earlier failed runs and the isolated reproduction/fix are
+recorded in the report. Circuit application code and layout baselines are unchanged.
+
+**Automatic recognition remains blocked/unvalidated.** The approved default
+`models/mechanics.pt` is absent. A process-local probe of the existing experimental
+checkpoint ran actual detection and hybrid OCR on three public real images:
+5 Atwood, 8 spring and 11 incline detections; all three reconstructions remained
+unsupported. No model was downloaded/promoted and no external crops were sent.
+These are runtime observations, not accuracy scores. Independent real gold,
+printed/handwritten/Bengali accuracy and human/device review remain unverified.
+The report includes exact local verification commands for an approved checkpoint.
