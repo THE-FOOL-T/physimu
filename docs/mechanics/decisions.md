@@ -208,3 +208,29 @@ null-scene scaffolds outside gold. Source hashes/terms, provisional groups and
 quality exclusions are recorded in public-candidates.md; no independent review,
 real label or gold scene was fabricated. M4 stops before M5 perception, routes
 or production UI changes.
+
+
+## M7 source ownership and compatibility (2026-11-13)
+
+The owner explicitly authorized the structural M7 refactor. Circuit algorithms
+move into the local domain; shared implementations move behind the existing
+core/shell facades. Old Python imports alias the same module objects and old TS
+imports re-export the implementation. Preserve original test imports and caches,
+including the running synthetic training/finalization scripts.
+
+Keep native configuration/model/data/fixture paths, circuit response keys and
+netlist version 1 unchanged. Preserve inherited OCR vocabulary/filtering and
+shell circuit-facing signatures instead of generalizing behavior in this move.
+The complete map and boundaries are documented in ../architecture.md.
+
+Regression stability is the gate for this refactor; the explicit M7 start does
+not imply that mechanics recognition is accurate or production ready. Real
+printed/handwritten accuracy, independent gold, licences and HUMAN Bangla/device
+review remain unverified. Heavy gates must wait for the current training and
+its finalizer to release memory; pending gates are not passing results.
+
+
+M7 completion: full source-absent regression/browser gates pass with unchanged
+counts. The synthetic experiment completed 50 epochs, but three actual public
+mechanics pipeline trials remain unsupported. Preserve the experimental
+checkpoint separately; this result does not authorize production promotion.

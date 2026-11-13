@@ -1,0 +1,343 @@
+{
+  "kind": "synthetic-only-detector-experiment",
+  "completed_epochs": 50,
+  "train_images": 480,
+  "validation_images": 120,
+  "validation_objects": 1591,
+  "dataset_manifest_sha256": "65107a668df0f07330a654b9de0f11cfd033c9292a7a82b6fc882550dcdc0d46",
+  "weights": "models/mechanics-synthetic-20261113.pt",
+  "weights_sha256": "148ae88339fd607f6aa08456a7135f2a5e44e60260372426563161b846dfc8cd",
+  "started_utc": "2026-11-13T10:06:17.404414+00:00",
+  "finished_utc": "2026-11-13T15:03:56.575151+00:00",
+  "wrapper_wall_seconds": 17859.170737,
+  "interrupted": true,
+  "protocol": {
+    "imgsz": 512,
+    "confidence": 0.25,
+    "ap_confidence_floor": 0.001,
+    "nms_iou": 0.7,
+    "matching_iou": 0.5,
+    "AP_iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "AP_interpolation_points": 101,
+    "max_det": 300,
+    "class_order": [
+      "block",
+      "ball",
+      "bob",
+      "cart",
+      "incline",
+      "floor",
+      "wall",
+      "ceiling",
+      "pivot",
+      "ground_hatch",
+      "pulley",
+      "rope",
+      "rod",
+      "spring",
+      "arrow_force",
+      "arrow_velocity",
+      "angle_mark",
+      "axis",
+      "trajectory_arc",
+      "dimension_line",
+      "text_label"
+    ]
+  },
+  "synthetic_styles": {
+    "all": {
+      "images": 120,
+      "support": 1591,
+      "micro_precision": 0.8685145700071073,
+      "micro_recall": 0.7680703959773727,
+      "macro_AP50": 0.7582964661553286,
+      "macro_AP50_95": 0.5899433471457319
+    },
+    "printed": {
+      "images": 40,
+      "support": 520,
+      "micro_precision": 0.8963963963963963,
+      "micro_recall": 0.7653846153846153,
+      "macro_AP50": 0.7527362375083708,
+      "macro_AP50_95": 0.6081353398521544
+    },
+    "handwritten": {
+      "images": 42,
+      "support": 555,
+      "micro_precision": 0.868421052631579,
+      "micro_recall": 0.772972972972973,
+      "macro_AP50": 0.7646185978191318,
+      "macro_AP50_95": 0.5896968346891673
+    },
+    "scan": {
+      "images": 14,
+      "support": 194,
+      "micro_precision": 0.8176795580110497,
+      "micro_recall": 0.7628865979381443,
+      "macro_AP50": 0.7726660994072441,
+      "macro_AP50_95": 0.5808419456648233
+    },
+    "photo": {
+      "images": 24,
+      "support": 322,
+      "micro_precision": 0.8576388888888888,
+      "micro_recall": 0.7670807453416149,
+      "macro_AP50": 0.7713816896282517,
+      "macro_AP50_95": 0.5941439200710361
+    }
+  },
+  "classes": {
+    "block": {
+      "support": 126,
+      "predictions": 125,
+      "tp": 125,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9920634920634921,
+      "AP50": 0.9994788952579469,
+      "AP50_95": 0.8479823906207736
+    },
+    "ball": {
+      "support": 13,
+      "predictions": 13,
+      "tp": 12,
+      "fp": 1,
+      "fn": 1,
+      "precision": 0.9230769230769231,
+      "recall": 0.9230769230769231,
+      "AP50": 0.9207920792079208,
+      "AP50_95": 0.6198223048111263
+    },
+    "bob": {
+      "support": 16,
+      "predictions": 15,
+      "tp": 15,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.9375,
+      "AP50": 1.0,
+      "AP50_95": 0.9137623762376237
+    },
+    "cart": {
+      "support": 24,
+      "predictions": 24,
+      "tp": 24,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.835870658494421
+    },
+    "incline": {
+      "support": 30,
+      "predictions": 30,
+      "tp": 30,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.9875019040365576
+    },
+    "floor": {
+      "support": 108,
+      "predictions": 27,
+      "tp": 15,
+      "fp": 12,
+      "fn": 93,
+      "precision": 0.5555555555555556,
+      "recall": 0.1388888888888889,
+      "AP50": 0.18516223016257505,
+      "AP50_95": 0.0518648170636723
+    },
+    "wall": {
+      "support": 23,
+      "predictions": 3,
+      "tp": 0,
+      "fp": 3,
+      "fn": 23,
+      "precision": 0.0,
+      "recall": 0.0,
+      "AP50": 0.012376237623762377,
+      "AP50_95": 0.0022277227722772275
+    },
+    "ceiling": {
+      "support": 29,
+      "predictions": 15,
+      "tp": 10,
+      "fp": 5,
+      "fn": 19,
+      "precision": 0.6666666666666666,
+      "recall": 0.3448275862068966,
+      "AP50": 0.3171081078696105,
+      "AP50_95": 0.13028479564137957
+    },
+    "pivot": {
+      "support": 16,
+      "predictions": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 16,
+      "precision": 0.0,
+      "recall": 0.0,
+      "AP50": 0.0,
+      "AP50_95": 0.0
+    },
+    "ground_hatch": {
+      "support": 190,
+      "predictions": 221,
+      "tp": 179,
+      "fp": 42,
+      "fn": 11,
+      "precision": 0.8099547511312217,
+      "recall": 0.9421052631578948,
+      "AP50": 0.9482006333226192,
+      "AP50_95": 0.6412350143402576
+    },
+    "pulley": {
+      "support": 47,
+      "predictions": 47,
+      "tp": 47,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.9408658099852539
+    },
+    "rope": {
+      "support": 47,
+      "predictions": 47,
+      "tp": 47,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.9429914074911034
+    },
+    "rod": {
+      "support": 16,
+      "predictions": 16,
+      "tp": 16,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.961062106210621
+    },
+    "spring": {
+      "support": 19,
+      "predictions": 21,
+      "tp": 19,
+      "fp": 2,
+      "fn": 0,
+      "precision": 0.9047619047619048,
+      "recall": 1.0,
+      "AP50": 0.9917367676617282,
+      "AP50_95": 0.6323309097827076
+    },
+    "arrow_force": {
+      "support": 120,
+      "predictions": 126,
+      "tp": 113,
+      "fp": 13,
+      "fn": 7,
+      "precision": 0.8968253968253969,
+      "recall": 0.9416666666666667,
+      "AP50": 0.9722708789254542,
+      "AP50_95": 0.6641822116945334
+    },
+    "arrow_velocity": {
+      "support": 133,
+      "predictions": 133,
+      "tp": 112,
+      "fp": 21,
+      "fn": 21,
+      "precision": 0.8421052631578947,
+      "recall": 0.8421052631578947,
+      "AP50": 0.9063623872571602,
+      "AP50_95": 0.5788727635765267
+    },
+    "angle_mark": {
+      "support": 59,
+      "predictions": 0,
+      "tp": 0,
+      "fp": 0,
+      "fn": 59,
+      "precision": 0.0,
+      "recall": 0.0,
+      "AP50": 0.0,
+      "AP50_95": 0.0
+    },
+    "axis": {
+      "support": 79,
+      "predictions": 84,
+      "tp": 79,
+      "fp": 5,
+      "fn": 0,
+      "precision": 0.9404761904761905,
+      "recall": 1.0,
+      "AP50": 0.9964221711002937,
+      "AP50_95": 0.7597889076630913
+    },
+    "trajectory_arc": {
+      "support": 13,
+      "predictions": 13,
+      "tp": 13,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "AP50": 1.0,
+      "AP50_95": 0.9433443344334433
+    },
+    "dimension_line": {
+      "support": 120,
+      "predictions": 149,
+      "tp": 120,
+      "fp": 29,
+      "fn": 0,
+      "precision": 0.8053691275167785,
+      "recall": 1.0,
+      "AP50": 0.9700479516149857,
+      "AP50_95": 0.5306548950652973
+    },
+    "text_label": {
+      "support": 363,
+      "predictions": 298,
+      "tp": 246,
+      "fp": 52,
+      "fn": 117,
+      "precision": 0.825503355704698,
+      "recall": 0.6776859504132231,
+      "AP50": 0.7042674492578456,
+      "AP50_95": 0.4041649601397033
+    }
+  },
+  "predict_seconds": {
+    "total": 11.221952399704605,
+    "median": 0.08212979999370873,
+    "p95": 0.14414239501347764
+  },
+  "inference_scope": "model.predict wall time per image, including preprocessing and first-call warmup; excludes label/file audit",
+  "real_printed": null,
+  "real_handwritten": null,
+  "promotion_eligible": false,
+  "default_model_changed": false
+}

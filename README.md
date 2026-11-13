@@ -17,8 +17,13 @@ See the [analysis guide](docs/mechanics/perception.md) for limits and evaluation
 Mechanics also has [handwriting controls and crop consent](docs/mechanics/handwriting.md)
 and [reviewed-data round tooling](docs/mechanics/rounds.md). Real printed/handwritten
 accuracy remains unverified; synthetic-only training candidates are experimental.
-The domain registry and shared facades are in place; circuit files stay at
-their existing locations until M7. See [milestone status](docs/mechanics/status.md).
+The completed 600-image detector experiment and its real-preview failures are
+recorded in [training results](docs/mechanics/synthetic-training.md).
+Circuit implementations live in `backend/domains/circuit/` and
+`frontend/src/domains/circuit/`. Shared backend code lives in `backend/core/`,
+and shared UI code in `frontend/src/shell/`. Old imports retain compatibility
+aliases. See the [architecture and move list](docs/architecture.md) and
+[milestone status](docs/mechanics/status.md) for verification evidence.
 The Python distribution/public package is `augphys`; `circuit_sim` is a local
 compatibility name for unchanged circuit tests and tools. Source provenance and
 historical setup references are in [the import record](docs/IMPORT.md).

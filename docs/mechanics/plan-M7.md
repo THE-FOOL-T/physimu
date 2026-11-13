@@ -64,3 +64,14 @@ claim the milestone complete. Record actual commands, counts and limits in statu
 
 Circuit/domain moves and shared integration receive separate small commits;
 documentation is separate. Stop after M7 with changed/gates/open-questions report.
+
+## Completion validation after training
+
+After the 50-epoch experiment finishes, retain its synthetic-only result and
+weak-class evidence. Run a child-process trial of the completed experimental
+candidate on three already downloaded public diagrams, using actual local OCR
+and the mechanics pipeline with crop consent off. Keep full responses ignored,
+validate scene/envelope shape and record timings/provenance. These are unreviewed
+runtime observations, not gold or real accuracy. Do not change app defaults or
+train/tune on these previews. Stop the owned normal app while memory-heavy
+verification runs, then restore its normal configuration at completion.

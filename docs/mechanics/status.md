@@ -1539,3 +1539,252 @@ HUMAN: supply/review disjoint real labels and frozen printed/handwritten scenes,
 decide licences, run adequate retraining/evaluation, review Bangla and devices.
 Handwriting heuristics and synthetic-only training do not establish stability.
 M6 stops here. M7 requires a later explicit continue and both domains stable.
+
+## M7 — source ownership refactor in progress (2026-11-13)
+
+**M7 is complete as a source-ownership refactor.** Full tests, check and the
+source-absent browser run pass with unchanged counts. Actual EN/BN screenshots
+and the complete move/import diff were reviewed. Circuit behavior and netlist
+version 1 are preserved. Real mechanics recognition is not established: the
+completed synthetic candidate still returns unsupported on the three public
+pipeline trials recorded below.
+
+The owner explicitly authorized M7. It began while training continued; the
+preparation/queued-worker records below are historical checkpoints. Completion
+gates, commits, restored app and remaining HUMAN work are reported at the end.
+
+### Implemented
+
+- Moved **77 implementation files** into the circuit domain and shared core/shell
+  folders. The complete old/new map is in [m7-moves.json](m7-moves.json) and the
+  readable [architecture guide](../architecture.md). Circuit backend files now
+  include `domains/circuit/{detect,engine,netlist,wires,resolve,validate}.py` and
+  `domains/circuit/solver/`. Frontend renderer, solver, types and circuit editors
+  now live under `src/domains/circuit/`.
+- Shared configuration, preprocessing, style, OCR, inference settings, jobs and
+  duplicate checking are implemented under backend/core. Shared frontend DOM,
+  upload/workspace/image/storage/language helpers and styles are under shell.
+  Extracted the existing image encoder and two bbox matching helpers with
+  unchanged function bodies. Facade exports and mechanics product source stay
+  unchanged. Inherited OCR vocabulary/filtering and shell circuit-facing types
+  are preserved; this is not a new generic recognition policy or shell redesign.
+- Old Python module imports alias the actual moved module objects, retaining
+  private attributes, monkeypatches, locks and caches within each namespace.
+  Namespace packages keep their original paths so child aliases resolve once.
+  Old TypeScript modules re-export the moved implementations and live language
+  bindings. No second algorithm copy or circuit server was introduced.
+- Updated **32 imports-only files** that remain at their paths. The structural
+  verifier covers all **109 moved/updated implementation paths**, the three
+  extracted helper bodies and exact repository resource roots. Before-move
+  hashes remain anchored to M6 and, for protected imported files, the original
+  import manifest. No blanket hash-guard allowance was added. Original test
+  sources/assertions and binary fixtures/assets/snapshots retain their checks.
+- Extended the editable package list for core OCR and the circuit solver in
+  both local namespaces, and reinstalled it without dependencies/build isolation.
+  The independence helper now gives its temporary server child explicit absent
+  model paths, so supplied owner models can remain in place while degradation
+  is verified. Normal test configuration and application defaults are unchanged.
+- Circuit weights, OCR files, model/default/config/credential settings, dependency
+  pins, datasets, fixtures, translation JSON and saved netlist version 1 remain
+  unchanged. The active synthetic v4 training experiment and its scripts retain
+  compatible imports. No mechanics candidate was promoted or selected.
+
+### Preparation checks and queued gates (historical checkpoint)
+
+| Check | Actual result |
+| --- | --- |
+| Move/structure proof | **109 paths**, including 77 implementation moves and 32 imports-only updates; three extracted function bodies and resource roots pass. |
+| Legacy/canonical import probe | **111 module-identity checks passed** across backend, augphys.backend and circuit_sim.backend; all actual modules are in this checkout, registry order unchanged, Ultralytics not loaded. |
+| Focused independence suite | **8 passed**, **10.14 s**; includes original implementation/test/asset protection, namespace identity, transport and explicit missing-model behavior. |
+| Existing frontend unit runner | **117 passed**, zero failed/skipped, **13.0465 s**, using the existing one-file concurrency setting. |
+| Frontend type check and production build | Passed; Vite build **1.84 s**. |
+| Model doctor | Exit **0**, all five circuit/OCR files match their manifest. This does not validate a mechanics model. |
+| Ruff and whitespace | Full backend/tools lint and format checks passed during preparation; staged/working Git whitespace checks passed. |
+| Full M7 manage.py test/check | **Pending**, not counted as executed. M6's 598 Python/one skip and 117 TS totals are historical expectations. |
+| Full M7 browser/layout/accessibility/source-absent gates | **Pending**, not passing claims. Expected existing collection is 124; baselines have not been regenerated. |
+| Fresh M7 visual inspection | **Pending**; existing M6 captures are historical evidence only. |
+
+The initial move proof needed to normalize Prettier's optional trailing comma
+after a wrapped import. Initial focused independence checks had seven passes and
+one hash failure because warmup's canonical import rewrite was not in the first
+move map. The corrected verifier protects imports-only files structurally as
+well as moved files; it does not exempt their algorithm statements. A metadata
+generation attempt also tried reading a newly added helper from the old commit;
+the corrected inventory selects modified existing files only. Those unsuccessful
+attempts are retained in `.cache/m7/`, not reported as gate passes.
+
+An initial Prettier command ran from the repository root, selected an ephemeral
+unpinned version and found no src directory. Correct formatting used the pinned
+frontend-installed executable. No dependency/lockfile pin changed. No model
+download or real label-provider request was made.
+
+Commands executed include the local `.venv` Python editable install with
+`--no-deps --no-build-isolation`, `tools/check_m7_moves.py`, the eight-test
+independence file, Ruff lint/format, `manage.py doctor`, and frontend `npm test`
+and `npm run build`. Logs and the import probe are in ignored `.cache/m7/`.
+
+The actual background worker `.cache/m7/after_training.py` waits for the active
+training job and its finalizer to finish, then runs doctor, move proof and:
+
+```powershell
+.\.venv\Scripts\python.exe tools/verify_independence.py --source $sourcePath --browser --out "$PWD\.cache\m7\isolated"
+```
+
+`$sourcePath` is the original checkout recorded in IMPORT.md. The helper runs
+full test, check, guarded source-absent HTTP/degradation and full browser checks,
+restoring the source in finally. The worker records actual exit codes/counts in
+`checks.json`, `isolated/` and `report.md`; its live state is `.cache/m7/status.json`.
+It preserves historical tracked timing JSON. A known chooser failure may receive
+five focused repeats, with the failed full run retained and explicitly reported.
+The worker never declares M7 complete, approves recognition or commits changes;
+fresh screenshot/diff review remains necessary after those gates.
+
+The owned app-restoration watcher was coordinated to wait for M7's heavy checks
+too. The normal server remains paused and is queued to return afterwards. The
+training process, inputs, optimizer and checkpoints were not stopped or changed.
+At worker launch/check, training was still running with **19/50 epochs saved**;
+this is a timestamped observation, not its current/final progress or an ETA.
+
+### Assumptions and remaining work
+
+The stability prerequisite is treated as a regression gate for this expressly
+authorized structural refactor, not a claim that mechanics recognition has been
+validated. Full regression evidence and visual review must precede completion
+and shared-file commits. Existing circuit OCR deadline variability and historical
+keyboard chooser behavior remain applicable; no timeout/assertion was weakened.
+
+Real mechanics printed/handwritten accuracy, independent gold/labels, model/data
+licence decisions, GPU execution, HUMAN Bangla review and real-device/novice QA
+remain **null/unverified**. HUMAN tasks are unchanged. At this preparation
+checkpoint M7 remained in progress until the queued gates and review finished.
+
+
+### M7 queued verification execution
+
+The background gate worker finished at 2026-11-13T15:18:42.860670+00:00.
+Recorded state: **automated_checks_passed_review_pending**. See `.cache/m7/report.md`, `checks.json` and
+`isolated/` for actual commands, exit codes and raw counts. Screenshot/diff
+review and commits remain pending; M7 is not declared complete by this worker.
+
+- `move-proof`: exit 0, 0.97 seconds.
+- `doctor`: exit 0, 0.89 seconds.
+- `isolation`: exit 0, 638.38 seconds.
+- `working-whitespace`: exit 0, 0.16 seconds.
+- `staged-whitespace`: exit 0, 0.22 seconds.
+
+
+### M7 completion ? measured gates and final review
+
+Training subsequently completed all **50 epochs**. Its experimental model,
+complete synthetic/per-class results and failures are documented in
+[synthetic-training.md](synthetic-training.md) and
+[synthetic-training-result.json](synthetic-training-result.json). This is a
+synthetic-only CPU experiment, not HUMAN gold or a production promotion.
+
+| Completion gate | Actual measured result |
+| --- | --- |
+| Finalizer `manage.py test`, source present | **598 Python passed, 1 skipped**, **117.46 s**; **117 TS passed**; type check/build passed, build **1.94 s**. |
+| M7 source-absent guarded `manage.py test` | **598 Python passed, 1 skipped**, **102.46 s**; **117 TS passed**; type check/build passed, build **1.58 s**. |
+| M7 source-absent guarded `manage.py check` | Full Ruff/Prettier passed; **598 Python passed, 1 skipped**, **94.41 s**; **117 TS passed**, type check/build passed, build **1.48 s**. |
+| Full guarded/source-absent browser | **124 collected: 122 passed, 2 skipped, zero failed**, **5.9 min**. This is a clean single run of all 122 available cases. |
+| Strict circuit layout and keyboard | **12/12 zero-tolerance layouts passed**, no baseline regeneration. The imported chooser scenario passed in **1.7 s**; no focused retry was needed. |
+| Accessibility | Twelve fresh default-layout reports contain **zero violations**. Existing EN/BN mechanics/switch/accessibility assertions also passed. |
+| Pre-integration guarded `manage.py test` | **598 Python passed, 1 skipped**, **94.48 s**; **117 TS passed**, type check/build passed, build **1.54 s**. |
+| Completion guarded `manage.py test`, committed code | **598 Python passed, 1 skipped**, **103.26 s**; **117 TS passed**, type check/build passed, build **1.69 s**. |
+| Final staged-document independence check | **8 passed**, **10.54 s**; includes the completed move map and newly tracked documentation/result records. |
+| Moves and legacy imports | **77 moves + 32 imports-only paths** structurally verified; three extracted helper bodies and resource roots unchanged. **111** legacy/canonical module identities passed in the preparation probe; expanded identity assertions also pass in every full independence run. |
+| Model doctor | Exit **0**, all five circuit/OCR files match. Mechanics experimental weights are separate/ignored and are not approved by doctor. |
+| Source/network proof | Original checkout absent through full test/check/HTTP/browser gates, restored in finally and still clean. Both intentional guard probes blocked; **zero** runtime external attempts in isolated, pre-integration, candidate-trial and completion runs. Process-level guards allow loopback/IPC; this is not a kernel/browser firewall claim. |
+| Source-absent live app | Root HTTP 200, explicit missing_weights/unavailable/hybrid health. Actual circuit upload retains detector_unavailable/demo_fallback and original envelope keys plus domain. |
+
+No test function was added/removed: totals remain **598 Python passes + one
+optional real-model benchmark skip**, **117 TS**, **124 browser scenarios**.
+The two browser skips are the existing optional private owner-analysis assets.
+All 397 imported Python tests and original TS/browser assertions are retained.
+No original test, timeout, retry, threshold or layout image was weakened.
+
+Fresh desktop EN and phone BN screenshots of both Circuit and Mechanics were
+opened and inspected from `.cache/m7/visual/`. The capture script also checked
+zero page errors, no horizontal overflow and a return to the retained seven-part
+circuit document in both languages. The actual phone fixture retains its native
+source, parameter scrolling, provenance and consent-off controls. This is
+screenshot/emulation QA, not HUMAN Bangla approval or physical-device testing.
+
+The fixed code passed all regression gates without an analysis/solver fix.
+The only preparation failures were the import/move-audit bookkeeping and tool
+invocation issues already disclosed above. Their original logs remain local.
+The known historical keyboard flake did not reproduce; this does not prove it
+cannot recur.
+
+Browser-generated timing JSON was copied to `.cache/m7/`, then the historical
+tracked files were restored. Edited Run (30 synchronous events): median
+**11.9 ms**, p95 **16.2 ms**, maximum **26.6 ms**. Parameter events (100): median
+**6.0 ms**, p95 **7.8 ms**, maximum **10.7 ms**. Both exclude paint and are circuit
+UI measurements, not real mechanics latency or a frame-rate claim.
+
+### Completed candidate trial and remaining recognition limits
+
+After the full browser run, a child process explicitly selected the completed
+experimental mechanics checkpoint. It used the actual local detector and hybrid
+OCR on three previously downloaded public diagrams at the application-default
+**640 px / confidence 0.25**; synthetic evaluation used 512 px. There were no
+oracle detections/text, external label calls or model/default changes. The
+source scenes are unreviewed observations, never gold or training approval.
+
+| Preview | Actual detections | Result | Whole-call wall seconds |
+| --- | ---: | --- | ---: |
+| Atwood | 5 | unsupported; object/attachment combination incomplete | 30.91 |
+| Spring?mass | 8 | unsupported; object/attachment combination incomplete | 14.77 |
+| Incline | 10 | unsupported; required physical/attachment constraint, including force warnings | 28.81 |
+
+All three returned valid native scenes/source images with retained editable
+objects, no circuit netlist/solution/demo, consent false and zero crops sent.
+Unsupported output is correct degradation, not successful real recognition.
+Timings include model/OCR setup, deadline work and geometry; they are not a
+controlled warmed HTTP benchmark. Raw responses, hashes, stage timings and
+unreviewed counts are in `.cache/m7/experimental-runtime/`. No real accuracy
+percentage is inferred from these three examples. The finalizer's public
+Atwood/spring overlays were also opened; missing/misclassified symbols remain
+visible. The model remains experimental and is not the application default.
+
+### Final architecture audit, commits and stop point
+
+The full [move map](m7-moves.json) and [architecture guide](../architecture.md)
+list every implementation destination, import-only update and extracted helper.
+Python algorithms are compared structurally, frontend implementation tokens
+retain their expressions/literals, and original imported source hashes anchor
+the before-move state. Legacy modules share the actual implementation object
+within each namespace. Actual resource roots still resolve to this checkout.
+
+Shared implementations/type dependencies and the narrow opt-in transport audit
+preparation: **8ffefce**. Circuit destination modules: **c0a6fcc**. Canonical
+imports, compatibility aliases, packaging and the strengthened move audit:
+**da7369d**. Documentation/results are a separate commit. Full manage.py test
+passed before the shared foundation and shared integration commits; the final
+committed code passed again at completion. There are no data/weight commits.
+
+Circuit API keys/config/defaults, model hashes, dependency pins, fixtures,
+translations, saved netlist v1 and the mechanics implementation/tests are
+unchanged. The shared OCR retains its inherited electrical vocabulary/filtering,
+and shell helpers keep their existing circuit-facing signatures. This refactor
+moves ownership; it does not claim to have redesigned those APIs or improved
+recognition. The original architecture assumptions in plan-M7.md still apply.
+
+The normal owned app was stopped during heavy final verification to reserve
+memory, then restored at **http://127.0.0.1:8000**. Final health reports detector
+**ready**, OCR **ready**, backend **hybrid**, both OCR workers ready and memory-only
+storage unless correction consent is given. The normal mechanics configuration
+still names the original default path, not the experimental candidate. No test
+server or training job remains running. The source checkout is restored/clean.
+
+Raw proof and counts are in `.cache/m7/isolated/`, `checks.json`, `counts.json`,
+`test-pre-integration.log`, `test-completion.log` and `visual/`. The completed
+training's own logs/weights/evaluation remain in its original ignored folder.
+No further training, source/model download, cloud compute, provider request or
+HUMAN review was performed during completion.
+
+Real printed/handwritten detection and physical correctness, independent gold,
+model/data licence approval, GPU execution, Linux/macOS, HUMAN Bangla review and
+physical-device/novice QA remain **null/unverified**. HUMAN: supply and review
+disjoint real labels and frozen scenes, decide licences and review the actual
+candidate before promotion. M7 stops here; no further milestone was started.
