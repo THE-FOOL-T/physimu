@@ -20,9 +20,9 @@ BN_UNITS_PENDING_REVIEW = {
     "ডিগ্রি": "deg",
 }
 NUM = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?"
-UNIT = r"N\s*/\s*m|m\s*/\s*s\s*(?:\^\s*2|2)|m\s*/\s*s|kg\s*/\s*s|rad\s*/\s*s|kg|cm|mm|deg|°|[gmN]"
+UNIT = r"N\s*/\s*m|m\s*/\s*s\s*(?:\^\s*2|2)|m\s*/\s*s|kg\s*/\s*s|rad\s*/\s*s|1\s*/\s*s|kg|cm|mm|deg|°|[gmN]"
 PATTERN = re.compile(
-    r"(?<![\w.])(?:(?P<name>[A-Za-zμµθΘ][\w]*)\s*=\s*)?(?P<number>"
+    r"(?<![\w.])(?:(?P<name>[A-Za-zμµθΘω][\w]*)\s*[:=]\s*)?(?P<number>"
     + NUM
     + r")\s*(?P<unit>"
     + UNIT
@@ -33,6 +33,7 @@ PATTERN = re.compile(
 def normalize(raw):
     text = unicodedata.normalize("NFC", raw or "").translate(OCR_DIGITS)
     text = text.replace("−", "-").replace("²", "^2").replace("µ", "μ").replace("٫", ".")
+    text = text.replace("ₛ", "s").replace("ₖ", "k")
     for a, b in BN_UNITS_PENDING_REVIEW.items():
         text = text.replace(a, b)
     return re.sub(r"(?<=\d),(?=\d)", ".", text)
@@ -48,6 +49,7 @@ class Token:
     bbox: list[float]
     confidence: float
     source: str = "ocr"
+    conflict: bool = False
 
     def as_dict(self):
         return asdict(self)
@@ -77,13 +79,13 @@ def parse(raw, bbox=(0.0, 0.0, 1.0, 1.0), confidence=1.0, source="ocr"):
         elif unit == "m/s":
             kind = "speed"
         elif unit == "m/s^2" or unit == "m/s2":
-            kind = "gravity"
+            kind = "acceleration" if name and name.lower() not in {"g", "gravity"} else "gravity"
             unit = "m/s^2"
         elif unit == "N/m":
             kind = "spring_constant"
         elif unit == "N":
             kind = "force"
-        elif unit == "kg/s":
+        elif unit in {"kg/s", "1/s"}:
             kind = "damping"
         elif name and (name.startswith(("μ", "mu")) or name.lower() == "e") and not unit:
             kind = (
@@ -135,5 +137,21 @@ def read_tokens(readings):
                 max((t.confidence for t in ts), default=0),
             ),
         )
+        # Confident incompatible readings remain unresolved; engine scores are
+        # not calibrated votes that can silently settle contradictory numbers.
+        for token in selected:
+            token.conflict = any(
+                other.kind not in {"unplaced", "name"}
+                and token.kind not in {"unplaced", "name"}
+                and other.confidence >= 0.65
+                and token.confidence >= 0.65
+                and (
+                    other.kind != token.kind
+                    or other.unit != token.unit
+                    or other.number != token.number
+                )
+                for candidates in parsed
+                for other in candidates
+            )
         result.extend(selected)
     return result

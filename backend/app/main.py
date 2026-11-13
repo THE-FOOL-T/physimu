@@ -246,6 +246,21 @@ async def analyze_start(
     check_rate(request)
     data = await read_upload(image)
     decoded = await validated_image(image, data, page)
+    mechanics_options = None
+    raw_region = (await request.form()).get("figure_region")
+    if raw_region is not None and domain == "mechanics":
+        from ..domains.mechanics.understanding import select_region
+
+        try:
+            region = json.loads(str(raw_region))
+            select_region([], region, decoded.shape[1], decoded.shape[0])
+            mechanics_options = {"figure_region": region}
+        except (ValueError, TypeError):
+            raise HTTPException(422, detail={"code": "invalid_figure_region"}) from None
+    if mechanics_options:
+        from ..domains.mechanics.options import MechanicsOptions
+
+        selected_domain = MechanicsOptions(selected_domain, mechanics_options)
     try:
         id_ = jobs.start(
             lambda progress: run_analysis(

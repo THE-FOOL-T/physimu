@@ -8,6 +8,8 @@ import numpy as np
 from . import geometry, sprites
 from .defaults import assumed
 from .validate import warning
+from .parameters import compile_parameters
+from .relationships import body_endpoints
 
 
 def value(n, unit, confidence=0.8, source="geometry", status="given"):
@@ -118,6 +120,27 @@ def measure(image, detections, lang, style, check):
         if d.type not in {"block", "ball", "bob", "cart"}:
             continue
         fit = sprites.body_mask(image, d.bbox, lines, style=style)
+        # An uncertain body inside a detected label is retained as rejected
+        # evidence, not silently counted as a second physical mass.
+        a, b, c, e = d.bbox
+
+        def text_overlap(box):
+            return (
+                max(0.0, min(c, box[2]) - max(a, box[0]))
+                * max(0.0, min(e, box[3]) - max(b, box[1]))
+                / max(1.0, (c - a) * (e - b))
+            )
+
+        if (
+            d.confidence < 0.6
+            and fit["confidence"] == 0
+            and any(text_overlap(t) > 0.7 for t in texts)
+        ):
+            ref = id_("rejected_")
+            scene["annotations"].append(dict(id=ref, type="label", geometry=dict(bbox=d.bbox)))
+            identity[d.id] = ref
+            warning(scene, "detector_candidate_rejected", ref)
+            continue
         ref = id_("B")
         polygon = fit["polygon"]
         anchor = np.mean(polygon, axis=0).tolist()
@@ -202,8 +225,15 @@ def measure(image, detections, lang, style, check):
             )
             if not nearest:
                 raise ValueError("attachment_unreached")
+            observed_ends = body_endpoints(points, scene["bodies"])
+            if not observed_ends:
+                raise ValueError("attachment_unreached")
             if scene["pulleys"] and len(nearest) >= 2 and d.type == "rope":
-                selected = sorted(nearest[:2], key=lambda b: b["anchor"][0])
+                if len(observed_ends) < 2:
+                    raise ValueError("attachment_unreached")
+                selected = sorted(
+                    [r["body"] for r in observed_ends[:2]], key=lambda b: b["anchor"][0]
+                )
                 start, end = [
                     points[
                         np.argmin(np.linalg.norm(points - np.array(b["anchor"]), axis=1))
@@ -235,6 +265,15 @@ def measure(image, detections, lang, style, check):
                 end = points[np.argmin(np.linalg.norm(points - anchor, axis=1))].tolist()
                 piv = next((a for a in scene["annotations"] if a["id"] == "pivot"), None)
                 if piv and d.type in {"rope", "rod"}:
+                    if (
+                        float(
+                            np.linalg.norm(
+                                points - np.array(piv["geometry"]["points"][0]), axis=1
+                            ).min()
+                        )
+                        > 20
+                    ):
+                        raise ValueError("attachment_unreached")
                     start = piv["geometry"]["points"][0]
                     end = body["anchor"]
                     a, b = "pivot", body["id"]
@@ -244,6 +283,7 @@ def measure(image, detections, lang, style, check):
                     scene["annotations"].append(
                         dict(id=a, type="axis", geometry=dict(points=[start]))
                     )
+                    warning(scene, "support_anchor_assumed", ref)
                 route = [start, end] if d.type == "spring" or piv else max(fit["segments"], key=len)
                 if math.dist(route[0], start) > math.dist(route[-1], start):
                     route = route[::-1]
@@ -339,6 +379,8 @@ def measure(image, detections, lang, style, check):
             identity[d.id] = ref
         except ValueError as error:
             unknown(d, str(error))
+    for detection_id, ref in identity.items():
+        evidence.setdefault(ref, {})["detection_id"] = detection_id
     confidences = {identity[d.id]: d.confidence for d in detections if d.id in identity}
     return scene, evidence, link_choices, confidences
 
@@ -349,6 +391,7 @@ def calibrate(scene, assignments, evidence):
     bodies = scene["bodies"]
     links = scene["links"]
     params = scene["params"]
+    compile_parameters(scene, assignments)
     S = 100.0
     measured = False
     for row in assignments:
@@ -405,7 +448,7 @@ def calibrate(scene, assignments, evidence):
 
     def param(key, v):
         old = params.get(key)
-        if not old or old["status"] == "assumed":
+        if not old or old["status"] == "assumed" and old["source"] == "prior":
             params[key] = copy.deepcopy(v)
 
     if kind == "pendulum" and links:
@@ -417,7 +460,7 @@ def calibrate(scene, assignments, evidence):
         b = bodies[0]
         dx, dy = np.array(b["anchor"]) - np.array(pivot)
         link["length_m"] = link["length_m"] or physical(math.hypot(dx, dy) / S, "m")
-        link["damping"] = value(0.0, "1/s", 0.0, "prior", "assumed")
+        link["damping"] = link.get("damping") or value(0.0, "1/s", 0.0, "prior", "assumed")
         param("release_angle", value(math.degrees(math.atan2(dx, dy)), "deg"))
         param("angular_speed", zero("rad/s"))
         b["initial"]["position"] = {"x": physical(dx / S, "m"), "y": physical(dy / S, "m")}
@@ -484,6 +527,7 @@ def calibrate(scene, assignments, evidence):
         bodies[0]["initial"]["position"]["x"] = physical(0.0, "m")
     if kind in {"atwood", "table_pulley", "incline_pulley"}:
         param("initial_speed", assumed("initial_speed"))
+        param("initial_displacement", zero("m"))
     if kind == "table_pulley":
         bodies.sort(key=lambda b: not bool(b["on_surface"]))
     if kind == "collision_1d":
@@ -515,7 +559,7 @@ def calibrate(scene, assignments, evidence):
             f"bodies.{b['id']}.mass",
             "physics",
             0.01,
-            max(100, b["mass"]["number"] * 2),
+            max(100, (b["mass"]["number"] or 0) * 2),
             "kg",
         )
     bind("g", "constants.g", "physics", 0.1, 30, "m/s^2")
@@ -546,6 +590,7 @@ def calibrate(scene, assignments, evidence):
                 "initial_stretch": "spring_end",
                 "launch_angle": "launch",
                 "launch_speed": "launch",
+                "initial_displacement": "pulley_0",
             }.get(key),
         )
     for sf in scene["surfaces"]:
@@ -594,6 +639,15 @@ def calibrate(scene, assignments, evidence):
     if kind == "collision_1d":
         for b in bodies:
             bind("v_" + b["id"], f"bodies.{b['id']}.initial.velocity.x", "initial", -30, 30, "m/s")
+            bind(
+                "x_" + b["id"],
+                f"bodies.{b['id']}.initial.position.x",
+                "initial",
+                0,
+                scene["image"]["width"] / S,
+                "m",
+                "collision_" + b["id"],
+            )
     scene["bindings"] = bindings
     scene["repairs"] = sprites.repairs(bodies, scene["surfaces"])
     return scene

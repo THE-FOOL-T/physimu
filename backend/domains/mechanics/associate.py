@@ -53,11 +53,29 @@ def targets(scene):
 
     for body in scene["bodies"]:
         for kind, field in [("mass", "mass"), ("speed", "initial.velocity.x"), ("name", None)]:
+            points = [body["anchor"]]
+            if kind == "speed":
+                for arrow in scene["annotations"]:
+                    route = arrow.get("geometry", {}).get("points", [])
+                    if not arrow["id"].startswith("velocity") or len(route) < 2:
+                        continue
+                    owners = sorted(scene["bodies"], key=lambda b: math.dist(route[0], b["anchor"]))
+                    if (
+                        owners[0]["id"] == body["id"]
+                        and math.dist(route[0], body["anchor"]) <= 120
+                        and (
+                            len(owners) == 1
+                            or math.dist(route[0], owners[1]["anchor"])
+                            - math.dist(route[0], owners[0]["anchor"])
+                            > 12
+                        )
+                    ):
+                        points.extend(route)
             add(
                 kind,
                 f"bodies.{body['id']}.{field}" if field else None,
                 body["id"],
-                [body["anchor"]],
+                points,
             )
     for surface in scene["surfaces"]:
         for kind, field in [("friction_static", "mu_s"), ("friction_kinetic", "mu_k")]:
@@ -77,6 +95,13 @@ def targets(scene):
     pivot = next((a for a in scene["annotations"] if a["id"] == "pivot"), None)
     if pivot:
         add("angle", "params.release_angle", "pivot", pivot["geometry"]["points"])
+        for link in scene["links"]:
+            if link["type"] in {"rope", "rod"}:
+                add("damping", f"links.{link['id']}.damping", link["id"], link["polyline"])
+    if len(scene["bodies"]) == 1 and scene["bodies"][0]["type"] == "ball" and not scene["links"]:
+        add(
+            "angle", "params.launch_angle", scene["bodies"][0]["id"], [scene["bodies"][0]["anchor"]]
+        )
     for annotation in scene["annotations"]:
         if annotation["type"] == "dimension":
             add("length", None, annotation["id"], annotation["geometry"]["points"])
@@ -90,6 +115,7 @@ def targets(scene):
 
 def associate(scene, tokens, detection_confidences=None):
     possible = targets(scene)
+    pivot = any(a["id"] == "pivot" for a in scene["annotations"])
     # A nearby bare m/M/g is a body name. A numeric label still needs its unit;
     # numeric strings without one remain unplaced rather than guessing metres.
     names = [t for t in tokens if t.kind == "name"]
@@ -102,8 +128,12 @@ def associate(scene, tokens, detection_confidences=None):
     matrix = np.full((len(tokens), len(possible) + len(tokens)), 1e6)
     for i, token in enumerate(tokens):
         matrix[i, len(possible) + i] = 1.1
+        if token.conflict:
+            continue
         for j, target in enumerate(possible):
             if token.kind != target["kind"]:
+                continue
+            if token.kind == "damping" and token.unit != ("1/s" if pivot else "kg/s"):
                 continue
             dist = distance(centre(token.bbox), target["points"]) if target["points"] else 0.0
             if dist > 120:
@@ -123,9 +153,18 @@ def associate(scene, tokens, detection_confidences=None):
             "ref": None,
             "path": None,
             "accepted": False,
-            "reason": "no_plausible_owner",
+            "reason": "conflicting_readings" if token.conflict else "no_plausible_owner",
         }
-        if j < len(possible) and matrix[i, j] < 1.1:
+        plausible = sorted(v for v in matrix[i, : len(possible)] if v < 1.1)
+        ambiguous = (
+            token.kind in {"mass", "speed"}
+            and not named_owners.get((token.name or "").lower())
+            and len(plausible) > 1
+            and plausible[1] - plausible[0] < 0.1
+        )
+        if ambiguous:
+            row["reason"] = "ambiguous_owner"
+        if not ambiguous and j < len(possible) and matrix[i, j] < 1.1:
             target = possible[j]
             confidence = min(
                 token.confidence, float((detection_confidences or {}).get(target["ref"], 0.9))
@@ -163,7 +202,16 @@ def associate(scene, tokens, detection_confidences=None):
                         )
                     )
                 if token.kind == "friction_kinetic" and token.name in {"μ", "mu"}:
-                    put(scene, target["path"].replace("mu_k", "mu_s"), val(token, confidence))
+                    interpreted = {**val(token, confidence * 0.7), "status": "assumed"}
+                    put(scene, target["path"], interpreted.copy())
+                    put(scene, target["path"].replace("mu_k", "mu_s"), interpreted.copy())
+                    scene["warnings"].append(
+                        dict(
+                            code="friction_interpretation_assumed",
+                            ref=target["ref"],
+                            message_key="mech.friction_interpretation_assumed",
+                        )
+                    )
         if not row["accepted"] and token.number is not None:
             key = f"unplaced_{len(scene['params']) + 1}"
             scene["params"][key] = val(token, token.confidence)

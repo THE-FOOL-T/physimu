@@ -13,6 +13,11 @@ from .label_reader import read_fallback
 from .associate import associate, centre
 from .perception import blank, measure, calibrate
 from .validate import interpretations, finalize, warning
+from .archetypes import hypotheses
+from .evidence import build_evidence
+from .readiness import assess
+from .ocr import fuse_mechanics
+from .understanding import understand, select_region
 
 STAGES = (
     "received",
@@ -33,17 +38,26 @@ def route_domain(image):
 
 def readings(rows, w, h):
     clean = []
+    if not isinstance(rows, (list, tuple)):
+        return clean
     for r in rows[:256]:
         if not isinstance(r, dict) or not isinstance(r.get("text"), str):
             continue
         box = r.get("bbox", [])
-        if len(box) != 4 or not np.isfinite(box).all():
+        if (
+            not isinstance(box, (list, tuple))
+            or len(box) != 4
+            or not all(isinstance(n, (int, float)) and math.isfinite(n) for n in box)
+        ):
             continue
         x, y, z, v = map(float, box)
         box = [max(0.0, x), max(0.0, y), min(float(w), z), min(float(h), v)]
         if box[0] >= box[2] or box[1] >= box[3]:
             continue
-        confidence = float(r.get("confidence", 0.0))
+        try:
+            confidence = float(r.get("confidence", 0.0))
+        except (ValueError, TypeError):
+            continue
         if not math.isfinite(confidence):
             continue
         row = {
@@ -51,6 +65,8 @@ def readings(rows, w, h):
             "bbox": box,
             "confidence": max(0.0, min(1.0, confidence)),
             "source": r.get("source", "ocr"),
+            "engine": r.get("engine", "unknown"),
+            "provenance": r.get("provenance", []),
         }
         row["alternatives"] = (
             readings(r.get("alternatives", [])[:4], w, h) if r.get("alternatives") else []
@@ -91,6 +107,10 @@ def analyze_mechanics_page(
     def result(reason=None):
         nonlocal scene
         scene = Scene.model_validate(scene).model_dump(mode="json", by_alias=True)
+        diagnostics["hypotheses"] = hypotheses(scene)
+        evidence = build_evidence(scene, diagnostics)
+        diagnostics["evidence"] = evidence.model_dump(mode="json")
+        readiness = assess(scene, evidence)
         timings[stage] = time.perf_counter() - changed
         timings["total"] = time.perf_counter() - started
         advance("done")
@@ -104,6 +124,7 @@ def analyze_mechanics_page(
             source_image=image_url(source),
             style_estimate=style,
             diagnostics=diagnostics,
+            readiness=readiness,
         )
 
     with model_lease("mechanics", check):
@@ -111,7 +132,13 @@ def analyze_mechanics_page(
             progress("received", {"source_image": image_url(source), "domain": "mechanics"})
         advance("preprocess")
         style = estimate_style(source)
-        source, notes, effective = preprocess(source, options.get("style", "auto"), style)
+        # Mechanics binds source pixels to physical geometry. Shared perspective
+        # warping/ruling erasure has no inverse transform contract, so keep the
+        # decoded source untouched. Native geometry/OCR do their own local masks.
+        override = options.get("style", "auto")
+        effective = override if override in {"printed", "handwritten"} else style["style"]
+        notes = []
+        diagnostics["understanding"] = understand(source, style)
         style = {
             **style,
             "effective_style": effective,
@@ -161,7 +188,11 @@ def analyze_mechanics_page(
             source, [d for d in boxes if d.type in {"block", "ball", "bob", "cart", "pulley"}]
         )
         diagnostics["figure_regions"] = regions
-        chosen = sorted(regions, key=lambda b: (b[0], b[1]))[0]
+        try:
+            chosen = select_region(regions, options.get("figure_region"), w, h)
+        except ValueError:
+            warning(scene, "invalid_figure_region")
+            return result("Choose a figure region inside the source image.")
         selected = [
             d
             for d in boxes
@@ -183,7 +214,9 @@ def analyze_mechanics_page(
         except Exception:
             raw = []
             ocr_notes = [("ocr_failed", None)]
-        all_text = readings(raw, w, h)
+        raw = readings(raw, w, h)
+        raw_engines = readings(ocr.get("engine_readings", []), w, h)
+        all_text = readings(fuse_mechanics(raw, {"engine_readings": raw_engines}), w, h)
         text = [
             r
             for r in all_text
@@ -234,6 +267,7 @@ def analyze_mechanics_page(
                     "radius_px",
                     "coils",
                     "warning",
+                    "detection_id",
                 }
             }
             for ref, fit in evidence.items()
@@ -264,7 +298,11 @@ def analyze_mechanics_page(
         scene = calibrate(scene, assignments, evidence)
         advance("validate")
         reason = finalize(scene, reason)
-        if len(regions) > 1 and scene["archetype"] == "collision_1d":
+        if (
+            len(regions) > 1
+            and scene["archetype"] == "collision_1d"
+            and options.get("figure_region") is None
+        ):
             after_region = sorted(regions, key=lambda b: (b[0], b[1]))[1]
 
             def inside(rect):

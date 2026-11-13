@@ -30,6 +30,18 @@ def surface_options(body, surfaces):
 
 def violations(scene):
     errors = []
+    for name, v in scene["params"].items():
+        if not name.startswith("unplaced_") and v["number"] is None:
+            errors.append(("unresolved_parameter", None))
+    if scene["archetype"] == "projectile":
+        for name, minimum, maximum in [
+            ("launch_speed", 0, float("inf")),
+            ("launch_height", 0, float("inf")),
+            ("launch_angle", 0, 90),
+        ]:
+            v = scene["params"].get(name)
+            if v and (v["number"] is None or not minimum <= v["number"] <= maximum):
+                errors.append(("invalid_launch", None))
     for b in scene["bodies"]:
         if b["mass"]["number"] is None or b["mass"]["number"] <= 0:
             errors.append(("invalid_mass", b["id"]))
@@ -39,7 +51,7 @@ def violations(scene):
         if (
             sf["type"] == "incline"
             and sf.get("angle_deg")
-            and not 0 < sf["angle_deg"]["number"] < 90
+            and (sf["angle_deg"]["number"] is None or not 0 < sf["angle_deg"]["number"] < 90)
         ):
             errors.append(("unsupported_incline_orientation", sf["id"]))
         if (
@@ -135,9 +147,16 @@ def interpretations(scene, link_choices):
             alternatives.append(record)
             if best is None or cost < best[0]:
                 best = (cost, candidate, reason, confidence)
-    return best[1:] if best else (scene, "No objects available", 0.0), sorted(
-        alternatives, key=lambda r: r["score"]
-    )[:16]
+    ranked = sorted(alternatives, key=lambda r: r["score"])[:16]
+    if best and any(
+        r["archetype"] != best[1]["archetype"]
+        and r["archetype"] != "unsupported"
+        and not r["violations"]
+        and r["score"] - best[0] <= 3
+        for r in ranked
+    ):
+        warning(best[1], "ambiguous_interpretation")
+    return best[1:] if best else (scene, "No objects available", 0.0), ranked
 
 
 def finalize(scene, reason=None):
