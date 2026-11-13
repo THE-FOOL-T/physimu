@@ -29,6 +29,7 @@ from ..config import load_config
 from .jobs import JobStore
 from .warmup import state as model_state, start_warmup
 from ..domains import get as get_domain, names as domain_names
+from ..core.models import model_lease
 
 ROOT = Path(__file__).resolve().parents[2]
 log = logging.getLogger("circuit_sim")
@@ -42,7 +43,8 @@ log.propagate = False
 
 @asynccontextmanager
 async def lifespan(app):
-    start_warmup()
+    with model_lease("circuit"):
+        start_warmup()
 
     async def expire_jobs():
         while True:
@@ -338,10 +340,26 @@ def resolve_api(body: SolveRequest):
 @app.post("/api/corrections")
 async def corrections(
     image: UploadFile = File(...),
-    netlist: str = Form(...),
+    netlist: str | None = Form(None),
     opt_in: bool = Form(False),
     texts: str = Form("[]"),
+    domain: str = Form("circuit"),
+    scene: str | None = Form(None),
 ):
+    if domain not in {"circuit", "mechanics"}:
+        raise HTTPException(400, detail={"code": "unknown_domain"})
+    if domain == "mechanics":
+        if not opt_in:
+            raise HTTPException(400, detail="Explicit correction storage opt-in required")
+        from ..domains.mechanics.corrections import save_correction
+
+        data = await read_upload(image)
+        try:
+            return await run_in_threadpool(save_correction, data, scene, ROOT)
+        except ValueError as exc:
+            raise HTTPException(422, detail={"code": "invalid_correction"}) from exc
+    if netlist is None:
+        raise HTTPException(422, detail={"code": "invalid_request"})
     if not opt_in:
         raise HTTPException(400, detail="Explicit correction storage opt-in required")
     data = await read_upload(image)

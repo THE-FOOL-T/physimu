@@ -44,6 +44,11 @@ import {
   download,
 } from "./project";
 import "./workspace.css";
+import {
+  MechanicsAnalysis,
+  type DetectionBox,
+  type AnalysisProgress,
+} from "./analysis";
 
 const numberText = (n: number, places = 2) => {
   const v = n.toFixed(places);
@@ -160,6 +165,14 @@ export class MechanicsWorkspace implements DomainHandle {
   private playButton: HTMLButtonElement;
   private runButton: HTMLButtonElement;
   private locale = "";
+  private analysis = new MechanicsAnalysis();
+  private analysisEpoch = 0;
+  private analyzing = false;
+  private analysisBoxes: DetectionBox[] = [];
+  private analysisStatus: HTMLElement;
+  private analysisProgress: HTMLProgressElement;
+  private cancelAnalysis: HTMLButtonElement;
+  private correctionConsent: HTMLInputElement;
   constructor() {
     this.root.className = "mechanics-workspace";
     this.root.dataset.testid = "mechanics-workspace";
@@ -179,6 +192,20 @@ export class MechanicsWorkspace implements DomainHandle {
       if (f) void this.upload(f);
       upload.value = "";
     });
+    const analysis = el("section", this.root);
+    analysis.className = "mech-analysis";
+    this.analysisStatus = el("p", analysis);
+    this.analysisStatus.dataset.testid = "mechanics-analysis-status";
+    this.analysisStatus.setAttribute("role", "status");
+    this.analysisProgress = el("progress", analysis);
+    this.analysisProgress.max = 100;
+    this.analysisProgress.hidden = true;
+    this.analysisProgress.dataset.testid = "mechanics-analysis-progress";
+    this.cancelAnalysis = button(analysis, "cancel_analysis", () => {
+      this.stopAnalysis();
+      this.render();
+    });
+    this.cancelAnalysis.hidden = true;
     const il = el("label", top);
     el("span", il, "import_project");
     const importer = el("input", il);
@@ -205,6 +232,14 @@ export class MechanicsWorkspace implements DomainHandle {
         if (blob) download(blob, "mechanics-overlay.png");
       }),
     );
+    const correction = el("div", this.root);
+    correction.className = "mech-toolbar";
+    const consent = el("label", correction);
+    this.correctionConsent = el("input", consent);
+    this.correctionConsent.type = "checkbox";
+    this.correctionConsent.dataset.testid = "mechanics-correction-consent";
+    el("span", consent, "correction_consent");
+    button(correction, "save_correction", () => void this.saveCorrection());
     const fixtures = select(
       top,
       "synthetic_fixture",
@@ -435,6 +470,8 @@ export class MechanicsWorkspace implements DomainHandle {
     return this;
   }
   unmount() {
+    this.stopAnalysis();
+    this.correctionConsent.checked = false;
     this.active = false;
     ++this.generation;
     this.clock.pause();
@@ -454,6 +491,8 @@ export class MechanicsWorkspace implements DomainHandle {
       playing: this.clock.playing,
       editing: this.editing,
       active: this.active,
+      analyzing: this.analyzing,
+      analysisBoxes: structuredClone(this.analysisBoxes),
       frame0: this.renderer?.frame0,
       degraded: this.renderer?.degraded,
       background: this.renderer?.backgroundHash(),
@@ -486,7 +525,133 @@ export class MechanicsWorkspace implements DomainHandle {
       ? t(key)
       : `${t("mech.validation_failed")}: ${key}`;
   }
+  private stopAnalysis() {
+    this.analysisEpoch++;
+    this.analysis.cancel();
+    this.analyzing = false;
+    this.analysisBoxes = [];
+    this.analysisProgress.hidden = true;
+    this.cancelAnalysis.hidden = true;
+    this.analysisStatus.textContent = "";
+  }
+  private async analyze(file: File) {
+    this.stopAnalysis();
+    const epoch = this.analysisEpoch;
+    this.analyzing = true;
+    this.analysisProgress.value = 0;
+    this.analysisProgress.hidden = false;
+    this.cancelAnalysis.hidden = false;
+    this.analysisStatus.textContent = t("mech.stage_queued");
+    try {
+      let canonicalImage = "";
+      const result = await this.analysis.start(
+        file,
+        language,
+        async (job: AnalysisProgress) => {
+          if (epoch !== this.analysisEpoch || !this.active) return;
+          const p = job.partial;
+          if (
+            p?.source_image &&
+            p.width &&
+            p.height &&
+            canonicalImage !== p.source_image
+          ) {
+            await checkImage(p.source_image, p.width, p.height);
+            if (epoch !== this.analysisEpoch || !this.active) return;
+            canonicalImage = p.source_image;
+            this.install(
+              emptyScene({ path: file.name, width: p.width, height: p.height }),
+              canonicalImage,
+              true,
+            );
+          }
+          this.analysisProgress.value = job.percent;
+          const text = (p?.texts ?? [])
+            .slice(0, 12)
+            .map((r) => r.text)
+            .join(" · ");
+          this.analysisStatus.textContent = `${t(`mech.stage_${job.stage}`)} · ${numberText(job.percent, 0)}% · ${numberText(job.elapsed_seconds)} s${text ? ` · ${text}` : ""}`;
+          if (job.partial?.detections)
+            this.analysisBoxes = job.partial.detections.filter(
+              (d) =>
+                Array.isArray(d.bbox) &&
+                d.bbox.length === 4 &&
+                d.bbox.every(Number.isFinite),
+            );
+          this.render();
+        },
+      );
+      if (!result || epoch !== this.analysisEpoch || !this.active) return;
+      await checkImage(
+        result.source_image,
+        result.scene.image.width,
+        result.scene.image.height,
+      );
+      if (epoch !== this.analysisEpoch || !this.active) return;
+      this.analyzing = false;
+      this.analysisBoxes = [];
+      this.install(
+        result.scene,
+        result.source_image,
+        result.provenance !== "extracted",
+      );
+      this.analysisStatus.textContent = t("mech.stage_done");
+      this.notice.textContent = t(
+        result.warnings.some((w) => w.code === "weights_unavailable")
+          ? "mech.weights_unavailable"
+          : result.provenance === "unsupported"
+            ? "mech.unsupported_analysis"
+            : result.provenance === "partial"
+              ? "mech.partial_analysis"
+              : "mech.extracted_analysis",
+      );
+    } catch (error) {
+      if (epoch === this.analysisEpoch && this.active) {
+        this.report(error);
+        this.editing = true;
+      }
+    } finally {
+      if (epoch === this.analysisEpoch) {
+        this.analyzing = false;
+        this.analysisProgress.hidden = true;
+        this.cancelAnalysis.hidden = true;
+      }
+    }
+  }
+  private async saveCorrection() {
+    if (!this.correctionConsent.checked || !this.engine) {
+      this.notice.textContent = t("mech.correction_opt_in");
+      return;
+    }
+    const epoch = this.generation;
+    try {
+      const form = new FormData();
+      form.append(
+        "image",
+        new File(
+          [await (await fetch(this.image)).blob()],
+          "mechanics-correction.png",
+          { type: "image/png" },
+        ),
+      );
+      form.append("domain", "mechanics");
+      form.append("scene", JSON.stringify(this.engine.original));
+      form.append("opt_in", "true");
+      const response = await fetch("/api/corrections", {
+        method: "POST",
+        body: form,
+      });
+      if (!response.ok) throw new Error("mech.correction_failed");
+      if (epoch === this.generation && this.active) {
+        this.notice.textContent = t("mech.correction_saved");
+        this.correctionConsent.checked = false;
+      }
+    } catch (error) {
+      if (epoch === this.generation && this.active) this.report(error);
+    }
+  }
   private async upload(file: File) {
+    this.stopAnalysis();
     const token = ++this.generation;
     try {
       if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
@@ -503,11 +668,13 @@ export class MechanicsWorkspace implements DomainHandle {
         data,
         true,
       );
+      void this.analyze(file);
     } catch (e) {
       if (token === this.generation) this.report(e);
     }
   }
   private async import(file: File) {
+    this.stopAnalysis();
     const token = ++this.generation;
     try {
       if (file.size > 44000000) throw new Error("mech.image_size");
@@ -529,6 +696,7 @@ export class MechanicsWorkspace implements DomainHandle {
     }
   }
   private async loadFixture(name: string) {
+    this.stopAnalysis();
     const token = ++this.generation;
     try {
       const f = fixture(name),
@@ -557,6 +725,7 @@ export class MechanicsWorkspace implements DomainHandle {
     this.editing = editing;
     this.selected = scene.bodies[0]?.id ?? objects(scene)[0]?.id ?? "";
     this.points = [];
+    this.correctionConsent.checked = false;
     this.notice.textContent = "";
     this.renderer = null;
     delete this.root.dataset.ready;
@@ -572,6 +741,7 @@ export class MechanicsWorkspace implements DomainHandle {
   }
   private change(action: () => void) {
     if (!this.engine) return;
+    this.stopAnalysis();
     const before = this.snapshot();
     try {
       action();
@@ -618,6 +788,7 @@ export class MechanicsWorkspace implements DomainHandle {
     });
   }
   private travel(redo: boolean) {
+    this.stopAnalysis();
     const state = redo ? this.history.redo() : this.history.undo();
     if (!state) return;
     this.engine = restoreEngine(state);
@@ -666,6 +837,10 @@ export class MechanicsWorkspace implements DomainHandle {
         if (t(key) !== key) o.textContent = t(key);
       }
     this.canvas.setAttribute("aria-label", t("mech.diagram_keyboard"));
+    this.analysisProgress.setAttribute(
+      "aria-label",
+      t("mech.analysis_progress"),
+    );
     this.graph.setAttribute("aria-label", t("mech.graph_description"));
     this.root
       .querySelector('[role="tablist"]')!
@@ -686,10 +861,7 @@ export class MechanicsWorkspace implements DomainHandle {
       try {
         const rows = this.engine.rows().map((row) => ({
           ...row,
-          label:
-            t(`mech.param_${row.id}`) === `mech.param_${row.id}`
-              ? row.id.replaceAll("_", " ")
-              : t(`mech.param_${row.id}`),
+          label: this.bindingLabel(row.id),
         }));
         parameterPanel(
           this.params,
@@ -958,6 +1130,20 @@ export class MechanicsWorkspace implements DomainHandle {
     const key = `mech.value_${path.split(".").at(-1)}`;
     return t(key) === key ? path : t(key);
   }
+  private bindingLabel(id: string) {
+    const base = id.replace(/_(?:S|L)\d+$/, "").replace(/^v_B([12])$/, "v$1");
+    const aliases: Record<string, string> = {
+      release_angle: "angle",
+      pendulum_length: "length",
+      initial_stretch: "stretch",
+      initial_speed: "speed",
+      start_position: "position",
+      applied_force: "force",
+      restitution: "e",
+    };
+    const key = `mech.param_${aliases[base] ?? base}`;
+    return t(key) === key ? base.replaceAll("_", " ") : t(key);
+  }
   private coordinates(text: string, n: number) {
     const values = text.split(",").map((v) => Number(v.trim()));
     if (values.length !== n || values.some((v) => !Number.isFinite(v)))
@@ -1202,6 +1388,11 @@ export class MechanicsWorkspace implements DomainHandle {
   private drawEditor(ctx: CanvasRenderingContext2D, s: Scene) {
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#005789";
+    if (this.analyzing)
+      for (const d of this.analysisBoxes) {
+        const [x, y, z, v] = d.bbox;
+        ctx.strokeRect(x, y, z - x, v - y);
+      }
     for (const b of s.bodies) {
       ctx.setLineDash([5, 3]);
       ctx.strokeRect(

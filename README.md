@@ -9,8 +9,11 @@ results and use Edit. See [status](docs/status.md) for measured limitations.
 Physimu contains the preserved circuit workspace as local source. The top-bar
 domain selector defaults to Circuit. Mechanics now supports local image authoring,
 scene editing, simulation and scene/image JSON or overlay PNG export. See the
-[authoring guide](docs/mechanics/authoring.md). Mechanics image recognition is
-unimplemented; its analysis API still returns `unsupported`.
+[authoring guide](docs/mechanics/authoring.md). Mechanics uploads now run a local
+perception pipeline and return an editable scene with explicit provenance. A
+compatible independent mechanics checkpoint is required for detection; without
+one, analysis reports `weights_unavailable` and retains the image for authoring.
+See the [analysis guide](docs/mechanics/perception.md) for limits and evaluation.
 The domain registry and shared facades are in place; circuit files stay at
 their existing locations until M7. See [milestone status](docs/mechanics/status.md).
 The Python distribution/public package is `augphys`; `circuit_sim` is a local
@@ -21,7 +24,9 @@ historical setup references are in [the import record](docs/IMPORT.md).
 `domain` form field (default `circuit`); unknown names, including `auto`, return
 HTTP 400 with `unknown_domain`. Switching domains retains the loaded circuit and
 cancels its pending analysis. Mechanics retains its authored document and pauses
-on switching. Automatic mechanics analysis arrives in later milestones.
+on switching. Both domains cancel pending uploads when deactivated. Detector
+ownership is serialized: switching domains evicts the other detector and may
+require a reload. Correction saving remains explicit opt-in and off by default.
 
 ## Cross-platform setup
 

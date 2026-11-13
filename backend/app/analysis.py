@@ -6,12 +6,13 @@ from ..pipeline.engine import analyze_page, image_url
 from ..pipeline.validate import fallback, safe_solve
 from ..pipeline.warnings import ordered
 from ..domains.circuit.adapter import CircuitDomain
+from ..core.models import model_lease
 
 log = logging.getLogger("circuit_sim.analysis")
 HYBRID_ANALYSIS_LOCK = threading.Lock()
 
 
-def run_analysis(
+def _run_analysis(
     decoded,
     problem_text,
     lang,
@@ -25,7 +26,8 @@ def run_analysis(
         problem_text=problem_text, lang=lang, style=style, use_label_reader=use_label_reader
     )
     if domain is not None and domain.name != "circuit":
-        # Mechanics must never enter circuit warmup, normalization, or demo fallback.
+        # The model lease handles startup ownership; mechanics never enters circuit
+        # analysis, result normalization, or demo fallback.
         return domain.analyze(decoded, options, progress)
 
     from ..config import load_config
@@ -72,3 +74,23 @@ def run_analysis(
         result["observed_netlist"]["image"]["path"] = ""
     result["domain"] = "circuit"
     return result
+
+
+def run_analysis(
+    decoded,
+    problem_text,
+    lang,
+    style,
+    use_label_reader=False,
+    progress=None,
+    request_id=None,
+    domain=None,
+):
+    def check():
+        if progress:
+            progress("queued")
+
+    with model_lease(domain.name if domain is not None else "circuit", check):
+        return _run_analysis(
+            decoded, problem_text, lang, style, use_label_reader, progress, request_id, domain
+        )
