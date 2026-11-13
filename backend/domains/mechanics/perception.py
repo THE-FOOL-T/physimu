@@ -8,7 +8,7 @@ import numpy as np
 from . import geometry, sprites
 from .defaults import assumed
 from .validate import warning
-from .parameters import compile_parameters
+from .parameters import compile_parameters, pendulum_speed
 from .relationships import body_endpoints
 
 
@@ -463,6 +463,7 @@ def calibrate(scene, assignments, evidence):
         link["damping"] = link.get("damping") or value(0.0, "1/s", 0.0, "prior", "assumed")
         param("release_angle", value(math.degrees(math.atan2(dx, dy)), "deg"))
         param("angular_speed", zero("rad/s"))
+        pendulum_speed(scene, assignments, link)
         b["initial"]["position"] = {"x": physical(dx / S, "m"), "y": physical(dy / S, "m")}
     if kind in {"incline_block", "incline_pulley"}:
         sf = next(s for s in scene["surfaces"] if s["type"] == "incline")

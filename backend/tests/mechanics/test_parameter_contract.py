@@ -114,3 +114,39 @@ def test_subscript_friction_and_speed_label_near_owned_arrow_tip():
     )
     row = associate(s, parse("v0=40 m/s", [x + 240, y - 45, x + 280, y - 20]))[0]
     assert row["accepted"] and row["ref"] == body["id"]
+
+
+def test_pendulum_tangential_speed_drives_angular_parameter_with_explicit_conversion():
+    s = measured_fixture("pendulum")
+    rows = associate(s, parse("v0=4 m/s", s["bodies"][0]["bbox"]))
+    s["annotations"].append(
+        dict(
+            id="speed_label", type="label", geometry=dict(text="v0=4 m/s"), bound_to=rows[0]["path"]
+        )
+    )
+    calibrate(s, rows, {})
+    assert rows[0]["path"] == "params.angular_speed"
+    assert s["params"]["angular_speed"]["number"] == 4 / s["links"][0]["length_m"]["number"]
+    assert s["params"]["angular_speed"]["source"] == "constraint"
+    assert s["params"]["angular_speed"]["status"] == "assumed"
+    assert s["annotations"][-1]["bound_to"] == "params.angular_speed"
+    assert (
+        "speed_label"
+        in next(b for b in s["bindings"] if b["path"] == "params.angular_speed")["labels"]
+    )
+    Scene.model_validate(s)
+
+
+@pytest.mark.parametrize("angular", [5.0, None])
+def test_explicit_pendulum_angular_value_preserves_conflicting_linear_observation(angular):
+    s = measured_fixture("pendulum")
+    s["params"]["angular_speed"].update(
+        number=angular, status="user", source="user", confidence=1.0
+    )
+    rows = associate(s, parse("v0=4 m/s", s["bodies"][0]["bbox"]))
+    calibrate(s, rows, {})
+    assert s["params"]["angular_speed"]["number"] == angular
+    assert not rows[0]["accepted"]
+    assert rows[0]["reason"] == "conflicting_angular_speed"
+    assert s["params"][rows[0]["unplaced_path"].split(".")[-1]]["number"] == 4
+    Scene.model_validate(s)

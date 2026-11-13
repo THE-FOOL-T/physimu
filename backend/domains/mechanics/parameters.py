@@ -92,3 +92,62 @@ def compile_parameters(scene, assignments):
             for a in scene["annotations"]:
                 if a.get("bound_to") == old_path:
                     a["bound_to"] = path
+
+
+def pendulum_speed(scene, assignments, link):
+    """A measured tangential speed drives omega=v/L, with calibration provenance.
+
+    An explicit angular reading/user correction outranks this derived quantity.
+    """
+    length = link["length_m"]
+    angular = scene["params"]["angular_speed"]
+    for row in assignments:
+        if not row["accepted"] or row["kind"] != "speed":
+            continue
+        if not length or not length["number"] or length["number"] <= 0:
+            continue
+        derived = row["number"] / length["number"]
+        old_path = row["path"]
+        if angular["status"] != "assumed" or angular["source"] == "user":
+            if angular["number"] is None or not math.isclose(
+                angular["number"], derived, rel_tol=1e-4, abs_tol=1e-6
+            ):
+                row.update(accepted=False, reason="conflicting_angular_speed")
+                key = f"unplaced_{len(scene['params']) + 1}"
+                scene["params"][key] = dict(
+                    number=row["number"],
+                    unit="m/s",
+                    status="given",
+                    source="ocr",
+                    confidence=row["confidence"],
+                )
+                row["unplaced_path"] = "params." + key
+                for label in scene["annotations"]:
+                    if label.get("bound_to") == old_path:
+                        label["bound_to"] = row["unplaced_path"]
+            else:
+                row.update(
+                    path="params.angular_speed", derived_number=derived, derived_unit="rad/s"
+                )
+                for label in scene["annotations"]:
+                    if label.get("bound_to") == old_path:
+                        label["bound_to"] = "params.angular_speed"
+            continue
+        angular.update(
+            number=derived,
+            unit="rad/s",
+            status="assumed",
+            source="constraint",
+            confidence=min(row["confidence"], length["confidence"]),
+        )
+        row.update(path="params.angular_speed", derived_number=derived, derived_unit="rad/s")
+        for label in scene["annotations"]:
+            if label.get("bound_to") == old_path:
+                label["bound_to"] = "params.angular_speed"
+        scene["warnings"].append(
+            dict(
+                code="pendulum_speed_converted",
+                ref=link["id"],
+                message_key="mech.pendulum_speed_converted",
+            )
+        )
