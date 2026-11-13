@@ -864,3 +864,218 @@ review, physical-device/novice QA and Linux/macOS execution remain
 review frozen gold, review Bangla and test physical devices. Codex's local
 manual QA project is never designated gold. M3 stops here; M4 requires the next
 explicit continue.
+
+## M4 — data tooling and synthetic bootstrap (2026-11-13)
+
+Mechanics data/training tooling is implemented and paired CPU smoke training
+completed. The smoke model has zero scores and is not installed for production.
+M5 perception/API/UI integration has not started. Frozen real data and reviewed
+training labels remain HUMAN tasks, so all real metrics remain null.
+
+### Implemented and preserved
+
+- Added the fixed 21-class schema, contained/fresh dataset outputs, per-image
+  hashes/provenance and strict finite in-image YOLO validation. Generated data,
+  models, real pool and frozen gold stay ignored; only their READMEs/schema,
+  tools/tests and guides enter Git.
+- Added a null-scene unreviewed authoring scaffold, gold-envelope/scene validator
+  and exclusive portable freeze-hash metadata. The tools never write a gold
+  scene. Actual frozen folders contain only READMEs. Test review attestations are
+  explicitly synthetic mocks outside those folders, not actual HUMAN approval.
+- Reused existing signature/near-duplicate/grouping helpers through the core
+  facade and added mechanics split/source/frozen-integrity checks. Exact/resized
+  duplicates and source overlaps are covered. This conservative signature does
+  not discover every crop, rotation or redraw; human source grouping is required.
+- Extended M2 primitives in separate mechanics-only drawing/generator modules.
+  Native layout, scale, reflection, typeface/ink/strokes, labels/hatching and
+  printed/scan/simulated handwriting/photo styles share their pixel/annotation
+  homography. Outputs include images, YOLO labels, auxiliary scenes, indexed
+  visible masks, amodal boxes/object maps, source notice and contact sheet.
+  Existing M2 painter/fixtures/schema/solvers and all circuit product code remain
+  unchanged. Augmented scenes are geometry supervision, not calibrated solver
+  or real-recognition benchmarks.
+- Added local-checkpoint paired fine-tune/control, plan/execute/smoke/device
+  options, immutable input copies and model cards. Circuit weights are refused.
+  Full training requires at least 20 independently frozen scenes per real style;
+  smoke is explicitly ineligible for promotion. No full or GPU training ran.
+- Added per-class precision/recall/AP50/AP50:95, identical explicit evaluation
+  protocols, real quotas, separate printed/handwritten frozen reports, fresh
+  unreviewed prelabels and provenance-preserving HUMAN-reviewed export import.
+  Import binds image and reviewed-label hashes, maps every noncanonical class
+  explicitly (null drops it), and rejects leakage before a trainable manifest.
+  The promotion tool refuses smoke/synthetic results and checks improvements
+  without more than 0.02 common-class recall regression on matching real data.
+- Appended independent mechanics config with local `MECHANICS_MODEL` resolution.
+  M0's config guard now hashes the identical original byte prefix and separately
+  asserts the exact appended settings. Existing config loader, circuit settings,
+  model pins, API keys, analysis algorithms, frontend and original test sources
+  or snapshot thresholds were not changed.
+
+The plan preceded implementation. Workflow and source/licence decisions are in
+[labeling.md](labeling.md), [detector_results.md](detector_results.md) and
+[dataset_sources.md](dataset_sources.md). No public training dataset was used;
+the M3 public pendulum is unreviewed proposal QA only. Vendor licence statements
+are recorded without approving the owner's use.
+
+The owner subsequently confirmed no HUMAN-reviewed data exists and asked Codex
+to find it. [public-candidates.md](public-candidates.md) records the completed
+source search and ignored local starter pack: seven PNGs and seven null-scene,
+review-false scaffolds, including five fresh candidate diagrams, one prior M3 QA
+pendulum and one quarantined inconsistent projectile source. An actual corrected
+projectile source was found/rendered instead; the disputed free-body diagram
+was excluded. Two rate-limited UBC figures were obtained from their publisher.
+Original/PNG hashes, attribution, stated terms and provisional source groups are
+recorded. No real image/label entered training or frozen gold. Related annotated
+datasets use different semantics; no class map or independent gold was invented.
+Source-research downloads were authorized network activity outside guarded gates.
+
+### Commands and actual results
+
+Commands were executed from the Windows workspace using the existing Python
+3.12.10/Node 26.4.0/npm 11.17.0/Edge environment. Torch 2.13.0+cpu reports CUDA
+unavailable; Ultralytics remains 8.4.193. No dependencies or model pins changed.
+The local general `yolo26n.pt` was copied to ignored `models/`; its hash and
+80-class inventory are recorded in detector_results.md. No checkpoint download.
+
+Representative executed commands (absolute `$PWD` output paths):
+
+```powershell
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.make_synthetic --out "$PWD\data\generated_mechanics\m4-r1-20261113-v3" --count 600 --seed 42
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.leakage "$PWD\data\generated_mechanics\m4-r1-20261113-v3" --out "$PWD\.cache\m4-final\leakage.json"
+# After the pulley-mask correction, generated and audited fresh final v4:
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.make_synthetic --out "$PWD\data\generated_mechanics\m4-r1-20261113-v4" --count 600 --seed 42
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.leakage "$PWD\data\generated_mechanics\m4-r1-20261113-v4" --out "$PWD\.cache\m4-final\leakage-v4.json"
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.train --data "$PWD\data\generated_mechanics\m4-r1-20261113-v3" --pretrained "$PWD\models\yolo26n.pt" --out "$PWD\.cache\m4-cpu-smoke-v1" --smoke --execute --device cpu --imgsz 192 --seed 42
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.prelabel .cache/m4-prelabel-input --weights "$PWD\.cache\m4-cpu-smoke-v1\fine_tune\weights\best.pt" --out "$PWD\.cache\m4-prelabels-v1" --imgsz 192 --device cpu
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.make_gold_template .cache/m3-real/simple-pendulum.png --out "$PWD\.cache\m4-human-scaffold-v1"
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.gold
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.eval_detector --quota data/real_pool --out "$PWD\.cache\m4-final\real-quotas.json"
+.\.venv\Scripts\python.exe -m backend.tools.mechanics.eval_detector --frozen data/eval/mechanics --style printed --out "$PWD\.cache\m4-final\printed-null.json"
+# Same frozen command with --style handwritten and handwritten-null.json.
+.\.venv\Scripts\python.exe manage.py doctor
+.\.venv\Scripts\python.exe manage.py test
+.\.venv\Scripts\python.exe manage.py check
+.\.venv\Scripts\python.exe manage.py browser
+```
+
+Full gates use the existing Python/Node process guards, loopback allowed, npm
+offline and YOLO offline. Guarded smoke/proposal runs used the Python guard too.
+The existing main server and original source checkout remain present; this is
+not a fresh source-absent or host/browser firewall proof. No source was moved.
+
+| Gate | Actual measured result |
+| --- | --- |
+| First new data contracts plus independence | 30 passed in 7.28 s. |
+| Initial complete new M4 tests | 28 passed in 20.15 s, before the external-map and pulley-ownership regressions were added. |
+| Expanded data contract/review cases | 23 passed in 3.59 s; includes explicit external class drops, reviewed-label tamper and frozen-source import rejection. |
+| Corrected full `manage.py test`, before shared commit | **490 Python passed, 1 skipped**, 58.10 s; **109 TS passed**; type check/build passed. |
+| `manage.py check` | Ruff lint/format and Prettier passed; **490 Python passed, 1 skipped**, 58.24 s; **109 TS passed**; type check/build passed. |
+| Pulley mask regression and generator suite | **7 passed**, 22.58 s; ensures the erased rope interior belongs to the pulley without filling its source image with ink. |
+| Post-correction lint and formatting | Full Ruff lint and format check passed; 131 files already formatted. |
+| Final tracked-code `manage.py test`, after mask correction | **491 Python passed, 1 skipped**, 65.64 s; **109 TS passed**; type check/build passed. |
+| Full browser suite | **118 collected: 115 passed, 1 failed, 2 skipped**, 4.9 min. Only failure: the existing keyboard chooser timeout, below. |
+| Unchanged keyboard scenario, isolated five times | **5 passed**, 23.0 s. Across full/focused runs all **116 available unique scenarios** passed; this is not a clean single-run 116/116 claim. |
+| Strict circuit snapshots and accessibility | **12/12 at zero pixel tolerance**; no baselines regenerated. Twelve recorded default-layout accessibility reports have zero violations; mounted mechanics accessibility cases also passed. |
+| Paired CPU smoke | Both arms completed one epoch, 16 train / 8 validation images, all 21 classes present; **45.72 s** complete CLI wall time. |
+| Actual proposal/scaffold/null evaluation CLIs | Exit 0; one unreviewed empty proposal, null source-scene scaffold outside gold, zero real images/quotas, separate all-null real style metrics. |
+| `manage.py doctor` | Exit 0; all five existing circuit/OCR model files match. The extra general checkpoint remains separate/ignored. |
+
+The first full test invocation passed all 490 Python tests but stopped at npm
+because the verification command quoted a Windows Node preload path with
+backslashes. The corrected forward-slash path passed the complete command.
+This was a guard-launch command error, not a passing full gate or product fix.
+Original test assertions, skips, timeouts and snapshots were not weakened.
+
+The full browser run's only failure is the unchanged imported keyboard upload
+scenario at `layout.spec.ts:97`, waiting 30 seconds for the file-chooser event,
+as previously disclosed in M0/M1. Five focused repetitions pass unchanged with
+the same process guards. No production keyboard delay, test retry, skip, timeout
+or assertion change was introduced. The two private owner-analysis cases remain
+skipped because their optional cached asset is absent. The optional backend
+real-model OCR benchmark remains skipped. No new browser test was needed for
+these tooling-only changes; the existing Circuit/Mechanics round trips passed.
+
+Fresh circuit timing JSON was copied to `.cache/m4-final/`, then the historical
+tracked files restored. Thirty synchronous edited-Run samples: median **12.5 ms**,
+p95 **15.4 ms**, maximum **16.4 ms**. One hundred parameter-event samples: median
+**5.7 ms**, p95 **6.8 ms**, maximum **8.3 ms**. Both exclude paint and are circuit
+UI measurements, not mechanics recognition or frame-rate measurements. Opened
+the fresh phone BN mechanics workspace capture; its retained controls and image
+remain visible without horizontal overflow. This is limited screenshot QA,
+not human Bengali review or physical-device testing.
+
+### Synthetic measurements and limits
+
+Final generated counts, native-layout/contact-sheet review and per-class table
+are recorded in [detector_results.md](detector_results.md). Seed 42 produced 600
+diagrams, **75 per archetype**, styles **180/120/180/120** printed/scan/simulated
+handwriting/photo, **480 train / 120 validation**, **300 mirrored**, **150 without
+numeric values**, and **60 with actual Bengali digit text**. Every class appears
+at least 75 times, exceeding 40. Images, boxes and scene coordinates stay inside
+the native canvas; near-duplicate groups remain within one split.
+
+Final output is ignored `data/generated_mechanics/m4-r1-20261113-v4/`, generated
+in **220.98 s**, exit 0. The final split audit also passes with no collisions.
+It explicitly reports zero frozen real images and null real-frozen protection.
+V4 changes 225 pulley-containing masks from v3, while every image, YOLO label,
+scene, object map and manifest byte is identical; that actual comparison is in
+`.cache/m4-final/v4-input-comparison.json`. Thus the measured v3 smoke uses the
+same image/label inputs as final v4; no detector retraining was necessary for
+the mask-only correction. Opened the actual final v4 contact sheet as well.
+
+The actual inspected contact sheet led to readable reflected text, drawn text
+extents, improved body contact/attachment handling and truthful support symbols.
+A later audit added the explicit pulley-interior mask-ownership correction and
+regression. These are synthetic authoring fixes, not real recognition results.
+Earlier fresh trial directories stay ignored and are not the final dataset.
+
+Both first-round smoke arms start from the same independent general checkpoint.
+Fine-tune training wall time: **21.14 s**; control: **6.63 s**, including SDK/model
+work and unequal first-call setup overhead. At common `imgsz=192`, confidence
+0.25, matching IoU 0.50, AP floor 0.001 and IoU 0.50:0.05:0.95, every class has
+**precision 0, recall 0, AP50 0 and AP50:95 0** in both arms on eight synthetic
+validation diagrams/108 objects. **Synthetic, not real accuracy.** No useful
+detector, improvement, full training or production promotion is claimed.
+
+Median per-image `model.predict` wall time was **57.9 ms** fine-tune and
+**56.8 ms** control (p95 **172.3 / 176.5 ms**). The scope includes preprocessing
+and first-call warmup and excludes the data audit. Eight synthetic images do not
+establish real latency, HTTP timing or fair model-speed comparison.
+
+### Shared changes, HUMAN tasks and stop point
+
+Against M3 `ff73afe`, shared implementation/config changes are exactly:
+`.gitignore` **9 added / 0 removed**, core facade **5/0**, example config **7/0**,
+and the M0 independence guard **15/1**. The original example-config prefix is
+byte-for-byte identical. No frontend/circuit algorithm, imported original test,
+fixture, model pin or circuit visual baseline changed; no renames.
+
+Shared integration/plan commit: **5a46afa**; dataset/gold/generator tools:
+**012fb2e**; paired training/evaluation/review import: **d8939e7**. Documentation
+is separate; the final mask correction/regression is **6f560f7**. All datasets, models,
+scaffolds and proposals stay ignored. The actual frozen tree contains exactly
+three READMEs, with no agent-authored gold, labels or freeze manifest.
+
+Python count is **461 M3 + 30 M4 = 491 passed**; TS stays **109**, browser stays
+**118 collected**. Full test/check/browser, smoke/proposal, generator and focused
+keyboard process-guard logs contain zero blocked external attempts. Original
+source tracked status remains clean. No source was moved and no existing server
+was stopped. Logs, null reports, per-arm metrics/hashes, input comparison,
+accessibility reports and fresh timing/capture copies are in `.cache/m4-final/`.
+After staging the completed guides/source catalogue, all eight independence
+checks passed again in **6.54 s**, and `git diff --cached --check` passed. Public
+starter integrity checks confirm seven exact image hashes and seven null-scene,
+review-false scaffolds; frozen real folders remain README-only.
+
+HUMAN: decide source/model/data licences; independently author/review and freeze
+at least 20 printed and 20 handwritten real scenes; supply reviewed real labels
+(25–40 instances per class, 10 images per archetype); run GPU training and review
+real evaluation before model promotion. Bangla review and real-device/novice QA
+remain HUMAN too. The public manual QA project and synthetic validator mocks do
+not count toward these requirements.
+
+Real printed/handwritten recognition and end-to-end correctness, independent
+gold physics, real model/HTTP latency, full/GPU training duration, Linux/macOS,
+human Bangla approval and physical-device testing remain **null/unverified**.
+No smoke weight was installed at `models/mechanics.pt`. M4 stops here; M5 needs
+the next explicit continue.

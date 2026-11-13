@@ -159,3 +159,52 @@ ids/units and native numeric input fields retain their source/machine spelling.
 Translations remain pending human Bengali review. No browser storage of scene
 or uploaded image, backend mechanics analysis, detector/OCR, data generation,
 training, HTTP model benchmark or automatic routing is added in M3. Stop before M4.
+
+## M4: mechanics data tooling and synthetic smoke
+
+The owner's continue authorizes M4 only. The fixed 21-class schema and all data,
+gold, leakage, training, evaluation and review-import implementations live under
+mechanics paths. Existing circuit training/promotion tools are not edited;
+their signature/near-duplicate/grouping helpers are re-exported through the core
+facade. The explicit M4 config requirement is reconciled with M0's config hash
+guard by preserving every original byte and guarding an appended mechanics-only
+section separately. `MECHANICS_MODEL` resolves a local independent path; the
+production mechanics model loader/perception path is still M5 work.
+
+Gold is a HUMAN contract. The scaffold leaves scene null and review false;
+validation reads independently supplied scenes and freeze tooling writes only
+exclusive hash metadata. Generated/training/prelabel outputs refuse the frozen
+root. Full training refuses fewer than 20 frozen scenes in either real style;
+CPU smoke can run without them and is permanently marked ineligible for
+promotion. Real metrics and protection against an absent frozen set remain null.
+Validator tests use explicitly synthetic review mocks outside the real folders.
+
+The generator uses native seeded scene geometry, actual drawn masks and one
+pixel/annotation homography. Amodal boxes identify each complete drawn object;
+the indexed mask stores visible topmost ownership. Reflected text is prepared
+locally to remain readable. Auxiliary augmented scenes are geometry supervision,
+not calibrated simulation benchmarks. Near-duplicate connected components stay
+in one split, but shared primitives still limit synthetic independence.
+
+An existing local general 80-class checkpoint was copied, with its hash recorded;
+no circuit weight initializes mechanics and no model was downloaded. In R1 the
+two smoke arms share that general initialization. One epoch on 16 images and
+eight-image validation completed; every class scored zero in both arms. This
+proves plumbing only. No smoke candidate was installed as the production model.
+Full/GPU training, model promotion and real recognition are unverified.
+
+Real proposals remain unreviewed, including empty outputs. Import requires a
+person's per-image review, exact reviewed label/image hashes, source groups and
+source/licence notes. Noncanonical source classes need an explicit total map,
+with null for dropped classes. Frozen overlaps reject the import before a
+trainable manifest exists. The conservative image signature does not discover
+all crops/rotations/redraws; HUMAN source grouping and review remain necessary.
+
+Source/licence decisions, independently reviewed real gold and labels, GPU
+training, Bengali review and physical-device QA remain HUMAN. No public dataset
+was incorporated. After the owner confirmed no reviewed material exists and
+asked for help finding it, Codex collected public source candidates and prepared
+null-scene scaffolds outside gold. Source hashes/terms, provisional groups and
+quality exclusions are recorded in public-candidates.md; no independent review,
+real label or gold scene was fabricated. M4 stops before M5 perception, routes
+or production UI changes.
