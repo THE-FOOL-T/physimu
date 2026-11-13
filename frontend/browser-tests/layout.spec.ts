@@ -91,10 +91,11 @@ for (const [width, height] of [
 test("keyboard operation reaches upload, playback, part selection and value editing", async ({
   page,
 }) => {
+  // Enable native chooser interception before navigation and keyboard activation.
+  const chooser = page.waitForEvent("filechooser");
   await page.goto("/");
   await expect(page.locator("#readout tr")).toHaveCount(7);
   await page.locator("#dropzone").focus();
-  const chooser = page.waitForEvent("filechooser");
   await page.keyboard.press("Enter");
   await chooser;
   await page.locator("#play").focus();
