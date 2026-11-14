@@ -177,6 +177,11 @@ test("correcting a blocking physical value unlocks simulation without replacing 
     ref: "B1",
     message_key: "mech.invalid_mass",
   });
+  s.warnings.push({
+    code: "missing_mass",
+    ref: "B1",
+    message_key: "mech.missing_mass",
+  });
   const e = new BindingEngine(s),
     original = structuredClone(e.original);
   assert.equal(e.trajectory.supported, false);
@@ -184,6 +189,7 @@ test("correcting a blocking physical value unlocks simulation without replacing 
   assert.equal(e.trajectory.supported, true, e.trajectory.reason);
   assert.equal(e.document.meta.provenance, "authored");
   assert.ok(!e.document.warnings.some((w) => w.code === "invalid_mass"));
+  assert.ok(!e.document.warnings.some((w) => w.code === "missing_mass"));
   assert.deepEqual(e.original, original);
   assert.deepEqual(
     parseProject(project(e, "data:image/png;base64,AAAA")).current_scene,

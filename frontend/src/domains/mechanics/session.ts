@@ -13,6 +13,7 @@ import {
 } from "./analysis";
 import { preserveCorrections } from "./reanalysis";
 import { el } from "./workspace-dom";
+import type { MechanicsUploadPanel } from "./upload-panel";
 
 export interface SessionView {
   analysisStatus: HTMLElement;
@@ -24,6 +25,8 @@ export interface SessionView {
   figureSelect: HTMLSelectElement;
   interpretationSelect: HTMLSelectElement;
   notice: HTMLElement;
+  uploadPanel: MechanicsUploadPanel;
+  fixtureSelect: HTMLSelectElement;
 }
 interface SessionHost {
   engine(): BindingEngine | null;
@@ -46,6 +49,7 @@ interface SessionHost {
   render(): void;
   report(error: unknown): void;
   number(n: number, places?: number): string;
+  resetSource(): void;
 }
 
 /** Owns image/project IO and one cancellable analysis generation. It cannot solve
@@ -54,6 +58,7 @@ export class MechanicsSession {
   private analysis = new MechanicsAnalysis();
   private analysisEpoch = 0;
   analyzing = false;
+  private file?: File;
   analysisBoxes: DetectionBox[] = [];
   figureRegions: BBox[] = [];
   interpretations: NonNullable<
@@ -111,6 +116,7 @@ export class MechanicsSession {
     this.host.report(error);
   }
   cancel() {
+    const wasAnalyzing = this.analyzing;
     this.analysisEpoch++;
     this.analysis.cancel();
     this.analyzing = false;
@@ -118,11 +124,16 @@ export class MechanicsSession {
     this.view.analysisProgress.hidden = true;
     this.view.cancelAnalysis.hidden = true;
     this.view.analysisStatus.textContent = "";
+    if (wasAnalyzing) this.view.uploadPanel.failed();
   }
-  private async analyze(file: File, preserve = false) {
+  confirmCandidate(index: number) {
+    if (this.file) return this.analyze(this.file, false, index);
+  }
+  private async analyze(file: File, preserve = false, candidate?: number) {
     this.cancel();
     const previous = preserve ? this.engine : null;
     const analysisOptions: MechanicsAnalysisOptions = {
+      pendulumCandidate: candidate,
       style: this.view.analysisStyle.value as MechanicsAnalysisOptions["style"],
       useLabelReader: this.view.labelConsent.checked,
       figureRegion:
@@ -133,6 +144,7 @@ export class MechanicsSession {
     this.view.labelConsent.checked = false;
     const epoch = this.analysisEpoch;
     this.analyzing = true;
+    this.view.uploadPanel.start(preserve);
     this.view.analysisProgress.value = 0;
     this.view.analysisProgress.hidden = false;
     this.view.cancelAnalysis.hidden = false;
@@ -162,10 +174,17 @@ export class MechanicsSession {
                   height: p.height,
                 }),
                 canonicalImage,
-                true,
+                false,
               );
+            void this.view.uploadPanel.source(
+              canonicalImage,
+              p.width,
+              p.height,
+              file,
+            );
           }
           this.view.analysisProgress.value = job.percent;
+          this.view.uploadPanel.progress(job);
           const text = (p?.texts ?? [])
             .slice(0, 12)
             .map((r) => r.text)
@@ -191,6 +210,13 @@ export class MechanicsSession {
       if (epoch !== this.analysisEpoch || !this.active) return;
       this.analyzing = false;
       this.analysisBoxes = [];
+      this.view.uploadPanel.compiled(result);
+      void this.view.uploadPanel.source(
+        result.source_image,
+        result.scene.image.width,
+        result.scene.image.height,
+        file,
+      );
       const authored = previous?.original.meta.provenance === "authored";
       const savedHistory = this.history,
         before = previous ? this.snapshot() : null;
@@ -201,7 +227,10 @@ export class MechanicsSession {
       this.install(
         authored ? previous!.original : (merged?.scene ?? result.scene),
         result.source_image,
-        authored ? this.editing : result.provenance !== "extracted",
+        authored
+          ? this.editing
+          : result.scene.archetype === "unsupported" ||
+              result.provenance === "unsupported",
         authored
           ? {
               scene: previous!.original,
@@ -263,15 +292,17 @@ export class MechanicsSession {
       }
       this.view.interpretationSelect.parentElement!.hidden =
         this.interpretations.length <= 1;
-      this.view.analysisStatus.textContent = t("mech.stage_done");
+      this.view.analysisStatus.textContent = t("mech.analysis_compiled");
       this.view.notice.textContent = t(
-        result.warnings.some((w) => w.code === "weights_unavailable")
-          ? "mech.weights_unavailable"
-          : result.provenance === "unsupported"
-            ? "mech.unsupported_analysis"
-            : result.provenance === "partial"
-              ? "mech.partial_analysis"
-              : "mech.extracted_analysis",
+        result.diagnostics?.recognition?.method.includes("classical")
+          ? "mech.classical_method"
+          : result.warnings.some((w) => w.code === "weights_unavailable")
+            ? "mech.weights_unavailable"
+            : result.provenance === "unsupported"
+              ? "mech.unsupported_analysis"
+              : result.provenance === "partial"
+                ? "mech.partial_analysis"
+                : "mech.extracted_analysis",
       );
       if (authored)
         this.view.notice.textContent += ` ${t("mech.authored_reanalysis_retained")}`;
@@ -279,6 +310,7 @@ export class MechanicsSession {
       if (epoch === this.analysisEpoch && this.active) {
         this.report(error);
         this.editing = true;
+        this.view.uploadPanel.failed();
       }
     } finally {
       if (epoch === this.analysisEpoch) {
@@ -337,12 +369,18 @@ export class MechanicsSession {
     this.clearChoices();
     this.cancel();
     const token = ++this.generation;
+    this.file = file;
+    this.view.fixtureSelect.value = "choose_fixture";
+    const epoch = this.analysisEpoch;
+    this.analyzing = true;
+    this.view.uploadPanel.reset("upload", file.name, file);
+    this.host.resetSource();
     try {
       if (!["image/png", "image/jpeg", "image/webp"].includes(file.type))
         throw new Error("mech.invalid_image");
       const data = await readFile(file),
         img = await checkImage(data);
-      if (token !== this.generation) return;
+      if (token !== this.generation || epoch !== this.analysisEpoch) return;
       this.install(
         emptyScene({
           path: file.name,
@@ -350,11 +388,21 @@ export class MechanicsSession {
           height: img.naturalHeight,
         }),
         data,
-        true,
+        false,
+      );
+      void this.view.uploadPanel.source(
+        data,
+        img.naturalWidth,
+        img.naturalHeight,
+        file,
       );
       void this.analyze(file);
     } catch (e) {
-      if (token === this.generation) this.report(e);
+      if (token === this.generation) {
+        this.analyzing = false;
+        this.view.uploadPanel.failed();
+        this.report(e);
+      }
     }
   }
   async import(file: File) {
@@ -370,6 +418,14 @@ export class MechanicsSession {
         p.scene.image.height,
       );
       if (token !== this.generation) return;
+      this.view.fixtureSelect.value = "choose_fixture";
+      this.file = undefined;
+      this.view.uploadPanel.reset("project", file.name);
+      void this.view.uploadPanel.source(
+        p.source_image,
+        p.scene.image.width,
+        p.scene.image.height,
+      );
       this.install(p.scene, p.source_image, false, {
         scene: p.scene,
         overrides: p.parameter_overrides,
@@ -392,10 +448,22 @@ export class MechanicsSession {
           new File([await res.blob()], `${name}.png`, { type: "image/png" }),
         );
       if (token !== this.generation) return;
+      this.view.uploadPanel.reset("sample", name);
+      this.file = undefined;
+      this.view.fixtureSelect.value = name;
+      void this.view.uploadPanel.source(
+        data,
+        f.scene.image.width,
+        f.scene.image.height,
+      );
       this.install(f.scene, data, false);
     } catch (e) {
       if (token === this.generation) this.report(e);
     }
+  }
+  async retry() {
+    if (this.file) await this.upload(this.file);
+    else await this.reanalyze();
   }
   private clearChoices() {
     this.figureRegions = [];

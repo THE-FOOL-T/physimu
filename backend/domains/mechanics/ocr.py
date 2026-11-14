@@ -5,6 +5,7 @@ Execution, budgets, engine isolation and offline configuration remain shared.
 """
 
 import copy
+import math
 
 from .labels import parse, normalize
 
@@ -53,5 +54,24 @@ def fuse_mechanics(raw, diagnostics):
         row["provenance"] = list(
             dict.fromkeys(r.get("engine", r.get("source", "ocr")) for r in group)
         )
+        classifier = selected.get("classifier_result")
+        if (
+            isinstance(classifier, (list, tuple))
+            and classifier
+            and isinstance(classifier[0], (list, tuple))
+            and len(classifier[0]) == 2
+            and str(classifier[0][0]) in {"0", "90", "180", "270"}
+            and isinstance(classifier[0][1], (int, float))
+            and math.isfinite(classifier[0][1])
+            and 0.9 <= classifier[0][1] <= 1
+        ):
+            expected = int(classifier[0][0])
+            if selected.get("rotation") == expected:
+                for alternative in row["alternatives"]:
+                    if alternative.get("rotation", expected) != expected:
+                        alternative.update(
+                            binding_eligible=False,
+                            binding_exclusion="orientation_classifier_disagrees",
+                        )
         result.append(row)
     return sorted(result, key=lambda r: (r["bbox"][1], r["bbox"][0]))

@@ -1,5 +1,6 @@
 import type { Scene } from "./types";
 import { parseScene } from "./validate";
+import type { AnalysisStepState } from "../../shell/analysis-ui";
 
 export interface MechanicsResult {
   domain: "mechanics";
@@ -9,7 +10,36 @@ export interface MechanicsResult {
   source_image: string;
   warnings: Scene["warnings"];
   timings: Record<string, number | null>;
+  readiness?: {
+    status: string;
+    physics_supported: boolean;
+    issues: { code: string; message: string; path: string | null }[];
+  };
+  style_estimate?: {
+    style: string;
+    effective_style: string;
+    confidence: number;
+  };
   diagnostics?: {
+    classical?: {
+      accepted: boolean;
+      native_scale: number;
+      reason: string;
+      candidates: {
+        pivot: [number, number];
+        bob: { center: [number, number]; radius: number };
+        confidence: number;
+      }[];
+    };
+    recognition?: {
+      method: string;
+      model_status: string;
+      model_reason?: string;
+    };
+    stage_states?: Record<string, AnalysisStepState>;
+    detections?: DetectionBox[];
+    texts?: OCRReading[];
+    evidence?: { relationships: EvidenceRelationship[] };
     figure_regions?: [number, number, number, number][];
     alternatives?: {
       archetype: string;
@@ -25,20 +55,44 @@ export interface DetectionBox {
   type: string;
   bbox: [number, number, number, number];
   confidence: number;
+  source?: string;
+}
+export interface OCRReading {
+  text: string;
+  bbox: number[];
+  confidence?: number;
+  source?: string;
+  provenance?: string[];
+  engine?: string;
+  alternatives?: OCRReading[];
+  rotation?: number;
+  binding_eligible?: boolean;
+}
+export interface EvidenceRelationship {
+  type: string;
+  source: string;
+  target: string;
+  state: string;
+  confidence: number;
 }
 export interface AnalysisProgress {
   stage: string;
   percent: number;
   elapsed_seconds: number;
+  history?: string[];
   partial?: {
     source_image?: string;
     width?: number;
     height?: number;
     detections?: DetectionBox[];
-    texts?: { text: string; bbox: number[] }[];
+    texts?: OCRReading[];
+    stage_states?: AnalysisStepState[];
+    scene_evidence?: Scene;
+    relationships?: EvidenceRelationship[];
   };
 }
 export interface MechanicsAnalysisOptions {
+  pendulumCandidate?: number;
   style?: "auto" | "printed" | "handwritten";
   useLabelReader?: boolean;
   figureRegion?: [number, number, number, number];
@@ -96,6 +150,8 @@ export class MechanicsAnalysis {
     form.append("use_label_reader", String(options.useLabelReader === true));
     if (options.figureRegion)
       form.append("figure_region", JSON.stringify(options.figureRegion));
+    if (options.pendulumCandidate !== undefined)
+      form.append("pendulum_candidate", String(options.pendulumCandidate));
     const response = await this.transport("/api/analyze/start", {
       method: "POST",
       body: form,

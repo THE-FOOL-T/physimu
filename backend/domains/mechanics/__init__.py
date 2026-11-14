@@ -1,19 +1,11 @@
 """Mechanics perception plugin. Solving stays in the browser."""
 
+from .stages import STAGES
+
 
 class MechanicsDomain:
     name = "mechanics"
-    stages = (
-        "received",
-        "preprocess",
-        "detect",
-        "text",
-        "geometry",
-        "associate",
-        "archetype",
-        "validate",
-        "done",
-    )
+    stages = STAGES
 
     def __init__(self, detector=None, text_reader=None):
         self.detector, self.text_reader = detector, text_reader

@@ -3,6 +3,7 @@ import type { Scene } from "./types";
 import { el, button, select } from "./workspace-dom";
 import { nameOf, objects } from "./authoring";
 import { valueAt } from "./validate";
+import { componentName } from "./upload-panel";
 
 export type WorkspaceMode = "explore" | "fix" | "advanced";
 
@@ -10,6 +11,8 @@ export type WorkspaceMode = "explore" | "fix" | "advanced";
 export class WorkspacePanels {
   readonly inspector: HTMLElement;
   readonly component: HTMLSelectElement;
+  readonly uploadBody: HTMLElement;
+  readonly center: HTMLElement;
   private nav: HTMLElement;
   private advanced: HTMLElement[];
   private repairs: HTMLElement[];
@@ -24,12 +27,24 @@ export class WorkspacePanels {
     const layout = root.querySelector<HTMLElement>(".mech-layout")!;
     const diagram = layout.firstElementChild as HTMLElement,
       aside = layout.lastElementChild as HTMLElement;
-    diagram.classList.add("mech-diagram-panel");
-    aside.classList.add("mech-inspector-panel");
+    layout.classList.add("layout");
+    diagram.classList.add("mech-diagram-panel", "center", "panel");
+    aside.classList.add("mech-inspector-panel", "right", "panel");
+    this.center = diagram;
+    const input = el("aside", layout);
+    input.className = "left mech-import-panel";
+    layout.prepend(input);
+    const card = el("section", input);
+    card.className = "panel import-card";
+    const head = el("div", card);
+    head.className = "panel-head";
+    el("h2", head, "upload_image");
+    this.uploadBody = el("div", card);
+    this.uploadBody.className = "panel-body";
     this.nav = el("nav");
     this.nav.className = "mech-modebar";
     this.nav.setAttribute("aria-label", t("mech.workspace_mode"));
-    root.insertBefore(this.nav, layout);
+    diagram.prepend(this.nav);
     button(this.nav, "explore", () => changeMode("explore"));
     button(this.nav, "fix_interpretation", () => changeMode("fix"));
     // Existing Edit scene action stays available as Advanced Authoring.
@@ -63,8 +78,9 @@ export class WorkspacePanels {
     const details = el("details");
     details.className = "mech-setup";
     el("summary", details, "analysis_settings");
-    root.insertBefore(details, this.nav);
+    this.uploadBody.append(details, top);
     const analysis = root.querySelector<HTMLElement>(".mech-analysis")!;
+    this.uploadBody.prepend(analysis);
     // Keep live progress/cancellation visible while settings stay out of Explore.
     const options = analysis.querySelector<HTMLElement>(".mech-toolbar")!;
     details.append(options);
@@ -104,6 +120,17 @@ export class WorkspacePanels {
       '[data-action="back_original"]',
     )!;
     original.classList.add("mech-secondary-action");
+    for (const name of [
+      "mechanics-provenance",
+      "mechanics-notice",
+      "mechanics-handwriting-notice",
+      "mechanics-validation",
+      "mechanics-readiness",
+    ])
+      diagram.insertBefore(
+        root.querySelector(`[data-testid="${name}"]`)!,
+        this.nav,
+      );
   }
   refresh(mode: WorkspaceMode, scene: Scene | undefined, selected: string) {
     this.root.dataset.mode = mode;
@@ -133,18 +160,23 @@ export class WorkspacePanels {
       )) {
         const o = el("option", this.component);
         o.value = object.id;
-        o.textContent = nameOf(scene, object.id);
+        o.textContent =
+          mode === "advanced"
+            ? nameOf(scene, object.id)
+            : componentName(scene, object.id);
       }
     this.component.value = selected || selectedBefore;
     this.component.disabled = !scene;
     for (const node of [...this.labels.children].slice(1)) node.remove();
     if (scene) {
+      const owners = new Set([selected]);
+      for (const link of scene.links)
+        if ([link.a.ref, link.b.ref].includes(selected)) owners.add(link.id);
       const related = new Set(
         scene.bindings
           .filter(
             (b) =>
-              b.path.startsWith(`bodies.${selected}.`) ||
-              b.path.startsWith("params."),
+              owners.has(b.path.split(".")[1]) || b.path.startsWith("params."),
           )
           .map((b) => b.path),
       );

@@ -66,6 +66,7 @@ test("reanalysis retains user physics and immutable recognition; OCR repair chan
   expect((await state(page)).project.current_scene.constants.g.status).toBe(
     "user",
   );
+  await action(page, "fix_interpretation").click();
   await action(page, "run").click();
   const mass = page.locator('[data-parameter="mass_B1"] input[type="number"]');
   await mass.fill("4");
@@ -140,7 +141,7 @@ for (const lang of ["en", "bn"]) {
     await expect(
       page.getByTestId("mechanics-handwriting-notice"),
     ).toBeVisible();
-    expect((await state(page)).editing).toBe(true);
+    expect((await state(page)).editing).toBe(false);
     expect(
       (await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze())
         .violations,
@@ -196,7 +197,7 @@ test("real HTTP oracle upload reports partial progress, then edits and plays the
     .poll(async () => (await state(page)).analysisBoxes.length)
     .toBeGreaterThan(0);
   await expect(page.getByTestId("mechanics-analysis-status")).toContainText(
-    /Reading labels|Measuring geometry/,
+    /Read Parameters|Reconstruct Geometry/,
   );
   await expect(page.getByTestId("mechanics-analysis-status")).toContainText(
     "1 kg",
@@ -205,11 +206,13 @@ test("real HTTP oracle upload reports partial progress, then edits and plays the
   let s = await state(page);
   expect(s.project.scene.archetype).toBe("pendulum");
   expect(s.project.scene.meta.provenance).toBe("partial");
-  expect(s.editing).toBe(true);
+  expect(s.editing).toBe(false);
   expect(s.project.scene.links[0].a.ref).toBe("pivot");
   await expect(page.getByTestId("mechanics-notice")).toContainText(
     "does not establish correctness",
   );
+  await action(page, "fix_interpretation").click();
+  expect((await state(page)).editing).toBe(true);
   const value = page.locator(
     '.mechanics-workspace [data-value-path="bodies.B1.mass"]',
   );
@@ -272,6 +275,9 @@ test("missing mechanics weights retain editable native image; correction saving 
     buffer: Buffer.from(blank, "base64"),
   });
   await pending;
+  await expect
+    .poll(async () => (await state(page)).analyzing, { timeout: 20000 })
+    .toBe(false);
   await expect(page.getByTestId("mechanics-notice")).toContainText("weights");
   expect((await state(page)).editing).toBe(true);
   expect((await state(page)).project.scene.bodies).toEqual([]);
@@ -304,7 +310,7 @@ test("phone Bangla analysis and consent controls fit and remain accessible", asy
   await expect
     .poll(async () => (await state(page)).project?.scene.archetype)
     .toBe("pendulum");
-  expect((await state(page)).editing).toBe(true);
+  expect((await state(page)).editing).toBe(false);
   expect(
     await page.evaluate(
       () =>

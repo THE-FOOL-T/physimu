@@ -54,7 +54,7 @@ def blank(image, lang="en", style="unknown"):
     )
 
 
-def measure(image, detections, lang, style, check):
+def measure(image, detections, lang, style, check, *, trace_min_pixels=8):
     scene = blank(image, lang, style)
     evidence = {}
     link_choices = {}
@@ -215,7 +215,18 @@ def measure(image, detections, lang, style, check):
             fit = (
                 geometry.spring(image, d.bbox, exclusions, style=style)
                 if d.type == "spring"
-                else geometry.trace(image, d.bbox, exclusions, style=style)
+                else geometry.trace(
+                    image,
+                    d.bbox,
+                    exclusions,
+                    style=style,
+                    min_segment_pixels=trace_min_pixels,
+                    anchors=[
+                        a["geometry"]["points"][0]
+                        for a in scene["annotations"]
+                        if a["id"] == "pivot"
+                    ],
+                )
             )
             points = np.array(fit["endpoints"] if d.type == "spring" else fit["points"])
             ref = id_("L")
@@ -461,10 +472,26 @@ def calibrate(scene, assignments, evidence):
         dx, dy = np.array(b["anchor"]) - np.array(pivot)
         link["length_m"] = link["length_m"] or physical(math.hypot(dx, dy) / S, "m")
         link["damping"] = link.get("damping") or value(0.0, "1/s", 0.0, "prior", "assumed")
-        param("release_angle", value(math.degrees(math.atan2(dx, dy)), "deg"))
+        measured_angle = math.degrees(math.atan2(dx, dy))
+        printed_angle = params.get("release_angle")
+        if (
+            printed_angle
+            and printed_angle["number"] is not None
+            and printed_angle["source"] in {"ocr", "vlm"}
+            and abs(printed_angle["number"] - measured_angle) > 5
+        ):
+            warning(scene, "angle_mismatch", "pivot")
+        param("release_angle", value(measured_angle, "deg"))
         param("angular_speed", zero("rad/s"))
         pendulum_speed(scene, assignments, link)
-        b["initial"]["position"] = {"x": physical(dx / S, "m"), "y": physical(dy / S, "m")}
+        angle, length = params["release_angle"]["number"], link["length_m"]["number"]
+        initial_x, initial_y = dx / S, dy / S
+        if angle is not None and length is not None:
+            initial_x, initial_y = (
+                length * math.sin(math.radians(angle)),
+                length * math.cos(math.radians(angle)),
+            )
+        b["initial"]["position"] = {"x": physical(initial_x, "m"), "y": physical(initial_y, "m")}
     if kind in {"incline_block", "incline_pulley"}:
         sf = next(s for s in scene["surfaces"] if s["type"] == "incline")
         supported = next((b for b in bodies if b["on_surface"] == sf["id"]), bodies[0])

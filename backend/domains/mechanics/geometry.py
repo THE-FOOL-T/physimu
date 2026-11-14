@@ -146,7 +146,7 @@ def skeleton(mask):
     return result
 
 
-def trace(image, bbox, exclude=(), *, style="printed"):
+def trace(image, bbox, exclude=(), *, style="printed", min_segment_pixels=8, anchors=()):
     mask, offset = crop_mask(image, bbox, exclude, pad=4)
     if style == "handwritten":
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
@@ -155,7 +155,16 @@ def trace(image, bbox, exclude=(), *, style="printed"):
     segments = []
     all_points = []
     for label in range(1, count):
-        if stats[label, cv2.CC_STAT_AREA] < 8:
+        minimum = min_segment_pixels
+        center = offset + [
+            stats[label, cv2.CC_STAT_LEFT] + stats[label, cv2.CC_STAT_WIDTH] / 2,
+            stats[label, cv2.CC_STAT_TOP] + stats[label, cv2.CC_STAT_HEIGHT] / 2,
+        ]
+        # Preserve observed short dashes at known junctions; never extend a
+        # geometric endpoint across blank pixels to make an attachment fit.
+        if any(math.dist(center, anchor) <= 20 for anchor in anchors):
+            minimum = min(minimum, 3)
+        if stats[label, cv2.CC_STAT_AREA] < minimum:
             continue
         points = set(zip(*np.where(labels == label)))
 
@@ -188,7 +197,7 @@ def trace(image, bbox, exclude=(), *, style="printed"):
         while p is not None:
             route.append([float(p[1] + offset[0]), float(p[0] + offset[1])])
             p = parent[p]
-        if len(route) >= 8:
+        if len(route) >= minimum:
             segments.append(route[::-1])
             all_points.extend(route)
     if not segments:

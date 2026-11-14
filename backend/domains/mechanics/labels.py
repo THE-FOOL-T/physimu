@@ -120,7 +120,13 @@ def parse(raw, bbox=(0.0, 0.0, 1.0, 1.0), confidence=1.0, source="ocr"):
 def read_tokens(readings):
     result = []
     for row in readings:
-        choices = [row, *row.get("alternatives", [])]
+        if re.match(r"^\s*Fig(?:ure)?\.?\s*\d+\b", row.get("text", ""), re.I):
+            continue
+        choices = [
+            r for r in [row, *row.get("alternatives", [])] if r.get("binding_eligible", True)
+        ]
+        if not choices:
+            continue
         parsed = [
             parse(
                 r.get("text", ""),

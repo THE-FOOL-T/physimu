@@ -15,10 +15,21 @@ export function readiness(
   if (analyzing) return "analyzing";
   if (
     scene.warnings.some((w) => w.code === "weights_unavailable") &&
-    scene.meta.provenance === "unsupported"
+    scene.archetype === "unsupported"
   )
     return "needs_model";
-  if (!run.supported) return "unsupported";
+  if (!run.supported)
+    return scene.archetype !== "unsupported" &&
+      scene.warnings.some((w) =>
+        [
+          "missing_mass",
+          "missing_length",
+          "invalid_mass",
+          "unresolved_parameter",
+        ].includes(w.code),
+      )
+      ? "needs_review"
+      : "unsupported";
   if (
     scene.bindings.some((b) => valueAt(scene, b.path).status === "assumed") ||
     scene.frame.px_per_m.status === "assumed" ||

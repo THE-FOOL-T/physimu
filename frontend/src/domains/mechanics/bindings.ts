@@ -61,6 +61,8 @@ export class BindingEngine {
         (w) =>
           ![
             "invalid_mass",
+            "missing_mass",
+            "missing_length",
             "invalid_gravity",
             "invalid_friction",
             "invalid_link_value",

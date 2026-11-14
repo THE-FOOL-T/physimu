@@ -246,7 +246,7 @@ async def analyze_start(
     check_rate(request)
     data = await read_upload(image)
     decoded = await validated_image(image, data, page)
-    mechanics_options = None
+    mechanics_options = {}
     raw_region = (await request.form()).get("figure_region")
     if raw_region is not None and domain == "mechanics":
         from ..domains.mechanics.understanding import select_region
@@ -254,9 +254,18 @@ async def analyze_start(
         try:
             region = json.loads(str(raw_region))
             select_region([], region, decoded.shape[1], decoded.shape[0])
-            mechanics_options = {"figure_region": region}
+            mechanics_options["figure_region"] = region
         except (ValueError, TypeError):
             raise HTTPException(422, detail={"code": "invalid_figure_region"}) from None
+    raw_candidate = (await request.form()).get("pendulum_candidate")
+    if raw_candidate is not None and domain == "mechanics":
+        try:
+            candidate = int(str(raw_candidate))
+            if not 0 <= candidate < 64:
+                raise ValueError
+            mechanics_options["pendulum_candidate"] = candidate
+        except (ValueError, TypeError):
+            raise HTTPException(422, detail={"code": "invalid_pendulum_candidate"}) from None
     if mechanics_options:
         from ..domains.mechanics.options import MechanicsOptions
 

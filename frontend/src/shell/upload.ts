@@ -8,6 +8,7 @@ import type { GhostPart } from "../domains/circuit/ui/trace-issues";
 import { t, format, digits } from "./language";
 import { ImageStore } from "./image-store";
 import { friendlyFilename } from "./filenames";
+import { AnalysisStepper, createAnalysisPreview } from "./analysis-ui";
 
 export type AnalysisResult = {
   netlist: Netlist;
@@ -86,6 +87,7 @@ export class UploadWorkspace {
   private preview: HTMLImageElement;
   private boxes: HTMLCanvasElement;
   private stepper: HTMLOListElement;
+  private steps: AnalysisStepper;
   private clock: HTMLElement;
   private error: HTMLElement;
   private retry: HTMLButtonElement;
@@ -106,14 +108,13 @@ export class UploadWorkspace {
     this.receipt = node("p", card);
     this.receipt.dataset.testid = "upload-receipt";
     this.receipt.setAttribute("role", "status");
-    const frame = node("div", card);
-    frame.className = "upload-preview";
-    this.preview = node("img", frame);
-    this.preview.dataset.testid = "upload-preview";
-    this.preview.hidden = true;
-    this.boxes = node("canvas", frame);
-    this.boxes.dataset.testid = "detected-preview";
-    this.boxes.hidden = true;
+    const preview = createAnalysisPreview(
+      card,
+      "upload-preview",
+      "detected-preview",
+    );
+    this.preview = preview.image;
+    this.boxes = preview.canvas;
     const toggle = node("label", card);
     toggle.className = "toggle";
     this.show = node("input", toggle);
@@ -138,7 +139,8 @@ export class UploadWorkspace {
     this.stepper.className = "stepper";
     this.stepper.dataset.testid = "analysis-stepper";
     this.stepper.hidden = true;
-    stages.forEach((stage) => node("li", this.stepper, "stage." + stage));
+    this.steps = new AnalysisStepper(this.stepper);
+    this.steps.stages(stages);
     this.clock = node("p", card);
     this.clock.setAttribute("aria-live", "off");
     this.cancel = node("button", card, "upload.cancel");
@@ -274,10 +276,7 @@ export class UploadWorkspace {
         started.stages.length >= 2 &&
         started.stages.every((stage: unknown) => typeof stage === "string")
       ) {
-        this.stepper.replaceChildren();
-        started.stages.forEach((stage: string) =>
-          node("li", this.stepper, "stage." + stage),
-        );
+        this.steps.stages(started.stages);
       }
       this.page.max = String(started.page_count || 1);
       this.page.parentElement!.hidden = (started.page_count || 1) <= 1;
@@ -394,11 +393,7 @@ export class UploadWorkspace {
   }
   private setStage(index: number) {
     this.index = index;
-    Array.from(this.stepper.children).forEach((el, i) => {
-      el.className = i < index ? "complete" : i === index ? "current" : "";
-      if (i === index) el.setAttribute("aria-current", "step");
-      else el.removeAttribute("aria-current");
-    });
+    this.steps.index(index);
     this.translate();
   }
   private draw() {

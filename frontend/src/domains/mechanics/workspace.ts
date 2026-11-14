@@ -38,6 +38,8 @@ import { WorkspacePanels, type WorkspaceMode } from "./panels";
 import { MechanicsSession } from "./session";
 import { readiness } from "./readiness";
 import { updateReadouts } from "./readouts";
+import { MechanicsUploadPanel } from "./upload-panel";
+import { repairMissingLength } from "./parameter-repair";
 import {
   PhysicsInteractionController,
   physicsHandles,
@@ -117,6 +119,7 @@ export class MechanicsWorkspace implements DomainHandle {
   private runButton: HTMLButtonElement;
   private locale = "";
   private session: MechanicsSession;
+  private uploadPanel: MechanicsUploadPanel;
   private get analyzing() {
     return this.session?.analyzing ?? false;
   }
@@ -505,6 +508,17 @@ export class MechanicsWorkspace implements DomainHandle {
         this.refresh();
       },
     );
+    this.uploadPanel = new MechanicsUploadPanel(
+      this.panels.uploadBody,
+      this.panels.center,
+      upload,
+      analysis,
+      {
+        upload: (file) => void this.upload(file),
+        retry: () => void this.session.retry(),
+        confirmCandidate: (index) => void this.session.confirmCandidate(index),
+      },
+    );
     const setup = this.root.querySelector<HTMLElement>(
       ".mech-authoring-setup",
     )!;
@@ -559,9 +573,22 @@ export class MechanicsWorkspace implements DomainHandle {
         render: () => this.render(),
         report: (error) => this.report(error),
         number: numberText,
+        resetSource: () => {
+          this.clock.reset();
+          this.engine = null;
+          this.renderer = null;
+          this.image = "";
+          this.selected = "";
+          this.canvas.width = 800;
+          this.canvas.height = 520;
+          delete this.root.dataset.ready;
+          this.refresh();
+        },
       },
       {
         analysisStatus: this.analysisStatus,
+        uploadPanel: this.uploadPanel,
+        fixtureSelect: fixtures,
         analysisProgress: this.analysisProgress,
         cancelAnalysis: this.cancelAnalysis,
         labelConsent: this.labelConsent,
@@ -613,6 +640,7 @@ export class MechanicsWorkspace implements DomainHandle {
       active: this.active,
       analyzing: this.analyzing,
       analysisBoxes: structuredClone(this.analysisBoxes),
+      analysis: this.uploadPanel.debug,
       frame0: this.renderer?.frame0,
       degraded: this.renderer?.degraded,
       background: this.renderer?.backgroundHash(),
@@ -627,6 +655,9 @@ export class MechanicsWorkspace implements DomainHandle {
       mode: this.workspaceMode,
       metrics: this.engine?.trajectory.metrics,
       initialState: this.engine?.trajectory.states[0],
+      currentState: this.engine?.trajectory.supported
+        ? sample(this.engine.trajectory, this.clock.displayTime)
+        : null,
       initialLayout: this.engine?.trajectory.supported
         ? archetypes[this.engine.original.archetype].layout(
             this.engine.original,
@@ -640,6 +671,7 @@ export class MechanicsWorkspace implements DomainHandle {
     const locale = `${language}/${banglaDigits}`;
     if (this.locale === locale) return;
     this.locale = locale;
+    this.uploadPanel.translate();
     this.refresh();
   };
   private tab(name: string) {
@@ -719,10 +751,19 @@ export class MechanicsWorkspace implements DomainHandle {
   }
   private change(action: () => void) {
     if (!this.engine) return;
+    const wasSupported = this.engine.trajectory.supported;
     this.stopAnalysis();
     const before = this.snapshot();
     try {
       action();
+      if (
+        !wasSupported &&
+        this.engine.trajectory.supported &&
+        this.workspaceMode === "fix"
+      ) {
+        this.workspaceMode = "explore";
+        this.editing = false;
+      }
       this.history.push(before, this.snapshot());
       this.clock.reset();
       this.refresh();
@@ -794,12 +835,38 @@ export class MechanicsWorkspace implements DomainHandle {
           engine.original,
           {},
         );
-        const reference = initial.states[0] ?? engine.trajectory.states[0];
+        let reference = initial.states[0] ?? engine.trajectory.states[0];
+        // A multi-state diagram's measured native pose may be equilibrium while
+        // an explicit printed angle specifies release. Validate extraction at
+        // that observed pose; the simulation still uses its actual solver state.
+        if (
+          reference &&
+          engine.original.annotations.some((a) =>
+            a.id.startsWith("alternate_state_"),
+          )
+        )
+          reference = {
+            ...reference,
+            positions: Object.fromEntries(
+              engine.original.bodies.map((b) => [
+                b.id,
+                {
+                  x:
+                    (b.anchor[0] - engine.original.links[0].a.point[0]) /
+                    engine.original.frame.px_per_m.number!,
+                  y:
+                    (b.anchor[1] - engine.original.links[0].a.point[1]) /
+                    engine.original.frame.px_per_m.number!,
+                },
+              ]),
+            ),
+          };
         if (reference && renderer.frame0.mean_absolute_channel === null)
           renderer.renderFrame0Check(reference);
         renderer.fitTrajectory(engine.trajectory, engine.solverParameters());
       }
       this.renderer = renderer;
+      this.uploadPanel.simulationReady(engine.trajectory.supported);
       this.clock.duration = engine.trajectory.duration;
       this.scrub.max = String(this.clock.duration);
       this.refreshWarnings();
@@ -811,6 +878,7 @@ export class MechanicsWorkspace implements DomainHandle {
       if (token === this.generation) {
         this.renderer = null;
         this.report(e);
+        this.uploadPanel.failed();
       }
     }
   }
@@ -862,7 +930,11 @@ export class MechanicsWorkspace implements DomainHandle {
             const binding = this.engine!.binding(row.id);
             if (
               this.workspaceMode !== "advanced" &&
-              binding.class === "geometry"
+              binding.class === "geometry" &&
+              !(
+                this.workspaceMode === "fix" &&
+                valueAt(s!, binding.path).number === null
+              )
             )
               return false;
             if (this.workspaceMode !== "explore") return true;
@@ -875,12 +947,25 @@ export class MechanicsWorkspace implements DomainHandle {
           })
           .map((row) => ({
             ...row,
+            locked:
+              this.workspaceMode === "fix" && row.value === null
+                ? false
+                : row.locked,
             label: this.bindingLabel(row.id),
           }));
         parameterPanel(
           this.params,
           rows,
-          (id, n) => this.change(() => this.engine!.set(id, n)),
+          (id, n) => {
+            const path = this.engine!.binding(id).path;
+            if (
+              this.workspaceMode === "fix" &&
+              path.endsWith(".length_m") &&
+              valueAt(this.engine!.original, path).number === null
+            )
+              this.edit((scene) => repairMissingLength(scene, path, n));
+            else this.change(() => this.engine!.set(id, n));
+          },
           (id) =>
             this.change(() => {
               if (this.engine!.unlocked.has(id))
@@ -936,7 +1021,12 @@ export class MechanicsWorkspace implements DomainHandle {
     this.panels?.refresh(this.workspaceMode, s, this.selected);
     this.readinessNotice.textContent = this.engine
       ? t(
-          `mech.readiness_${readiness(this.engine.document, this.engine.trajectory, this.analyzing)}`,
+          !this.analyzing &&
+            !this.engine.trajectory.supported &&
+            readiness(this.engine.document, this.engine.trajectory) ===
+              "needs_review"
+            ? "mech.correction_required"
+            : `mech.readiness_${readiness(this.engine.document, this.engine.trajectory, this.analyzing)}`,
         )
       : "";
     this.refreshWarnings();
@@ -956,7 +1046,10 @@ export class MechanicsWorkspace implements DomainHandle {
         !this.engine || (key !== "place_template" && !this.renderer);
     }
     this.playButton.disabled =
-      !this.engine?.trajectory.supported || this.editing || !this.renderer;
+      !this.engine?.trajectory.supported ||
+      this.editing ||
+      !this.renderer ||
+      this.analyzing;
     this.root.dataset.editing = String(this.editing);
     this.root.dataset.playing = String(this.clock.playing);
   }
@@ -997,6 +1090,8 @@ export class MechanicsWorkspace implements DomainHandle {
     return t(key) === key ? path : t(key);
   }
   private bindingLabel(id: string) {
+    if (this.workspaceMode !== "advanced" && id.startsWith("mass_"))
+      return t("mech.param_mass");
     const base = id.replace(/_(?:S|L)\d+$/, "").replace(/^v_B([12])$/, "v$1");
     const aliases: Record<string, string> = {
       release_angle: "angle",
@@ -1194,6 +1289,7 @@ export class MechanicsWorkspace implements DomainHandle {
         if (this.drag) moveHandle(draft, this.drag.handle, this.drag.point);
         this.drawEditor(ctx, draft);
       }
+      this.uploadPanel.paint(ctx);
     } else {
       r.render(
         this.canvas,

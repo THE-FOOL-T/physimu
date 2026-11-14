@@ -1,6 +1,6 @@
 import type { Scene, State } from "./types";
 import { t } from "../../shell";
-import { nameOf } from "./authoring";
+import { componentName } from "./upload-panel";
 
 const nodes = new WeakMap<HTMLElement, Map<string, HTMLElement>>();
 /** Playback updates existing text nodes; it does not rebuild the inspector each frame. */
@@ -29,7 +29,7 @@ export function updateReadouts(
     ],
     ...Object.entries(state.velocities).map(([id, v]): [string, string] => [
       id,
-      `${nameOf(scene, id)} · ${t("mech.velocity")}: (${number(v.x)}, ${number(v.y)}) m/s`,
+      `${componentName(scene, id)} · ${t("mech.velocity")}: (${number(v.x)}, ${number(v.y)}) m/s`,
     ]),
   ];
   const keys = new Set(rows.map(([key]) => key));

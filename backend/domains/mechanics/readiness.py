@@ -49,13 +49,21 @@ def assess(scene, evidence):
         message, action = MESSAGES.get(
             code, ("Review this retained observation in Fix interpretation.", "review")
         )
+        classical_supported = scene["archetype"] != "unsupported" and any(
+            w["code"] == "classical_vision" for w in scene["warnings"]
+        )
+        if code == "weights_unavailable" and classical_supported:
+            message, action = (
+                "Model inference is unavailable. This interpretation uses measured classical vision; review its evidence.",
+                "review_classical_evidence",
+            )
         issues.append(
             dict(
                 code=code,
                 ref=w.get("ref"),
                 path=None,
                 severity="error"
-                if code in blocking or code == "weights_unavailable"
+                if code in blocking or code == "weights_unavailable" and not classical_supported
                 else "warning",
                 message=message,
                 action=action,
@@ -85,9 +93,24 @@ def assess(scene, evidence):
                 )
             )
     status = "ready"
-    if any(w["code"] == "weights_unavailable" for w in scene["warnings"]):
+    if (
+        any(w["code"] == "weights_unavailable" for w in scene["warnings"])
+        and scene["archetype"] == "unsupported"
+    ):
         status = "needs_model"
-    elif scene["archetype"] == "unsupported" or scene["meta"]["provenance"] == "unsupported":
+    elif scene["archetype"] == "unsupported":
+        status = "unsupported"
+    elif errors and blocking <= {
+        "invalid_mass",
+        "invalid_link_value",
+        "unresolved_parameter",
+        "invalid_gravity",
+        "invalid_launch",
+        "invalid_friction",
+        "invalid_restitution",
+    }:
+        status = "needs_review"
+    elif scene["meta"]["provenance"] == "unsupported":
         status = "unsupported"
     elif issues:
         status = "needs_review"

@@ -389,7 +389,7 @@
       "from": "frontend/src/ui/upload.ts",
       "to": "frontend/src/shell/upload.ts",
       "source_sha256": "0519515cbfd53bfc93a132fd2bb1e007f957bb8a171ca4495941ec67c9f6c08d",
-      "structure_sha256": "26f18167dd5dba513342d4a5e41a41953ede4ee2d618a154e4455caed448ee0e"
+      "structure_sha256": "96611b1cd2e6ff9ac812574cdb62bfd0009afd742b2fd3c8d09faf3905c3a137"
     },
     {
       "from": "frontend/src/ui/warnings.ts",
@@ -514,7 +514,7 @@
       "from": "backend/app/main.py",
       "to": "backend/app/main.py",
       "source_sha256": "8b4c3335a2b670343a1e97bd3f6f0df0696c180719c07db3df8ced2b2d9bc694",
-      "structure_sha256": "fd8d37d1bb1a45d8946dd713f3473c6370ba66e32e2c14c9e82f6a1ef59d34ac",
+      "structure_sha256": "5e21f48019d1fde2a37a8904c10d88fbe6b6bdd33ea2218acb259abcd0e71501",
       "resource_roots": {
         "Path(__file__).resolve().parents[2]": "."
       }
@@ -734,6 +734,12 @@
       "to": "frontend/src/shell/simulation.ts",
       "source_sha256": "865eb9c3bd2954f7d7bd1a39341f9407b2215251c85051dd2ce7e85e23c6269b",
       "structure_sha256": "621c6d68495e45e624af61128a7ae73f11d85df4b2593eab3a8573ea32c527cd"
+    },
+    {
+      "from": "frontend/browser-tests/layout.spec.ts",
+      "to": "frontend/browser-tests/layout.spec.ts",
+      "source_sha256": "425880e2600c166557c3dc1b67800fd300e2c35cb1014e5174006f9f2fad6664",
+      "structure_sha256": "c3597e575ac94f73f0a4c4a22ae68855c8750217929ba1eb2d952a6d424b3ca2"
     }
   ],
   "post_m7_updates": [
@@ -743,6 +749,26 @@
       "previous_structure_sha256": "ec12505dd9bb5179ae348968bea68e5089dcbfc395d9e1d72430e0e2192a34e2",
       "structure_sha256": "fd8d37d1bb1a45d8946dd713f3473c6370ba66e32e2c14c9e82f6a1ef59d34ac",
       "reason": "Mechanics-only optional native figure_region validation and request-local domain adapter; circuit orchestration and defaults retained. Exact new implementation remains fingerprint-pinned. Starting commit b0e94bfc7f3e6fbb77986a5c994448b92898d71d."
+    },
+    {
+      "date": "2026-11-14",
+      "path": "frontend/src/shell/upload.ts",
+      "previous_structure_sha256": "26f18167dd5dba513342d4a5e41a41953ede4ee2d618a154e4455caed448ee0e",
+      "structure_sha256": "96611b1cd2e6ff9ac812574cdb62bfd0009afd742b2fd3c8d09faf3905c3a137",
+      "reason": "Extract unchanged Circuit preview DOM and index-stepper behavior into shared shell/analysis-ui.ts for Mechanics. Circuit actions and layout remain under browser regression."
+    },
+    {
+      "date": "2026-11-14",
+      "path": "backend/app/main.py",
+      "previous_structure_sha256": "fd8d37d1bb1a45d8946dd713f3473c6370ba66e32e2c14c9e82f6a1ef59d34ac",
+      "structure_sha256": "5e21f48019d1fde2a37a8904c10d88fbe6b6bdd33ea2218acb259abcd0e71501",
+      "reason": "Add a request-local, explicitly user-confirmed pendulum candidate option for Mechanics only; shared analysis coordinator and Circuit options stay unchanged."
+    },
+    {
+      "date": "2026-11-14",
+      "path": "frontend/browser-tests/layout.spec.ts",
+      "structure_sha256": "c3597e575ac94f73f0a4c4a22ae68855c8750217929ba1eb2d952a6d424b3ca2",
+      "reason": "Record existing baseline commit 4109f4a: register native chooser interception before navigation. All keyboard actions/assertions retained; no Circuit application or screenshot change. The prior report independence run preceded this test-only commit. Original import bytes remain pinned by source_sha256."
     }
   ]
 }

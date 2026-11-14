@@ -27,6 +27,7 @@ import {
   restoreEngine,
 } from "../../src/domains/mechanics/project";
 import { archetypes } from "../../src/domains/mechanics/archetypes";
+import { repairMissingLength } from "../../src/domains/mechanics/parameter-repair";
 const fixture = (name: string) =>
   parseScene(
     JSON.parse(
@@ -37,6 +38,33 @@ const fixture = (name: string) =>
     ),
   );
 const image = "data:image/png;base64,aW1hZ2U="; // Pure contract test; browser must decode before installation.
+
+test("first length repair calibrates the detected source and preserves an explicit release angle", () => {
+  const scene = fixture("pendulum"),
+    before = structuredClone(scene);
+  scene.links[0].length_m!.number = null;
+  scene.params.release_angle = userValue(15, "deg");
+  const pixels = Math.hypot(
+    scene.bodies[0].anchor[0] - scene.links[0].a.point[0],
+    scene.bodies[0].anchor[1] - scene.links[0].a.point[1],
+  );
+  repairMissingLength(scene, `links.${scene.links[0].id}.length_m`, 2.4);
+  assert.equal(scene.links[0].length_m!.number, 2.4);
+  assert.equal(scene.frame.px_per_m.number, pixels / 2.4);
+  assert.equal(scene.params.release_angle.number, 15);
+  if (before.bodies[0].radius_m?.number)
+    assert.equal(
+      scene.bodies[0].radius_m!.number,
+      (before.bodies[0].radius_m.number * before.frame.px_per_m.number!) /
+        scene.frame.px_per_m.number!,
+    );
+  assert.deepEqual(scene.bodies[0].anchor, before.bodies[0].anchor);
+  assert.deepEqual(scene.links[0].polyline, before.links[0].polyline);
+  assert.equal(new BindingEngine(parseScene(scene)).trajectory.supported, true);
+  assert.throws(() =>
+    repairMissingLength(scene, `links.${scene.links[0].id}.length_m`, -1),
+  );
+});
 
 test("manual templates transform native geometry, retain SI scale and label every Value assumed", () => {
   for (const name of [

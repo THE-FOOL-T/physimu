@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, asdict
 import gc
+import hashlib
 import os
 from pathlib import Path
 import threading
@@ -96,3 +97,33 @@ def detect(image, check=lambda: None):
         return [
             Detection(f"D{i + 1}", name, rect, conf) for i, (name, rect, conf) in enumerate(rows)
         ]
+
+
+def checkpoint_readiness(*, load=False):
+    """Mechanics-specific inventory; file presence alone never means compatible."""
+    cfg = mechanics_config()
+    path = Path(cfg["weights"])
+    result = dict(
+        path=str(path),
+        expected_class_count=len(NAMES),
+        expected_classes=list(NAMES),
+        available=False,
+        compatible=None,
+        status="missing",
+    )
+    if not path.is_file() or path.suffix.lower() != ".pt":
+        return result
+    result.update(available=True, status="unverified")
+    key = ("mechanics", str(path.resolve()), path.stat().st_mtime_ns, path.stat().st_size)
+    if not load and key not in _cache:
+        return result
+    try:
+        with model_lease("mechanics"), _lock:
+            model, _ = detector()
+            names = [model.names[i] for i in range(len(model.names))]
+        result.update(compatible=True, status="ready", actual_class_count=len(names), classes=names)
+        if load:
+            result["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    except WeightsUnavailable as error:
+        result.update(compatible=False, status="incompatible", reason=str(error))
+    return result

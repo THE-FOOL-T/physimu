@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from ...core import preprocess, estimate_style, figure_regions, read_text, image_url, model_lease
-from .detect import detect, Detection, WeightsUnavailable
+from .detect import detect, Detection, WeightsUnavailable, checkpoint_readiness
 from .scene import Scene
 from .labels import read_tokens
 from .label_reader import read_fallback
@@ -18,18 +18,9 @@ from .evidence import build_evidence
 from .readiness import assess
 from .ocr import fuse_mechanics
 from .understanding import understand, select_region
-
-STAGES = (
-    "received",
-    "preprocess",
-    "detect",
-    "text",
-    "geometry",
-    "associate",
-    "archetype",
-    "validate",
-    "done",
-)
+from .classical import pendulum_proposals, annotate_alternatives
+from ...core import configure_threads
+from .stages import STAGES
 
 
 def route_domain(image):
@@ -71,6 +62,23 @@ def readings(rows, w, h):
         row["alternatives"] = (
             readings(r.get("alternatives", [])[:4], w, h) if r.get("alternatives") else []
         )
+        if r.get("rotation") in (0, 90, 180, 270):
+            row["rotation"] = r["rotation"]
+        classifier = r.get("classifier_result")
+        if (
+            isinstance(classifier, list)
+            and classifier
+            and isinstance(classifier[0], (list, tuple))
+            and len(classifier[0]) == 2
+            and str(classifier[0][0]) in {"0", "90", "180", "270"}
+            and isinstance(classifier[0][1], (int, float))
+            and math.isfinite(classifier[0][1])
+            and 0 <= classifier[0][1] <= 1
+        ):
+            row["classifier_result"] = classifier[:1]
+        if r.get("binding_eligible") is False:
+            row["binding_eligible"] = False
+            row["binding_exclusion"] = str(r.get("binding_exclusion", "orientation"))[:80]
         clean.append(row)
     return clean
 
@@ -87,6 +95,9 @@ def analyze_mechanics_page(
     stage = "received"
     timings = {s: None for s in STAGES if s != "done"}
     diagnostics = {"detections": [], "texts": [], "measurements": {}, "alternatives": []}
+    stage_states = {name: dict(id=name, status="pending") for name in STAGES}
+    stage_states["received"]["status"] = "running"
+    diagnostics["stage_states"] = stage_states
     source = image
     scene = blank(source, lang)
     style = {}
@@ -99,10 +110,15 @@ def analyze_mechanics_page(
         nonlocal stage, changed
         now = time.perf_counter()
         timings[stage] = now - changed
+        if stage_states[stage]["status"] == "running":
+            stage_states[stage]["status"] = "completed"
         stage = name
+        stage_states[name]["status"] = "running"
         changed = now
         if progress:
-            progress(name, partial)
+            progress(
+                name, {**(partial or {}), "stage_states": [dict(v) for v in stage_states.values()]}
+            )
 
     def result(reason=None):
         nonlocal scene
@@ -114,6 +130,10 @@ def analyze_mechanics_page(
         timings[stage] = time.perf_counter() - changed
         timings["total"] = time.perf_counter() - started
         advance("done")
+        stage_states["done"]["status"] = "completed"
+        for entry in stage_states.values():
+            if entry["status"] == "pending":
+                entry.update(status="skipped", reason=reason or "not_executed")
         return dict(
             domain="mechanics",
             provenance=scene["meta"]["provenance"],
@@ -138,7 +158,6 @@ def analyze_mechanics_page(
         override = options.get("style", "auto")
         effective = override if override in {"printed", "handwritten"} else style["style"]
         notes = []
-        diagnostics["understanding"] = understand(source, style)
         style = {
             **style,
             "effective_style": effective,
@@ -149,6 +168,8 @@ def analyze_mechanics_page(
             warning(scene, "handwriting_edit_expected")
         for code, _ in notes:
             warning(scene, code)
+        advance("understand")
+        diagnostics["understanding"] = understand(source, style)
         advance(
             "detect",
             {
@@ -157,16 +178,39 @@ def analyze_mechanics_page(
                 "height": source.shape[0],
             },
         )
+        classical = None
+        diagnostics["recognition"] = dict(
+            method="controlled_perception" if detector else "model",
+            model_status="checking",
+            checkpoint=checkpoint_readiness(),
+        )
         try:
             detected = (detector or detect)(source, check=check)
+            diagnostics["recognition"]["model_status"] = "controlled" if detector else "ready"
+            if not detector:
+                diagnostics["recognition"]["checkpoint"] = checkpoint_readiness()
         except WeightsUnavailable as error:
             warning(scene, error.code)
-            return result(str(error))
+            diagnostics["recognition"].update(model_status="unavailable", model_reason=str(error))
+            detected = []
         except Exception:
             warning(scene, "detector_failed")
-            return result(
-                "Mechanics detector failed; the source image remains available for authoring."
+            diagnostics["recognition"].update(
+                model_status="failed", model_reason="inference_failed"
             )
+            detected = []
+        if diagnostics["recognition"]["model_status"] not in {"ready", "controlled"}:
+            configure_threads()
+            detected, classical = pendulum_proposals(
+                source, check, candidate=options.get("pendulum_candidate")
+            )
+            diagnostics["classical"] = classical
+            diagnostics["recognition"]["method"] = "classical_vision" if detected else "unresolved"
+            if detected:
+                warning(scene, "classical_vision")
+                stage_states["detect"].update(method="classical_vision", model_status="unavailable")
+            else:
+                stage_states["detect"].update(status="blocked", reason=classical["reason"])
         h, w = source.shape[:2]
         boxes = []
         for i, d in enumerate(detected[:300]):
@@ -182,8 +226,17 @@ def analyze_mechanics_page(
                 min(float(h), float(e)),
             ]
             if rect[0] < rect[2] and rect[1] < rect[3]:
-                boxes.append(Detection(f"D{i + 1}", d.type, rect, max(0.0, min(1.0, d.confidence))))
-        diagnostics["detections"] = [d.as_dict() for d in boxes]
+                boxes.append(
+                    Detection(
+                        d.id if classical else f"D{i + 1}",
+                        d.type,
+                        rect,
+                        max(0.0, min(1.0, d.confidence)),
+                    )
+                )
+        diagnostics["detections"] = [
+            {**d.as_dict(), "source": diagnostics["recognition"]["method"]} for d in boxes
+        ]
         regions = figure_regions(
             source, [d for d in boxes if d.type in {"block", "ball", "bob", "cart", "pulley"}]
         )
@@ -239,10 +292,69 @@ def analyze_mechanics_page(
             for k, v in ocr.items()
             if k in {"stages", "budget_exceeded", "engine_timeouts", "engine_limits"}
         }
+        if ocr_notes:
+            stage_states["text"].update(
+                status="partial" if text else "failed",
+                reason=",".join(code for code, _ in ocr_notes),
+            )
         advance("geometry", {"texts": text})
-        measured, evidence, choices, confidences = measure(source, selected, lang, effective, check)
+        measured, evidence, choices, confidences = measure(
+            source,
+            selected,
+            lang,
+            effective,
+            check,
+            trace_min_pixels=3 if classical and classical["accepted"] else 8,
+        )
+        # Measure real model boxes first. A limited classical hypothesis may
+        # recover a rejected topology; both evidence sources remain inspectable.
+        if (
+            not classical
+            and not detector
+            and interpretations(measured, choices)[0][0]["archetype"] == "unsupported"
+        ):
+            cv_boxes, cv_report = pendulum_proposals(
+                source, check, candidate=options.get("pendulum_candidate")
+            )
+            diagnostics["classical"] = cv_report
+            if cv_boxes:
+                cv_scene, cv_evidence, cv_choices, cv_confidences = measure(
+                    source, cv_boxes, lang, effective, check, trace_min_pixels=3
+                )
+                if interpretations(cv_scene, cv_choices)[0][0]["archetype"] == "pendulum":
+                    diagnostics["model_detections"] = diagnostics["detections"]
+                    diagnostics["model_geometry"] = measured
+                    diagnostics["recognition"].update(
+                        method="classical_vision",
+                        selection_reason="model_topology_rejected_by_measured_geometry",
+                    )
+                    classical = cv_report
+                    diagnostics["classical"] = classical
+                    measured, evidence, choices, confidences = (
+                        cv_scene,
+                        cv_evidence,
+                        cv_choices,
+                        cv_confidences,
+                    )
+                    boxes = cv_boxes
+                    regions = figure_regions(source, cv_boxes)
+                    chosen = select_region(regions, options.get("figure_region"), w, h)
+                    text = [
+                        r
+                        for r in all_text
+                        if chosen[0] <= centre(r["bbox"])[0] <= chosen[2]
+                        and chosen[1] <= centre(r["bbox"])[1] <= chosen[3]
+                    ]
+                    diagnostics["texts"] = text
+                    diagnostics["figure_regions"] = regions
+                    diagnostics["detections"] = [
+                        {**d.as_dict(), "source": "classical_vision"} for d in cv_boxes
+                    ]
+                    warning(scene, "classical_vision")
         measured["warnings"].extend(scene["warnings"])
         scene = measured
+        if classical and classical["accepted"]:
+            annotate_alternatives(scene, classical)
         scene["meta"]["region"] = list(map(float, chosen))
         if len(regions) > 1:
             warning(scene, "multiple_figures")
@@ -272,9 +384,19 @@ def analyze_mechanics_page(
             }
             for ref, fit in evidence.items()
         }
-        advance("associate")
+        advance(
+            "associate",
+            {
+                "scene_evidence": scene,
+                "relationships": build_evidence(scene, diagnostics).model_dump(mode="json")[
+                    "relationships"
+                ],
+            },
+        )
         assignments = associate(scene, read_tokens(text), confidences)
         diagnostics["assignments"] = assignments
+        if any(not r["accepted"] for r in assignments):
+            stage_states["associate"].update(status="partial", reason="unplaced_parameters")
         for row in assignments:
             if not row["accepted"]:
                 continue
@@ -295,9 +417,25 @@ def analyze_mechanics_page(
         (scene, reason, confidence), alternatives = interpretations(scene, choices)
         diagnostics["alternatives"] = alternatives
         diagnostics["archetype_confidence"] = confidence
+        if scene["archetype"] == "unsupported":
+            stage_states["archetype"].update(status="blocked", reason=reason)
         scene = calibrate(scene, assignments, evidence)
+        if classical and classical["accepted"]:
+            body, link = scene["bodies"][0], scene["links"][0] if scene["links"] else None
+            if body["mass"]["source"] == "prior":
+                body["mass"].update(number=None)
+                warning(scene, "missing_mass", body["id"])
+            if link and not any(
+                r["accepted"] and r["path"] == f"links.{link['id']}.length_m" for r in assignments
+            ):
+                link["length_m"].update(
+                    number=None, status="assumed", source="prior", confidence=0.0
+                )
+                warning(scene, "missing_length", link["id"])
         advance("validate")
         reason = finalize(scene, reason)
+        if scene["meta"]["provenance"] == "unsupported":
+            stage_states["validate"].update(status="blocked", reason=reason)
         if (
             len(regions) > 1
             and scene["archetype"] == "collision_1d"

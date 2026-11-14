@@ -18,7 +18,13 @@ class Record(BaseModel):
 
 class Relation(Record):
     type: Literal[
-        "SUPPORTED_BY", "ATTACHED_TO", "PASSES_OVER", "CONNECTED_TO", "LABEL_OF", "CONSTRAINED_TO"
+        "SUPPORTED_BY",
+        "ATTACHED_TO",
+        "PASSES_OVER",
+        "CONNECTED_TO",
+        "LABEL_OF",
+        "CONSTRAINED_TO",
+        "ALTERNATE_STATE_OF",
     ]
     source: str
     target: str
@@ -48,6 +54,7 @@ class Evidence(Record):
         "native_image_pixels_x_right_y_down"
     )
     image: dict
+    recognition: dict = Field(default_factory=dict)
     figure_regions: list[list[float]] = Field(default_factory=list)
     selected_region: list[float] | None = None
     detections: list[dict] = Field(default_factory=list)
@@ -142,6 +149,19 @@ def relationships(scene):
                     "assumed" if assumed else "supported" if gap <= 8 else "unresolved",
                 )
     for a in scene["annotations"]:
+        for link in scene["links"]:
+            if a["id"].startswith(f"alternate_state_{link['id']}_"):
+                edge(
+                    "ALTERNATE_STATE_OF",
+                    a["id"],
+                    link["id"],
+                    0.6,
+                    [
+                        "measured_similar_radius_and_size",
+                        "alternate_pose_interpretation_requires_review",
+                    ],
+                    "assumed",
+                )
         if a.get("bound_to"):
             edge("LABEL_OF", a["id"], a["bound_to"], 0.8, ["typed_parameter_assignment"])
     return edges
@@ -168,6 +188,7 @@ def build_evidence(scene, diagnostics):
     edges = relationships(scene)
     return Evidence(
         image=scene["image"],
+        recognition=diagnostics.get("recognition", {}),
         figure_regions=diagnostics.get("figure_regions", []),
         selected_region=scene["meta"].get("region"),
         detections=diagnostics.get("detections", []),
@@ -187,7 +208,10 @@ def build_evidence(scene, diagnostics):
         assignments=diagnostics.get("assignments", []),
         unassigned_labels=[r for r in diagnostics.get("assignments", []) if not r["accepted"]],
         unresolved_attachments=[
-            r.source for r in edges if r.state in {"assumed", "unresolved"} and r.type != "LABEL_OF"
+            r.source
+            for r in edges
+            if r.state in {"assumed", "unresolved"}
+            and r.type not in {"LABEL_OF", "ALTERNATE_STATE_OF"}
         ],
         assumptions=assumptions,
         warnings=scene["warnings"],

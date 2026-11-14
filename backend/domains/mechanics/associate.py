@@ -88,7 +88,12 @@ def targets(scene):
                 [surface["polyline"][0]],
             )
     for link in scene["links"]:
-        add("length", f"links.{link['id']}.length_m", link["id"], link["polyline"])
+        routes = list(link["polyline"])
+        for annotation in scene["annotations"]:
+            geometry = annotation["geometry"]
+            if annotation["id"].startswith(f"alternate_state_{link['id']}_"):
+                routes.extend(geometry["points"])
+        add("length", f"links.{link['id']}.length_m", link["id"], routes)
         if link["type"] == "spring":
             add("spring_constant", f"links.{link['id']}.k", link["id"], link["polyline"])
             add("damping", f"links.{link['id']}.damping", link["id"], link["polyline"])
@@ -136,12 +141,27 @@ def associate(scene, tokens, detection_confidences=None):
             if token.kind == "damping" and token.unit != ("1/s" if pivot else "kg/s"):
                 continue
             dist = distance(centre(token.bbox), target["points"]) if target["points"] else 0.0
-            if dist > 120:
+            reach = 120.0
+            if (
+                pivot
+                and len(scene["links"]) == 1
+                and (
+                    token.kind == "angle"
+                    and target["path"] == "params.release_angle"
+                    or token.kind == "length"
+                    and target["ref"] == scene["links"][0]["id"]
+                )
+            ):
+                link = scene["links"][0]
+                reach = max(
+                    reach, min(300.0, math.dist(link["a"]["point"], link["b"]["point"]) * 0.5)
+                )
+            if dist > reach:
                 continue
             named = named_owners.get((token.name or "").lower())
             if named and token.kind in {"mass", "speed"} and named != target["ref"]:
                 continue
-            matrix[i, j] = dist / 120 + (1 - token.confidence) * 0.2
+            matrix[i, j] = dist / reach + (1 - token.confidence) * 0.2
     report = []
     if not tokens:
         return report

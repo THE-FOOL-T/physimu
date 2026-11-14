@@ -95,7 +95,11 @@ def test_mechanics_missing_model_is_explicit_with_original_image(monkeypatch, tm
     assert result["scene"]["bodies"] == []
     assert result["scene"]["meta"]["provenance"] == "unsupported"
     assert result["timings"]["total"] > 0
-    assert set(stages) == {"received", "preprocess", "detect", "done"}
+    assert set(stages) == set(MechanicsDomain().stages)
+    assert all(
+        result["timings"][s] is not None for s in ("text", "geometry", "associate", "validate")
+    )
+    assert result["diagnostics"]["stage_states"]["detect"]["status"] == "blocked"
     assert "solution" not in result and "netlist" not in result
     decoded = core.decode(base64.b64decode(result["source_image"].split(",")[1]))
     np.testing.assert_array_equal(decoded, image())
@@ -141,6 +145,12 @@ def test_api_circuit_default_and_explicit_keep_the_same_payload(monkeypatch, exp
 
 @pytest.mark.parametrize("route", ["/api/analyze", "/api/analyze/start"])
 def test_mechanics_api_never_enters_circuit_analysis_or_fallback(monkeypatch, tmp_path, route):
+    from circuit_sim.backend.domains.mechanics import engine
+
+    # This is a domain-routing contract on blank pixels. Test B separately runs
+    # actual local OCR on the mandatory user raster without this controlled reader.
+    monkeypatch.setattr(engine, "read_text", lambda *a, **k: ([], []))
+
     def forbidden(*args, **kwargs):
         pytest.fail("Mechanics entered circuit analysis")
 
@@ -158,8 +168,8 @@ def test_mechanics_api_never_enters_circuit_analysis_or_fallback(monkeypatch, tm
         try:
             main.jobs.jobs[id_]["future"].result(timeout=3)
             job = client.get("/api/analyze/" + id_).json()
-            assert job["stage_count"] == 9 and job["percent"] == 100
-            assert set(job["history"]) == {"queued", "received", "preprocess", "detect", "done"}
+            assert job["stage_count"] == len(MECHANICS_STAGES) and job["percent"] == 100
+            assert set(job["history"]) == {"queued", *MECHANICS_STAGES}
             assert job["history"][-1] == "done"
             data = job["result"]
         finally:
